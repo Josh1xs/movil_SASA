@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SASA - Verificar Código</title>
+<link rel="stylesheet" href="../css/codigo.css">
+</head>
+<body>
+<div class="container">
+  <div class="logo">
+    <img src="../IMG/SASA.png" alt="Logo SASA">
+  </div>
+  <div class="title">SASA</div>
+  <p class="description">
+    Ingrese el código de verificación enviado a su dirección de correo electrónico.
+  </p>
+  <form id="verificationForm">
+    <label for="code" class="label">Código</label>
+    <input type="text" id="code" name="code" required>
+    
+    <button type="submit" class="submit-button">Continuar</button>
+  </form>
+  <div class="resend-link">
+    ¿No recibió su código? <a href="#resend" class="resend-link">Reenviar Código</a>
+  </div>
+</div>
+<script src="../js/codigo.js"></script>
+</body>
+</html>

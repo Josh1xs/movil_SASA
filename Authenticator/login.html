@@ -1,13 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/login.css">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SASA - Iniciar Sesión</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/login.css">
 </head>
 <body>
-    
+  <div class="container">
+    <div class="logo">
+      <img src="../IMG/SASA.png" alt="Logo SASA">
+    </div>
+    <div class="title">SASA</div>
+    <form id="loginForm">
+      <div class="input-group">
+        <i class="material-icons icon">email</i>
+        <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
+      </div>
+      <div class="input-group">
+        <i class="material-icons icon">lock</i>
+        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+      </div>
+      <button type="submit" class="submit-button">Iniciar Sesión</button>
+    </form>
+    <div class="forgot-password">
+      <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
+    </div>
+    <div class="register">
+      ¿No tienes una cuenta? <a href="registro.html">Regístrate</a>
+    </div>
+  </div>
+  <script src="../JS/login.js"></script>
 </body>
-    <script src="../JS/login.js"></script>
 </html>

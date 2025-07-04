@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #d3d3d3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.title {
+  font-size: 32px;
+  color: #8b0000;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: stretch;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.icon {
+  color: #8b0000;
+  margin-right: 10px;
+}
+
+input {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  flex: 1;
+  background: transparent;
+}
+
+.submit-button {
+  background-color: #8b0000;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #7a0000;
+}
+
+.forgot-password, .register {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.forgot-password a, .register a {
+  color: #8b0000;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.forgot-password a:hover, .register a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 320px) {
+  .title {
+    font-size: 24px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+
+  .submit-button {
+    font-size: 14px;
+  }
+
+  .forgot-password, .register {
+    font-size: 12px;
+  }
+}

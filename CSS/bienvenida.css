@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #d3d3d3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  background-color: #d3d3d3;
+  border-radius: 20px;
+  padding: 40px 20px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo img {
+  width: 150px; /* Ajusta el tamaño de la imagen del logotipo */
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 48px; /* Ajusta el tamaño de fuente del título */
+  color: #8b0000;
+  font-weight: 700; /* Utiliza la variante negrita de la fuente */
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 18px; /* Ajusta el tamaño de fuente del texto descriptivo */
+  color: #000;
+  text-align: center;
+  margin-bottom: 30px;
+  line-height: 1.5; /* Ajusta la altura de línea para mejorar la legibilidad */
+  max-width: 300px; /* Limita el ancho máximo del texto para evitar que se extienda demasiado */
+}
+
+.button {
+  background-color: #3C0000;
+  color: #EFDBBF;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #7a0000;
+}
