@@ -1,0 +1,135 @@
+/* --- Reset básico --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Cuerpo y tipografía --- */
+body {
+  font-family: sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  padding-bottom: 60px; /* espacio para la barra inferior */
+}
+
+/* --- Topbar --- */
+.topbar {
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+
+.back-button {
+  color: rgba(60, 0, 0, 0.85);
+  font-size: 1.2rem;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color:rgba(60, 0, 0, 0.85);
+}
+
+/* --- Menú Three Dots --- */
+.dropdown {
+  position: relative;
+}
+
+.three-dots-btn {
+  background: none;
+  border: none;
+  color: rgba(60, 0, 0, 0.85);
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.three-dots-btn:hover {
+  color:rgba(60, 0, 0, 0.85);
+}
+
+.dropdown-menu {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+  min-width: 180px;
+  background-color: #fff;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  color: #212529;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+.dropdown-divider {
+  height: 1px;
+  margin: 0.25rem 0;
+  background-color: #dee2e6;
+  border: none;
+}
+
+/* --- Contenido principal --- */
+.main-content {
+  padding: 1rem;
+}
+
+/* --- Navegación inferior (mobile-nav) --- */
+.mobile-nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 60px;
+  background: rgba(60, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav__link {
+  flex: 1;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.mobile-nav__link i {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+.mobile-nav__link.active {
+  color: #0d6efd;
+}
+
