@@ -1,13 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../CSS/recuperar.css">
-    <title>Recuperar Contraseña</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recuperar Contraseña - SASA</title>
+  <link rel="stylesheet" href="../CSS/recuperar.css">
 </head>
 <body>
-    
+  <div class="container">
+     <div class="logo">
+    <img src="../IMG/SASA.png" alt="Logo SASA">
+  </div>
+
+    <h1 class="titulo">Recupera tú<br>contraseña</h1>
+
+    <label for="email" class="label">Ingresa tú Correo Electronico</label>
+    <input type="email" id="email" class="input" placeholder="Correo electrónico" required />
+
+    <button class="boton">Enviar</button>
+  </div>
 </body>
-    <script src="../JS/recuperar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../JS/recuperar.js"></script>
 </html>
