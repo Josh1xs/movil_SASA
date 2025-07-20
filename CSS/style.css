@@ -5,89 +5,13 @@
   padding: 0;
 }
 
-/* --- Cuerpo y tipografía --- */
+/* --- Cuerpo general --- */
 body {
   font-family: sans-serif;
   background-color: #f8f9fa;
   color: #212529;
-  padding-bottom: 60px; /* espacio para la barra inferior */
-}
-
-/* --- Topbar --- */
-.topbar {
-  background-color: #fff;
-  border-bottom: 1px solid #dee2e6;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
-.back-button {
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  margin-right: 10px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.back-button:hover {
-  color:rgba(60, 0, 0, 0.85);
-}
-
-/* --- Menú Three Dots --- */
-.dropdown {
-  position: relative;
-}
-
-.three-dots-btn {
-  background: none;
-  border: none;
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
-}
-
-.three-dots-btn:hover {
-  color:rgba(60, 0, 0, 0.85);
-}
-
-.dropdown-menu {
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
-  min-width: 180px;
-  background-color: #fff;
-}
-
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  font-size: 14px;
-  color: #212529;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #000;
-}
-
-.dropdown-divider {
-  height: 1px;
-  margin: 0.25rem 0;
-  background-color: #dee2e6;
-  border: none;
+  padding-bottom: 80px; /* espacio para el menú inferior */
+  overflow-x: hidden;
 }
 
 /* --- Contenido principal --- */
@@ -95,24 +19,35 @@ body {
   padding: 1rem;
 }
 
-/* --- Navegación inferior (mobile-nav) --- */
+/* --- Topbar minimalista (opcional) --- */
+.topbar {
+  background-color: #fff;
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  text-align: center;
+}
+.topbar-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* --- Menú inferior flotante --- */
 .mobile-nav {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  height: 60px;
-  background: rgba(60, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  height: 55px;
+  background: #7c1c1c;
+  border-radius: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .mobile-nav__link {
@@ -120,16 +55,128 @@ body {
   text-align: center;
   color: white;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 18px;
+  background: none;
+  border: none;
 }
 
 .mobile-nav__link i {
+  font-size: 20px;
+}
+
+/* --- Botón menú hamburguesa dentro del menú inferior --- */
+.menu-toggle-btn {
+  cursor: pointer;
+}
+
+/* --- Fondo oscuro al abrir menú lateral --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 1001;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.overlay.show {
   display: block;
-  font-size: 18px;
-  margin-bottom: 2px;
 }
 
-.mobile-nav__link.active {
-  color: #0d6efd;
+/* --- Menú desplegable tipo tarjeta centrada (Pokémon) --- */
+.profile-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  max-width: 90%;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem 1rem 1rem;
+  z-index: 1002;
+  display: none;
+  flex-direction: column;
+  align-items: center;
 }
 
+.profile-menu.open {
+  display: flex;
+}
+
+/* Fondo oscurecido cuando el menú está abierto */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.overlay.show {
+  display: block;
+}
+
+/* Botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Avatar y usuario */
+.user-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.user-pass {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/* Opciones del menú */
+.menu-options {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.menu-options li {
+  margin-bottom: 0.8rem;
+  text-align: left;
+}
+
+.menu-options a {
+  color: #212529;
+  text-decoration: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.menu-options a:hover {
+  background: #f0f0f0;
+  color: #C91A1A;
+}

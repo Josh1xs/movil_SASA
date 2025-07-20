@@ -11,10 +11,12 @@ body {
 
 .container {
   background-color: white;
-  border-radius: 20px;
+  border-radius: 20px; /* Borde redondeado en las 4 esquinas */
   padding: 20px;
   width: 90%;
   max-width: 400px;
+  max-height: 90vh; /* Controla la altura total */
+  overflow-y: auto;  /* Por si el contenido se desborda */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
@@ -116,4 +118,43 @@ button:hover {
   .loginLink {
     font-size: 10px;
   }
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.container {
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/Edge */
+}
+
+.container::-webkit-scrollbar {
+  display: none;               /* Chrome/Safari */
+}
+
+
+.password-help {
+  text-align: left;
+  font-size: 13px;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.password-help p {
+  margin: 2px 0;
+}
+
+.password-help .valid {
+  color: green;
+}
+
+.password-help .invalid {
+  color: red;
 }
