@@ -1,40 +1,51 @@
-// login.js
-
-// Usuario de ejemplo (puedes reemplazar esto por un fetch a una API)
-const usuariosValidos = [
-  {
-    email: "cliente@sasa.com",
-    password: "1234"
-  },
-  {
-    email: "usuario@sasa.com",
-    password: "password"
-  }
-];
-
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-  e.preventDefault(); // Evita que se recargue la página
+document.getElementById('loginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
 
-  // Busca si existe un usuario válido
-  const usuarioEncontrado = usuariosValidos.find(user => user.email === email && user.password === password);
+  console.log("Correo ingresado:", email);
+  console.log("Contraseña ingresada:", password);
 
-  if (usuarioEncontrado) {
-    Swal.fire({
-      icon: 'success',
-      title: '¡Bienvenido!',
-      text: 'Inicio de sesión exitoso',
-      confirmButtonText: 'Continuar'
-    }).then(() => {
-      window.location.href = '../dashboard/index.html';
-    });
-  } else {
+  try {
+    const res = await fetch('https://retoolapi.dev/DeaUI0/registro'); // Asegúrate de que sea la API correcta
+    if (!res.ok) throw new Error('API sin respuesta');
+
+    const usuarios = await res.json();
+    console.log("Usuarios desde la API:", usuarios);
+
+    const usuarioEncontrado = usuarios.find(user =>
+      user.correo === email && user.contrasena === password
+    );
+
+    console.log("Usuario encontrado:", usuarioEncontrado);
+
+    if (usuarioEncontrado) {
+      // Guardar el ID para otros módulos
+      localStorage.setItem("userId", usuarioEncontrado.id);
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Bienvenido!',
+        text: 'Inicio de sesión exitoso',
+        confirmButtonText: 'Continuar'
+      }).then(() => {
+        window.location.href = '../dashboard/index.html';
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de autenticación',
+        text: 'Correo o contraseña incorrectos'
+      });
+    }
+
+  } catch (error) {
+    console.error('Error en login:', error);
     Swal.fire({
       icon: 'error',
-      title: 'Error de autenticación',
-      text: 'Correo o contraseña incorrectos'
+      title: 'Error del servidor',
+      text: 'No se pudo establecer conexión con el servidor'
     });
   }
 });

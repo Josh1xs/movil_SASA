@@ -1,49 +1,34 @@
-// cambiar.js
-
 document.addEventListener("DOMContentLoaded", () => {
-  const boton = document.querySelector(".boton");
+  const correo = localStorage.getItem("correoVerificacion");
+  const codigoCorrecto = localStorage.getItem("codigoVerificacion");
 
-  boton.addEventListener("click", (e) => {
+  const correoDestino = document.getElementById("correoDestino");
+  const form = document.getElementById("codigoForm");
+
+  if (correoDestino) correoDestino.textContent = correo || "No disponible";
+
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const nueva = document.getElementById("nueva").value.trim();
-    const confirmar = document.getElementById("confirmar").value.trim();
+    const ingresado = document.getElementById("codigo").value.trim();
 
-    if (!nueva || !confirmar) {
-      Swal.fire({
-        icon: "warning",
-        title: "Campos vacíos",
-        text: "Por favor completa ambos campos."
-      });
+    if (!ingresado) {
+      Swal.fire("Campo vacío", "Ingresa el código que recibiste", "warning");
       return;
     }
 
-    if (nueva.length < 6) {
+    if (ingresado === codigoCorrecto) {
       Swal.fire({
-        icon: "info",
-        title: "Contraseña muy corta",
-        text: "Debe tener al menos 6 caracteres."
+        icon: "success",
+        title: "Código verificado",
+        text: "Tu cuenta ha sido validada correctamente.",
+        confirmButtonText: "Continuar"
+      }).then(() => {
+        localStorage.removeItem("codigoVerificacion");
+        window.location.href = "../dashboard/index.html"; // o a donde continues el flujo
       });
-      return;
+    } else {
+      Swal.fire("Código incorrecto", "El código ingresado no coincide", "error");
     }
-
-    if (nueva !== confirmar) {
-      Swal.fire({
-        icon: "error",
-        title: "Las contraseñas no coinciden",
-        text: "Asegúrate de que ambas sean iguales."
-      });
-      return;
-    }
-
-    Swal.fire({
-      icon: "success",
-      title: "¡Contraseña cambiada!",
-      text: "Ahora puedes iniciar sesión con tu nueva contraseña.",
-      confirmButtonText: "Ir al login"
-    }).then(() => {
-      // Redireccionar al login
-      window.location.href = "../Authenticator/login.html";
-    });
   });
 });
