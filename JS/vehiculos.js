@@ -1,7 +1,9 @@
-const API_URL = "https://retoolapi.dev/uD4ozV/vehiculos";
+const API_URL = "https://retoolapi.dev/4XQf28/anadirvehiculo";
 
-// Obtener y mostrar los vehículos
 async function obtenerVehiculos() {
+  const userId = localStorage.getItem("userId");
+  if (!userId) return;
+
   try {
     const res = await fetch(API_URL);
     const vehiculos = await res.json();
@@ -9,21 +11,30 @@ async function obtenerVehiculos() {
     const lista = document.getElementById("vehiculosLista");
     lista.innerHTML = "";
 
-    vehiculos.forEach(v => {
+    // Filtrar solo los vehículos del cliente actual
+    const misVehiculos = vehiculos.filter(v => v.idCliente == userId);
+
+    if (misVehiculos.length === 0) {
+      lista.innerHTML = `<p class="text-muted">No tienes vehículos registrados.</p>`;
+      return;
+    }
+
+    misVehiculos.forEach(v => {
       const card = document.createElement("div");
-      card.className = "vehiculo-card d-flex justify-content-between align-items-center p-2 bg-white rounded shadow-sm";
+      card.className = "vehiculo-card";
 
       card.innerHTML = `
         <div>
-          <strong>${v.marca} ${v.modelo || ""}</strong><br>
-          ${v.anio}<br>
-          ${v.placa}
+          <strong>${v.marca || "Sin marca"} ${v.modelo || ""}</strong><br>
+          ${v.color || ""}<br>
+          ${v.placa || ""}
         </div>
-        <div>
-          <i class="fas fa-pen text-dark me-2" style="cursor:pointer;" onclick="editarVehiculo(${v.id})"></i>
-          <i class="fas fa-trash text-dark" style="cursor:pointer;" onclick="eliminarVehiculo(${v.id})"></i>
+        <div class="acciones">
+          <i class="fas fa-pen" onclick="editarVehiculo(${v.id})"></i>
+          <i class="fas fa-trash" onclick="eliminarVehiculo(${v.id})"></i>
         </div>
       `;
+
       lista.appendChild(card);
     });
   } catch (error) {
@@ -49,10 +60,7 @@ async function eliminarVehiculo(id) {
 
   if (confirmacion.isConfirmed) {
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
-      });
-
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (res.ok) {
         Swal.fire("Eliminado", "Vehículo eliminado correctamente", "success");
         obtenerVehiculos();
@@ -66,4 +74,45 @@ async function eliminarVehiculo(id) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", obtenerVehiculos);
+document.addEventListener("DOMContentLoaded", () => {
+  obtenerVehiculos();
+
+  // Menú Pokémon
+  const menuToggle = document.getElementById("menuToggle");
+  const profileMenu = document.getElementById("profileMenu");
+  const overlay = document.getElementById("overlay");
+  const closeMenu = document.getElementById("closeMenu");
+
+  function cerrarMenu() {
+    profileMenu.classList.remove("open");
+    overlay.classList.remove("show");
+  }
+
+  menuToggle?.addEventListener("click", () => {
+    profileMenu.classList.add("open");
+    overlay.classList.add("show");
+  });
+
+  closeMenu?.addEventListener("click", cerrarMenu);
+  overlay?.addEventListener("click", cerrarMenu);
+
+  // Cargar datos del usuario
+  const userId = localStorage.getItem("userId");
+  const apiUrl = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
+
+  const userIdElement = document.getElementById("menuUserId");
+  const nombreElement = document.getElementById("menuNombre");
+  const paseElement = document.getElementById("menuPase");
+
+  if (userIdElement) userIdElement.textContent = userId || "Desconocido";
+
+  if (userId) {
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(user => {
+        nombreElement.textContent = `${user.nombre} ${user.apellido}`;
+        paseElement.textContent = user.pase || "Cliente";
+      })
+      .catch(err => console.error("Error cargando usuario:", err));
+  }
+});

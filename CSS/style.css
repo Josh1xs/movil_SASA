@@ -1,39 +1,30 @@
-/* --- Reset básico --- */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* --- Cuerpo general --- */
 body {
-  font-family: sans-serif;
-  background-color: #f8f9fa;
+  background: #f8f9fa;
   color: #212529;
-  padding-bottom: 80px; /* espacio para el menú inferior */
-  overflow-x: hidden;
+  padding-bottom: 80px;
+  font-family: sans-serif;
 }
 
-/* --- Contenido principal --- */
-.main-content {
+.welcome-card {
+  background-color: #7c1c1c;
+  color: white;
+  border-radius: 16px;
+}
+
+.card-cita {
+  background: white;
+  border-radius: 16px;
   padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
 }
 
-/* --- Topbar minimalista (opcional) --- */
-.topbar {
-  background-color: #fff;
-  padding: 0.5rem;
-  position: sticky;
-  top: 0;
-  z-index: 998;
-  text-align: center;
-}
-.topbar-title {
-  font-size: 16px;
-  font-weight: bold;
+.card-cita i {
+  font-size: 32px;
+  color: #828b9a;
+  margin-bottom: 0.5rem;
 }
 
-/* --- Menú inferior flotante --- */
 .mobile-nav {
   position: fixed;
   bottom: 20px;
@@ -60,16 +51,10 @@ body {
   border: none;
 }
 
-.mobile-nav__link i {
-  font-size: 20px;
-}
-
-/* --- Botón menú hamburguesa dentro del menú inferior --- */
 .menu-toggle-btn {
   cursor: pointer;
 }
 
-/* --- Fondo oscuro al abrir menú lateral --- */
 .overlay {
   position: fixed;
   inset: 0;
@@ -77,13 +62,12 @@ body {
   display: none;
   z-index: 1001;
   backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
 }
+
 .overlay.show {
   display: block;
 }
 
-/* --- Menú desplegable tipo tarjeta centrada (Pokémon) --- */
 .profile-menu {
   position: fixed;
   top: 50%;
@@ -105,21 +89,6 @@ body {
   display: flex;
 }
 
-/* Fondo oscurecido cuando el menú está abierto */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: none;
-  z-index: 1001;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.overlay.show {
-  display: block;
-}
-
-/* Botón de cerrar */
 .close-btn {
   position: absolute;
   top: 10px;
@@ -131,40 +100,16 @@ body {
   cursor: pointer;
 }
 
-/* Avatar y usuario */
-.user-avatar-lg {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  object-fit: cover;
-  margin-bottom: 0.5rem;
-}
-
-.username {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-.user-pass {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-/* Opciones del menú */
 .menu-options {
   list-style: none;
   padding: 0;
   width: 100%;
   margin-top: 0.5rem;
 }
-
 .menu-options li {
   margin-bottom: 0.8rem;
   text-align: left;
 }
-
 .menu-options a {
   color: #212529;
   text-decoration: none;
@@ -175,7 +120,6 @@ body {
   border-radius: 10px;
   transition: background 0.2s;
 }
-
 .menu-options a:hover {
   background: #f0f0f0;
   color: #C91A1A;

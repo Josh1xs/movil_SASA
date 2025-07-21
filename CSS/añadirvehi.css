@@ -5,89 +5,13 @@
   padding: 0;
 }
 
-/* --- Cuerpo y tipografía --- */
+/* --- Cuerpo general --- */
 body {
   font-family: sans-serif;
   background-color: #f8f9fa;
   color: #212529;
-  padding-bottom: 60px; /* espacio para la barra inferior */
-}
-
-/* --- Topbar --- */
-.topbar {
-  background-color: #fff;
-  border-bottom: 1px solid #dee2e6;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
-.back-button {
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  margin-right: 10px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.back-button:hover {
-  color:rgba(60, 0, 0, 0.85);
-}
-
-/* --- Menú Three Dots --- */
-.dropdown {
-  position: relative;
-}
-
-.three-dots-btn {
-  background: none;
-  border: none;
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
-}
-
-.three-dots-btn:hover {
-  color:rgba(60, 0, 0, 0.85);
-}
-
-.dropdown-menu {
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
-  min-width: 180px;
-  background-color: #fff;
-}
-
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  font-size: 14px;
-  color: #212529;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #000;
-}
-
-.dropdown-divider {
-  height: 1px;
-  margin: 0.25rem 0;
-  background-color: #dee2e6;
-  border: none;
+  padding-bottom: 80px;
+  overflow-x: hidden;
 }
 
 /* --- Contenido principal --- */
@@ -95,41 +19,230 @@ body {
   padding: 1rem;
 }
 
-/* --- Navegación inferior (mobile-nav) --- */
+/* --- Topbar --- */
+.topbar {
+  background-color: #fff;
+  padding: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 998;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.topbar-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* --- Formulario estilizado --- */
+.formulario {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin-top: 1.2rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+.form-group {
+  margin-bottom: 1.4rem;
+}
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: block;
+  color: #333;
+}
+.form-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus {
+  border-color: #7c1c1c;
+  box-shadow: 0 0 0 2px rgba(124, 28, 28, 0.2);
+  outline: none;
+}
+.btn-guardar {
+  background-color: #218838;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-guardar:hover {
+  background-color: #1e7e34;
+}
+
+/* --- Menú inferior flotante --- */
 .mobile-nav {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  height: 60px;
-  background: rgba(60, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  height: 55px;
+  background: #7c1c1c;
+  border-radius: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
-
 .mobile-nav__link {
   flex: 1;
   text-align: center;
   color: white;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 18px;
+  background: none;
+  border: none;
+}
+.mobile-nav__link i {
+  font-size: 20px;
+}
+.menu-toggle-btn {
+  cursor: pointer;
 }
 
-.mobile-nav__link i {
+/* --- Overlay oscuro --- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+}
+.overlay.show {
   display: block;
-  font-size: 18px;
+}
+
+/* --- Menú tipo Pokémon (perfil) con estilo mejorado --- */
+.profile-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  max-width: 90%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem 1rem 1rem;
+  z-index: 1002;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.profile-menu.open {
+  display: flex;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Encabezado con ID */
+.profile-menu .user-id {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 5px;
+}
+.profile-menu .user-id b {
+  color: #000;
+}
+
+.user-avatar-link {
+  display: block;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.user-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #555;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 0 auto;
+}
+
+
+.user-avatar-lg i {
+  color: white;
+  font-size: 24px;
+}
+
+
+/* Nombre y rol */
+.username {
+  font-weight: 600;
+  font-size: 15px;
+  color: #000;
   margin-bottom: 2px;
 }
-
-.mobile-nav__link.active {
-  color: #0d6efd;
+.user-pass {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 1rem;
 }
 
+/* Opciones del menú */
+.menu-options {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+.menu-options li {
+  margin-bottom: 0.6rem;
+}
+.menu-options a {
+  color: #212529;
+  text-decoration: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.menu-options a i {
+  width: 18px;
+  text-align: center;
+}
+.menu-options a:hover {
+  background: #f0f0f0;
+  color: #C91A1A;
+}
+
+.menu-user-id {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.menu-user-id .label {
+  font-size: 13px;
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
+}

@@ -2,75 +2,85 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Añadir Vehículo</title>
-
-  <!-- Bootstrap e iconos -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="../CSS/misvehiculos.css" />
-  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/añadirvehi.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
-  <!-- Barra superior -->
-  <header class="topbar">
-    <a href="javascript:history.back()" class="back-button">
-      <i class="fas fa-arrow-left"></i>
-    </a>
-    <div class="dropdown">
-      <button class="three-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-ellipsis-v"></i>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="../Historial/historial.html">Historial</a></li>
-        <li><a class="dropdown-item" href="Vehiculos.html">Vehículos</a></li>
-        <li><a class="dropdown-item" href="AñadirVehiculo.html">Añadir Vehículo</a></li>
-        <li><a class="dropdown-item" href="../Citas/citas.html">Citas</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- Encabezado -->
-  <div class="encabezado-vehiculos text-center mb-3">
-    <img src="../IMG/banner-vehiculo.jpg" alt="Banner Vehiculo" class="img-fluid" />
-    <h2 class="encabezado-texto">Añadir vehículo</h2>
+  <!-- Título -->
+  <div class="topbar">
+    <span class="topbar-title"> Añadir Vehículo</span>
   </div>
 
-  <!-- Formulario -->
-<main class="px-4">
-  <form id="formVehiculo">
-    <div class="mb-3">
-      <label class="form-label">Marca</label>
-      <input type="text" id="marca" class="form-control border-danger" placeholder="Ej: Toyota" required />
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Modelo</label>
-      <input type="text" id="modelo" class="form-control border-danger" required />
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Año</label>
-      <input type="number" id="anio" class="form-control border-danger" required />
-    </div>
-    <div class="mb-4">
-      <label class="form-label">Placa</label>
-      <input type="text" id="placa" class="form-control border-danger" required />
-    </div>
-    <button type="submit" class="btn btn-danger w-100">Guardar</button>
-  </form>
-</main>
+  <div class="main-content">
+    <form id="formVehiculo" class="formulario" autocomplete="off">
+      <div class="form-group">
+        <label for="marca">Marca</label>
+        <input type="text" id="marca" placeholder="Ej: Toyota" required />
+      </div>
+      <div class="form-group">
+        <label for="modelo">Modelo</label>
+        <input type="text" id="modelo" placeholder="Ej: Corolla" required />
+      </div>
+      <div class="form-group">
+        <label for="color">Color</label>
+        <input type="text" id="color" placeholder="Ej: Rojo" required />
+      </div>
+      <div class="form-group">
+        <label for="placa">Placa</label>
+        <input type="text" id="placa" placeholder="Ej: P123-456" required />
+      </div>
+      <div class="form-group">
+        <label for="vin">VIN</label>
+        <input type="text" id="vin" placeholder="Ej: 1HGCM82633A123456" required />
+      </div>
 
-  <!-- Navegación inferior móvil -->
+      <button type="submit" class="btn-guardar">Guardar</button>
+    </form>
+  </div>
+
+  <!-- Fondo oscuro al abrir el menú -->
+  <div id="overlay" class="overlay"></div>
+
+ <!-- Menú tipo Pokémon -->
+<aside id="profileMenu" class="profile-menu">
+  <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
+  
+  <div class="menu-user-id">
+  <span class="label">ID de usuario</span>
+  <strong id="menuUserId">Desconocido</strong>
+</div>
+
+  
+  <a href="../Ajustes/ajustes.html" class="user-avatar-link">
+  <div class="user-avatar-lg">
+    <i class="fas fa-user"></i>
+  </div>
+</a>
+
+  
+  <div id="menuNombre" class="username mt-2">Nombre</div>
+  <div id="menuPase" class="user-pass">Pase</div>
+
+  <ul class="menu-options">
+    <li><a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a></li>
+    <li><a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a></li>
+    <li><a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a></li>
+    <li><a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a></li>
+  </ul>
+</aside>
+
+  <!-- Menú inferior flotante -->
   <nav class="mobile-nav d-flex justify-content-around">
     <a href="../Notificaciones/notificaciones.html" class="mobile-nav__link"><i class="fas fa-bell"></i></a>
     <a href="../dashboard/index.html" class="mobile-nav__link"><i class="fas fa-home"></i></a>
     <a href="../Facturas/facturas.html" class="mobile-nav__link"><i class="fas fa-receipt"></i></a>
-    <a href="../Ajustes/ajustes.html" class="mobile-nav__link"><i class="fas fa-cog"></i></a>
+    <button class="mobile-nav__link menu-toggle-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
   </nav>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../JS/añadirvehiculos.js"></script>
 </body>
 </html>
