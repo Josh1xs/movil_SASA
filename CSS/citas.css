@@ -1,118 +1,129 @@
-/* --- Reset básico --- */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* --- Cuerpo y tipografía --- */
 body {
-  font-family: sans-serif;
-  background-color: #f8f9fa;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f2f2f2;
   color: #212529;
-  padding-bottom: 60px; /* espacio para la barra inferior */
+  padding-bottom: 100px;
 }
 
-/* --- Topbar --- */
-.topbar {
-  background-color: #fff;
-  border-bottom: 1px solid #dee2e6;
-  position: sticky;
-  top: 0;
-  z-index: 999;
+.main-content {
+  padding: 1.2rem;
+}
+
+h1 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* ============ CALENDARIO ============ */
+.calendar-box {
+  background-color: white;
+  border-radius: 15px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  margin-bottom: 12px;
 }
 
-.back-button {
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  margin-right: 10px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.back-button:hover {
-  color:rgba(60, 0, 0, 0.85);
-}
-
-/* --- Menú Three Dots --- */
-.dropdown {
-  position: relative;
-}
-
-.three-dots-btn {
-  background: none;
+.calendar-header button {
+  background-color: #c91a1a;
+  color: white;
   border: none;
-  color: rgba(60, 0, 0, 0.85);
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.calendar-header button:hover {
+  background-color: #a51414;
 }
 
-.three-dots-btn:hover {
-  color:rgba(60, 0, 0, 0.85);
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
 }
 
-.dropdown-menu {
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 0;
-  min-width: 180px;
-  background-color: #fff;
-}
-
-.dropdown-item {
-  padding: 0.5rem 1rem;
-  font-size: 14px;
-  color: #212529;
+.calendar-body div {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
   transition: all 0.2s ease;
-  text-decoration: none;
-  display: block;
 }
 
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: #000;
+.calendar-body div:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
 }
 
-.dropdown-divider {
-  height: 1px;
-  margin: 0.25rem 0;
-  background-color: #dee2e6;
+.calendar-body .fw-bold {
+  background-color: #c91a1a;
+  color: white;
+}
+
+.calendar-body .bg-dark {
+  background-color: #212529 !important;
+  color: white;
+}
+
+/* ============ FORMULARIO ============ */
+form label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+form input {
+  border-radius: 8px;
+}
+
+form .btn {
+  height: 45px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.btn-maroon {
+  background-color: #7c1c1c;
+  color: white;
+}
+
+.btn-maroon:hover {
+  background-color: #5a1010;
+}
+
+.btn-danger {
+  background-color: #C91A1A;
+  color: white;
   border: none;
 }
-
-/* --- Contenido principal --- */
-.main-content {
-  padding: 1rem;
+.btn-danger:hover {
+  background-color: #a51414;
 }
 
-/* --- Navegación inferior (mobile-nav) --- */
+/* ============ MENÚ INFERIOR FLOTANTE ============ */
 .mobile-nav {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  height: 60px;
-  background: rgba(60, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  height: 55px;
+  background: #7c1c1c;
+  border-radius: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .mobile-nav__link {
@@ -120,16 +131,138 @@ body {
   text-align: center;
   color: white;
   text-decoration: none;
-  font-size: 12px;
-}
-
-.mobile-nav__link i {
-  display: block;
   font-size: 18px;
-  margin-bottom: 2px;
+  background: none;
+  border: none;
+}
+.mobile-nav__link i {
+  font-size: 20px;
 }
 
-.mobile-nav__link.active {
-  color: #0d6efd;
+/* ============ MENÚ POKÉMON ============ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  z-index: 1001;
+  backdrop-filter: blur(2px);
+}
+.overlay.show {
+  display: block;
 }
 
+.profile-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  max-width: 90%;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem 1rem 1rem;
+  z-index: 1002;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.profile-menu.open {
+  display: flex;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* ============ Citas Listadas ============ */
+#listaCitas h5 {
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+#listaCitas .bg-white {
+  border-left: 4px solid #c91a1a;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.profile-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  max-width: 90%;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  padding: 1.5rem 1rem 1rem;
+  z-index: 1002;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-menu.open {
+  display: flex;
+}
+
+.profile-menu .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #555;
+  cursor: pointer;
+}
+
+.profile-menu .username {
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 0.5rem;
+}
+
+.profile-menu .user-pass {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.profile-menu .menu-options {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  margin: 0;
+}
+
+.profile-menu .menu-options li {
+  margin-bottom: 0.5rem;
+}
+
+.profile-menu .menu-options a {
+  color: #212529;
+  text-decoration: none;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.profile-menu .menu-options a:hover {
+  background: #f0f0f0;
+  color: #C91A1A;
+}

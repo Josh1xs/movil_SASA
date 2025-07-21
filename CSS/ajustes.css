@@ -12,11 +12,12 @@ body {
   overflow-x: hidden;
 }
 
-/* CONTENIDO PRINCIPAL */
+/* CONTENEDOR PRINCIPAL AJUSTES */
 .ajustes-container {
-  background-color: #d9d9d9;
+  background-color: #f4f4f4;
   min-height: 100vh;
   border-radius: 20px 20px 0 0;
+  padding-bottom: 100px;
 }
 
 /* BOTÓN DE RETROCESO */
@@ -34,28 +35,82 @@ body {
 }
 
 /* INFO USUARIO */
-.user-info h4,
-.user-info p {
-  color: #000;
-  margin-bottom: 0;
+.user-info {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
 }
 
-.user-info .text-muted {
-  font-size: 13px;
-  margin-top: 0.2rem;
-  margin-bottom: 0.4rem;
-}
-
-/* BOTONES AJUSTES */
-.btn-ajuste {
-  border: 2px solid #7c1c1c !important;
-  color: #000 !important;
+.user-info h4 {
+  font-size: 20px;
   font-weight: bold;
-  background-color: #fff !important;
+  margin-bottom: 0.2rem;
 }
 
-.btn-ajuste i {
-  font-size: 14px;
+.user-info p {
+  margin: 0.3rem 0;
+}
+
+.user-info .fa-user-circle {
+  color: #555;
+  margin-top: 1rem;
+}
+
+/* SECCIONES DE EDICIÓN */
+.edit-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s;
+}
+
+.btn-edit {
+  background-color: #ffffff;
+  border: 2px solid #7c1c1c;
+  color: #7c1c1c;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+.btn-edit i {
+  color: #7c1c1c;
+}
+
+.form-nombre,
+.form-pass {
+  margin-top: 10px;
+}
+
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  padding: 10px;
+}
+
+.btn-save {
+  width: 100%;
+  background-color: #7c1c1c;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+  background-color: #5c1313;
 }
 
 /* BOTÓN CERRAR SESIÓN */
@@ -64,7 +119,7 @@ body {
   border: none;
   font-weight: bold;
   color: #fff;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 /* MENÚ INFERIOR */
@@ -107,6 +162,7 @@ body {
   z-index: 1001;
   backdrop-filter: blur(4px);
 }
+
 .overlay.show {
   display: block;
 }
@@ -128,6 +184,7 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
 .profile-menu.open {
   display: flex;
 }
@@ -189,36 +246,4 @@ body {
 .menu-options a:hover {
   background: #f0f0f0;
   color: #C91A1A;
-}
-
-.edit-section {
-  margin-bottom: 20px;
-}
-
-.btn-edit {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #8b0000;
-  border-radius: 6px;
-  background: white;
-  color: #000;
-  font-weight: 500;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-}
-
-.btn-edit i {
-  color: #8b0000;
-}
-
-.btn-save {
-  width: 100%;
-  background-color: #8b0000;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
 }
