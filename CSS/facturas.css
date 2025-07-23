@@ -133,3 +133,31 @@ body {
   background: #f0f0f0;
   color: #C91A1A;
 }
+
+/* facturas*/
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+#facturasContainer .card {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#facturasContainer .card h5 {
+  font-weight: bold;
+  color: #C91A1A;
+}
+
+
+
+
+
+

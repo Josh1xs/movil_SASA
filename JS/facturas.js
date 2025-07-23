@@ -47,4 +47,37 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch(err => console.error("Error cargando usuario:", err));
   }
+
+    // Mostrar facturas del cliente
+  const contenedor = document.getElementById("facturasContainer");
+
+  fetch("https://retoolapi.dev/VqXPy8/factura") // reemplaza por tu endpoint real
+    .then(res => res.json())
+    .then(data => {
+      const facturasCliente = data.filter(f => f.idCliente == userId);
+
+      if (facturasCliente.length === 0) {
+        contenedor.innerHTML = "<p class='text-center text-muted'>No tienes facturas registradas.</p>";
+        return;
+      }
+
+      facturasCliente.forEach(factura => {
+        const div = document.createElement("div");
+        div.classList.add("card", "mb-3", "p-3");
+        div.innerHTML = `
+          <h5 class="text-danger">Factura #${factura.idFactura}</h5>
+          <p><strong>Fecha:</strong> ${factura.fecha}</p>
+          <p><strong>Total:</strong> $${factura.montoTotal}</p>
+          <p><strong>Empleado:</strong> ${factura.idEmpleado}</p>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error("Error al cargar facturas:", err);
+      contenedor.innerHTML = "<p class='text-danger'>Error al cargar facturas.</p>";
+    });
+
 });
+
+

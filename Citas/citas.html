@@ -22,11 +22,10 @@
         <h5 id="mesActual" class="mb-0 text-capitalize"></h5>
         <button class="btn btn-danger btn-sm" onclick="cambiarMes(1)">&gt;</button>
       </div>
+
       <div id="calendario" class="d-grid" style="grid-template-columns: repeat(7, 1fr); gap: 4px;"></div>
       <p class="text-center mt-2 text-muted">Seleccione la fecha deseada para su cita.</p>
     </div>
-
-
 
     <form id="formCita" class="mt-3">
       <input type="hidden" id="fechaSeleccionada" />
@@ -40,6 +39,11 @@
         </select>
       </div>
 
+   <select id="vehiculoSelect" class="form-select" required>
+  <option value="">Selecciona tu vehículo</option>
+</select>
+
+
       <label for="estado">Estado</label>
       <input type="text" id="estado" class="form-control mb-2" />
 
@@ -51,10 +55,8 @@
       <a href="../dashboard/index.html" class="btn btn-danger w-100 mt-2">Cancelar</a>
     </form>
 
+    <div id="listaCitas" class="mt-3"></div>
 
-
-
-    <div id="listaCitas"></div>
   </main>
 
   <!-- Menú Pokémon + flotante (sin cambios) -->

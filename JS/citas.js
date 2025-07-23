@@ -82,13 +82,19 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+
+
+    const idVehiculo = document.getElementById("vehiculoSelect").value;
+
     const datos = {
       fecha,
       hora: horaFinal,
       estado,
       descripcion,
-      idCliente: userId
+      idCliente: userId,
+      idVehiculo
     };
+
 
     try {
       const res = await fetch(API_URL, {
@@ -98,11 +104,52 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!res.ok) throw new Error("Error al guardar");
+      const notificacion = {
+        titulo: "Cita agendada con éxito",
+        descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
+        fecha: new Date().toISOString().split("T")[0],
+        idCliente: userId
+      };
+
+      const notificacionCliente = {
+        titulo: "Cita agendada con éxito",
+        descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
+        fecha: new Date().toISOString().split("T")[0],
+        idCliente: userId
+      };
+
+      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notificacionCliente)
+      });
+
+      // 🔔 Notificar al EMPLEADO
+      const notificacionEmpleado = {
+        titulo: "Nueva cita agendada",
+        descripcion: `El cliente con ID ${userId} ha agendado una cita para el vehículo con ID ${idVehiculo} el ${fecha} a las ${horaFinal}.`,
+        fecha: new Date().toISOString().split("T")[0],
+        idCliente: userId,
+        tipo: "cita"
+      };
+
+      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notificacionEmpleado)
+      });
+
+
+      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notificacion)
+      });
 
       Swal.fire({
         icon: 'success',
         title: 'Cita registrada',
-        text: 'Tu cita fue guardada exitosamente.',
+        text: 'Tu cita fue guardada y notificada exitosamente.',
         confirmButtonColor: '#28a745'
       });
 
@@ -118,6 +165,30 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  async function cargarVehiculosCliente() {
+    selectVehiculo.innerHTML = '<option value="">Selecciona tu vehículo</option>';
+    const userId = localStorage.getItem("userId");
+    const selectVehiculo = document.getElementById("vehiculoSelect");
+
+    try {
+      const res = await fetch("https://retoolapi.dev/4XQf28/anadirvehiculo");
+      const data = await res.json();
+
+      const vehiculosCliente = data.filter(v => v.idCliente == userId);
+
+      vehiculosCliente.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v.id; // O puedes usar v.vin o v.placa si prefieres
+        option.textContent = `${v.marca} ${v.modelo} (${v.placa})`;
+        selectVehiculo.appendChild(option);
+      });
+
+    } catch (err) {
+      console.error("Error al cargar vehículos:", err);
+    }
+  }
+
 
   mostrarCitas();
 });
@@ -237,12 +308,29 @@ async function eliminarCita(id) {
 
       if (!res.ok) throw new Error("Error al eliminar");
 
+      const notificacion = {
+        titulo: "Cita eliminada",
+        descripcion: `Tu cita con ID ${id} fue eliminada correctamente.`,
+        fecha: new Date().toISOString().split("T")[0],
+        idCliente: localStorage.getItem("userId")
+      };
+
+      await fetch("https://retoolapi.dev/Nlb9BE/notificaciones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notificacion)
+      });
+
       Swal.fire({
         icon: 'success',
         title: 'Cita eliminada',
         text: 'Tu cita ha sido eliminada.',
         confirmButtonColor: '#28a745'
       });
+
+
+      mostrarCitas();
+      cargarVehiculosCliente()
 
       mostrarCitas();
     } catch (err) {
@@ -253,5 +341,39 @@ async function eliminarCita(id) {
         confirmButtonColor: '#c91a1a'
       });
     }
+  }
+
+
+cargarVehiculosCliente(); // ✅ Esto es lo que falta
+
+}
+
+  mostrarCitas();
+  cargarVehiculosCliente(); // ✅ Esto FALTABA para cargar los vehículos
+
+
+// 👇 Esta función ya la tenías, solo le agregué el reinicio del select:
+async function cargarVehiculosCliente() {
+  const userId = localStorage.getItem("userId");
+  const selectVehiculo = document.getElementById("vehiculoSelect");
+
+  // ✅ Limpiar opciones previas
+  selectVehiculo.innerHTML = '<option value="">Selecciona tu vehículo</option>';
+
+  try {
+    const res = await fetch("https://retoolapi.dev/4XQf28/anadirvehiculo");
+    const data = await res.json();
+
+    const vehiculosCliente = data.filter(v => v.idCliente == userId);
+
+    vehiculosCliente.forEach(v => {
+      const option = document.createElement("option");
+      option.value = v.id; // O v.vin o v.placa si quieres
+      option.textContent = `${v.marca} ${v.modelo} (${v.placa})`;
+      selectVehiculo.appendChild(option);
+    });
+
+  } catch (err) {
+    console.error("Error al cargar vehículos:", err);
   }
 }
