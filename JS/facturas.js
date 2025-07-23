@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.classList.remove("show");
   }
 
+  // Abrir y cerrar menú Pokémon
   menuToggle?.addEventListener("click", () => {
     profileMenu.classList.add("open");
     overlay.classList.add("show");
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   closeMenu?.addEventListener("click", closeProfileMenu);
   overlay?.addEventListener("click", closeProfileMenu);
 
-  // Navegación fluida sin interferencia al cerrar menú
+  // Navegación fluida en menú
   document.querySelectorAll(".profile-menu a").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
@@ -24,11 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
       closeProfileMenu();
       setTimeout(() => {
         window.location.href = href;
-      }, 300); // Espera 300ms para permitir la animación
+      }, 300);
     });
   });
 
-  // Cargar datos del usuario
+  // Mostrar datos del usuario (si se desea mantener)
   const userId = localStorage.getItem("userId");
   const apiUrl = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
 
@@ -48,27 +49,28 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(err => console.error("Error cargando usuario:", err));
   }
 
-    // Mostrar facturas del cliente
+  // Mostrar TODAS las facturas
   const contenedor = document.getElementById("facturasContainer");
 
-  fetch("https://retoolapi.dev/VqXPy8/factura") // reemplaza por tu endpoint real
+  fetch("https://retoolapi.dev/P7S5Iw/facturas")
     .then(res => res.json())
     .then(data => {
-      const facturasCliente = data.filter(f => f.idCliente == userId);
-
-      if (facturasCliente.length === 0) {
-        contenedor.innerHTML = "<p class='text-center text-muted'>No tienes facturas registradas.</p>";
+      if (data.length === 0) {
+        contenedor.innerHTML = "<p class='text-center text-muted'>No hay facturas registradas.</p>";
         return;
       }
 
-      facturasCliente.forEach(factura => {
+      data.forEach(factura => {
+        if (!factura.fecha || factura["monto total"] <= 0) return;
+
         const div = document.createElement("div");
-        div.classList.add("card", "mb-3", "p-3");
+        div.classList.add("card");
         div.innerHTML = `
-          <h5 class="text-danger">Factura #${factura.idFactura}</h5>
+          <h5 class="text-danger">Factura #${factura.id}</h5>
           <p><strong>Fecha:</strong> ${factura.fecha}</p>
-          <p><strong>Total:</strong> $${factura.montoTotal}</p>
+          <p><strong>Total:</strong> $${factura["monto total"]}</p>
           <p><strong>Empleado:</strong> ${factura.idEmpleado}</p>
+          <p><strong>Cliente:</strong> ${factura.idCliente || "No asignado"}</p>
         `;
         contenedor.appendChild(div);
       });
@@ -77,7 +79,4 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error al cargar facturas:", err);
       contenedor.innerHTML = "<p class='text-danger'>Error al cargar facturas.</p>";
     });
-
 });
-
-
