@@ -129,3 +129,20 @@ body {
   background: #f0f0f0;
   color: #C91A1A;
 }
+
+
+.notification-card h5 {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.notification-card p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+.notification-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+}
