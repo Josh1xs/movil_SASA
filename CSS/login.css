@@ -1,110 +1,154 @@
-body {
+* {
   margin: 0;
   padding: 0;
-  background-color: #d3d3d3;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('../IMG/bak.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: 'Poppins', sans-serif;
 }
 
 .container {
-  background-color: white;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  padding: 35px 30px;
   border-radius: 20px;
-  padding: 30px 20px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   text-align: center;
+  width: 90%;
+  max-width: 370px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease forwards;
 }
 
 .logo img {
-  width: 100px;
-  height: auto;
-  margin-bottom: 15px;
+  width: 90px;
+  margin-bottom: 10px;
+  animation: popIn 1s ease;
 }
 
 .title {
-  font-size: 32px;
-  color: #8b0000;
-  font-weight: bold;
-  margin-bottom: 25px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  align-items: stretch;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  animation: fadeIn 1.3s ease;
 }
 
 .input-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  background-color: #f9f9f9;
+  position: relative;
+  margin-bottom: 20px;
+  animation: fadeIn 1.5s ease;
 }
 
-.icon {
-  color: #8b0000;
-  margin-right: 10px;
+.input-group .icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: #000;
 }
 
-input {
-  border: none;
+.input-group input {
+  width: 100%;
+  padding: 10px 10px 10px 38px;
+  border: 1px solid black;
+  border-radius: 30px;
+  font-size: 1rem;
   outline: none;
-  font-size: 16px;
-  flex: 1;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  transition: background 0.3s ease;
+}
+
+.input-group label {
+  position: absolute;
+  top: 10px;
+  left: 38px;
+  color: #000;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  opacity: 1;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+  transform: translateX(-10px);
+  opacity: 0;
 }
 
 .submit-button {
-  background-color: #8b0000;
-  color: white;
-  padding: 12px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: #e60000;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 30px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 1.7s ease;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .submit-button:hover {
-  background-color: #7a0000;
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
 }
 
-.forgot-password, .register {
-  margin-top: 10px;
-  font-size: 14px;
+.submit-button:active {
+  transform: scale(0.97);
 }
 
-.forgot-password a, .register a {
-  color: #8b0000;
-  text-decoration: none;
-  font-weight: bold;
+
+.forgot-password,
+.register {
+  font-size: 0.9rem;
+  margin-top: 15px;
+  color: #000;
+  animation: fadeIn 2s ease;
 }
 
-.forgot-password a:hover, .register a:hover {
+.forgot-password a {
+  color: #000;
   text-decoration: underline;
 }
 
-@media (max-width: 320px) {
-  .title {
-    font-size: 24px;
-  }
+.register a {
+  color: #e60000;
+  font-weight: 600;
+  text-decoration: underline;
+}
 
-  input {
-    font-size: 14px;
-  }
 
-  .submit-button {
-    font-size: 14px;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  .forgot-password, .register {
-    font-size: 12px;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
