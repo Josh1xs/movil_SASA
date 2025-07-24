@@ -247,3 +247,62 @@ body {
   background: #f0f0f0;
   color: #C91A1A;
 }
+.edit-section {
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+  border: 1px solid #ddd;
+}
+.edit-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(124, 28, 28, 0.1);
+}
+
+.btn-edit {
+  background-color: #fdfdfd;
+  color: #7c1c1c;
+  border: 1.5px solid #7c1c1c;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+.btn-edit:hover {
+  background-color: #7c1c1c;
+  color: white;
+}
+.btn-edit i {
+  color: inherit;
+  transition: transform 0.3s ease;
+}
+.btn-edit:hover i {
+  transform: rotate(-15deg);
+}
+
+.form-nombre,
+.form-pass {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-save {
+  background: linear-gradient(to right, #7c1c1c, #5a1111);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.btn-save:hover {
+  background-color: #501010;
+  transform: scale(1.02);
+}
+
+.user-info {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}

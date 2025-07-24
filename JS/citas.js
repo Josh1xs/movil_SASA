@@ -3,10 +3,13 @@ let fechaActual = new Date();
 
 document.addEventListener("DOMContentLoaded", () => {
   cargarCalendario(fechaActual);
+  cargarVehiculosCliente(); // ✅ Solo una vez aquí
+  mostrarCitas();           // ✅ Solo una vez aquí
 
   const userId = localStorage.getItem("userId");
   document.getElementById("menuUserId").textContent = userId || "Desconocido";
 
+  // Menú flotante
   const menuToggle = document.getElementById("menuToggle");
   const profileMenu = document.getElementById("profileMenu");
   const overlay = document.getElementById("overlay");
@@ -35,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paseElement.textContent = user.pase || "Cliente";
     });
 
+  // Envío de cita
   document.getElementById("formCita").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -43,21 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const meridiano = document.getElementById("meridiano").value;
     const estado = document.getElementById("estado").value;
     const descripcion = document.getElementById("descripcion").value;
+    const idVehiculo = document.getElementById("vehiculoSelect").value;
 
-    if (!fecha) {
+    if (!fecha || !horaInput || !idVehiculo) {
       return Swal.fire({
         icon: 'warning',
-        title: 'Fecha requerida',
-        text: 'Debes seleccionar una fecha del calendario.',
-        confirmButtonColor: '#c91a1a'
-      });
-    }
-
-    if (!horaInput) {
-      return Swal.fire({
-        icon: 'error',
-        title: 'Hora inválida',
-        text: 'Debes ingresar una hora válida.',
+        title: 'Datos incompletos',
+        text: 'Debes llenar todos los campos requeridos.',
         confirmButtonColor: '#c91a1a'
       });
     }
@@ -66,13 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let horaNum = parseInt(horaStr);
     const minuto = parseInt(minutoStr);
 
-    if (meridiano === "PM" && horaNum !== 12) {
-      horaNum += 12;
-    } else if (meridiano === "AM" && horaNum === 12) {
-      horaNum = 0;
-    }
+    if (meridiano === "PM" && horaNum !== 12) horaNum += 12;
+    else if (meridiano === "AM" && horaNum === 12) horaNum = 0;
 
     const horaFinal = `${horaNum.toString().padStart(2, "0")}:${minutoStr}`;
+
     if (horaFinal < "07:00" || horaFinal > "16:00") {
       return Swal.fire({
         icon: 'error',
@@ -81,10 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmButtonColor: '#c91a1a'
       });
     }
-
-
-
-    const idVehiculo = document.getElementById("vehiculoSelect").value;
 
     const datos = {
       fecha,
@@ -95,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
       idVehiculo
     };
 
-
     try {
       const res = await fetch(API_URL, {
         method: "POST",
@@ -104,47 +93,32 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!res.ok) throw new Error("Error al guardar");
-      const notificacion = {
-        titulo: "Cita agendada con éxito",
-        descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
-        fecha: new Date().toISOString().split("T")[0],
-        idCliente: userId
-      };
 
-      const notificacionCliente = {
-        titulo: "Cita agendada con éxito",
-        descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
-        fecha: new Date().toISOString().split("T")[0],
-        idCliente: userId
-      };
+      const fechaNoti = new Date().toISOString().split("T")[0];
 
-      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(notificacionCliente)
-      });
+      const notificaciones = [
+        {
+          titulo: "Cita agendada con éxito",
+          descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
+          fecha: fechaNoti,
+          idCliente: userId
+        },
+        {
+          titulo: "Nueva cita agendada",
+          descripcion: `El cliente con ID ${userId} ha agendado una cita para el vehículo con ID ${idVehiculo} el ${fecha} a las ${horaFinal}.`,
+          fecha: fechaNoti,
+          idCliente: userId,
+          tipo: "cita"
+        }
+      ];
 
-      // 🔔 Notificar al EMPLEADO
-      const notificacionEmpleado = {
-        titulo: "Nueva cita agendada",
-        descripcion: `El cliente con ID ${userId} ha agendado una cita para el vehículo con ID ${idVehiculo} el ${fecha} a las ${horaFinal}.`,
-        fecha: new Date().toISOString().split("T")[0],
-        idCliente: userId,
-        tipo: "cita"
-      };
-
-      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(notificacionEmpleado)
-      });
-
-
-      await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(notificacion)
-      });
+      for (const noti of notificaciones) {
+        await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(noti)
+        });
+      }
 
       Swal.fire({
         icon: 'success',
@@ -155,7 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       e.target.reset();
       document.getElementById("fechaSeleccionada").value = "";
-      mostrarCitas();
+
+      mostrarCitas(); // ✅ Actualizar después de guardar
+
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -165,32 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
-
-  async function cargarVehiculosCliente() {
-    selectVehiculo.innerHTML = '<option value="">Selecciona tu vehículo</option>';
-    const userId = localStorage.getItem("userId");
-    const selectVehiculo = document.getElementById("vehiculoSelect");
-
-    try {
-      const res = await fetch("https://retoolapi.dev/4XQf28/anadirvehiculo");
-      const data = await res.json();
-
-      const vehiculosCliente = data.filter(v => v.idCliente == userId);
-
-      vehiculosCliente.forEach(v => {
-        const option = document.createElement("option");
-        option.value = v.id; // O puedes usar v.vin o v.placa si prefieres
-        option.textContent = `${v.marca} ${v.modelo} (${v.placa})`;
-        selectVehiculo.appendChild(option);
-      });
-
-    } catch (err) {
-      console.error("Error al cargar vehículos:", err);
-    }
-  }
-
-
-  mostrarCitas();
 });
 
 function cargarCalendario(fecha) {
@@ -211,9 +161,7 @@ function cargarCalendario(fecha) {
   });
 
   for (let i = 0; i < (primerDia + 6) % 7; i++) {
-    const div = document.createElement("div");
-    div.classList.add("py-2");
-    calendario.appendChild(div);
+    calendario.appendChild(document.createElement("div"));
   }
 
   const hoy = new Date();
@@ -253,7 +201,9 @@ function seleccionarFecha(dia) {
   const fecha = `${anio}-${mes.toString().padStart(2, "0")}-${dia.toString().padStart(2, "0")}`;
   document.getElementById("fechaSeleccionada").value = fecha;
 
-  document.querySelectorAll("#calendario div").forEach(div => div.classList.remove("bg-dark", "text-white"));
+  document.querySelectorAll("#calendario div").forEach(div =>
+    div.classList.remove("bg-dark", "text-white")
+  );
   event.target.classList.add("bg-dark", "text-white");
 }
 
@@ -284,6 +234,7 @@ async function mostrarCitas() {
         </div>
       `;
     });
+
   } catch (err) {
     console.error("Error al cargar citas:", err);
   }
@@ -328,11 +279,7 @@ async function eliminarCita(id) {
         confirmButtonColor: '#28a745'
       });
 
-
-      mostrarCitas();
-      cargarVehiculosCliente()
-
-      mostrarCitas();
+      mostrarCitas(); 
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -342,22 +289,11 @@ async function eliminarCita(id) {
       });
     }
   }
-
-
-cargarVehiculosCliente(); // ✅ Esto es lo que falta
-
 }
 
-  mostrarCitas();
-  cargarVehiculosCliente(); // ✅ Esto FALTABA para cargar los vehículos
-
-
-// 👇 Esta función ya la tenías, solo le agregué el reinicio del select:
 async function cargarVehiculosCliente() {
   const userId = localStorage.getItem("userId");
   const selectVehiculo = document.getElementById("vehiculoSelect");
-
-  // ✅ Limpiar opciones previas
   selectVehiculo.innerHTML = '<option value="">Selecciona tu vehículo</option>';
 
   try {
@@ -368,7 +304,7 @@ async function cargarVehiculosCliente() {
 
     vehiculosCliente.forEach(v => {
       const option = document.createElement("option");
-      option.value = v.id; // O v.vin o v.placa si quieres
+      option.value = v.id;
       option.textContent = `${v.marca} ${v.modelo} (${v.placa})`;
       selectVehiculo.appendChild(option);
     });
