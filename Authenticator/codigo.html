@@ -1,30 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SASA - Verificar Código</title>
-<link rel="stylesheet" href="../css/codigo.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SASA - Verificar Código</title>
+  <!-- Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Tus estilos -->
+  <link rel="stylesheet" href="../css/codigo.css"/>
 </head>
 <body>
-<div class="container">
-  <div class="logo">
-    <img src="../IMG/SASA.png" alt="Logo SASA">
+  <div class="container">
+    <div class="logo">
+      <img src="../IMG/logo sasa.jpg" alt="Logo SASA"/>
+    </div>
+
+    <h1 class="title">SASA</h1>
+
+    <p class="description">
+      Ingrese el código de verificación enviado a su correo.
+    </p>
+
+    <form id="verificationForm">
+      <div class="input-group">
+        <i class="fas fa-key icon"></i>
+        <input type="text" id="code" name="code" required />
+        <label for="code">Código de verificación</label>
+      </div>
+
+      <button type="submit" class="submit-button">Continuar</button>
+    </form>
+
+    <p class="forgot-password">
+      <a href="login.html">Volver al inicio</a>
+    </p>
+
+    <script src="../JS/codigo.js"></script>
   </div>
-  <div class="title">SASA</div>
-  <p class="description">
-    Ingrese el código de verificación enviado a su dirección de correo electrónico.
-  </p>
-  <form id="verificationForm">
-    <label for="code" class="label">Código</label>
-    <input type="text" id="code" name="code" required>
-    
-    <button type="submit" class="submit-button">Continuar</button>
-  </form>
-  <div class="resend-link">
-    ¿No recibió su código? <a href="#resend" class="resend-link">Reenviar Código</a>
-  </div>
-</div>
-<script src="../js/codigo.js"></script>
 </body>
 </html>

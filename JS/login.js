@@ -8,7 +8,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
   console.log("Contraseña ingresada:", password);
 
   try {
-    const res = await fetch('https://retoolapi.dev/DeaUI0/registro'); // Asegúrate de que sea la API correcta
+    const res = await fetch('https://retoolapi.dev/DeaUI0/registro'); 
     if (!res.ok) throw new Error('API sin respuesta');
 
     const usuarios = await res.json();
