@@ -36,12 +36,15 @@ body {
 
 /* --- Formulario estilizado --- */
 .formulario {
-  background: white;
+  border-left: 6px solid #7c1c1c;
   border-radius: 16px;
+  background: linear-gradient(145deg, #ffffff, #f2f2f2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   padding: 2rem 1.5rem;
   margin-top: 1.2rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.5s ease;
 }
+
 .form-group {
   margin-bottom: 1.4rem;
 }
@@ -57,15 +60,21 @@ body {
   font-size: 1rem;
   border-radius: 12px;
   border: 1px solid #ccc;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+  transition: all 0.25s ease;
+}
+.form-group input:hover {
+  border-color: #7c1c1c;
 }
 .form-group input:focus {
   border-color: #7c1c1c;
+  background-color: #fefefe;
   box-shadow: 0 0 0 2px rgba(124, 28, 28, 0.2);
   outline: none;
 }
+
 .btn-guardar {
-  background-color: #218838;
+  background: linear-gradient(to right, #218838, #1e7e34);
   color: white;
   font-weight: bold;
   border: none;
@@ -74,10 +83,25 @@ body {
   font-size: 1rem;
   border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(33, 136, 56, 0.3);
 }
 .btn-guardar:hover {
+  transform: scale(1.03);
   background-color: #1e7e34;
+  box-shadow: 0 6px 12px rgba(30, 126, 52, 0.4);
+}
+
+/* --- Animación fade --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Menú inferior flotante --- */
@@ -125,7 +149,7 @@ body {
   display: block;
 }
 
-/* --- Menú tipo Pokémon (perfil) con estilo mejorado --- */
+/* --- Menú tipo Pokémon (perfil) --- */
 .profile-menu {
   position: fixed;
   top: 50%;
@@ -157,22 +181,11 @@ body {
   cursor: pointer;
 }
 
-/* Encabezado con ID */
-.profile-menu .user-id {
-  font-size: 13px;
-  color: #777;
-  margin-bottom: 5px;
-}
-.profile-menu .user-id b {
-  color: #000;
-}
-
 .user-avatar-link {
   display: block;
   text-align: center;
   margin-bottom: 0.5rem;
 }
-
 .user-avatar-lg {
   width: 64px;
   height: 64px;
@@ -185,13 +198,10 @@ body {
   font-size: 26px;
   margin: 0 auto;
 }
-
-
 .user-avatar-lg i {
   color: white;
   font-size: 24px;
 }
-
 
 /* Nombre y rol */
 .username {
@@ -204,6 +214,18 @@ body {
   font-size: 13px;
   color: #888;
   margin-bottom: 1rem;
+}
+
+/* Encabezado con ID */
+.menu-user-id {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.menu-user-id .label {
+  font-size: 13px;
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
 }
 
 /* Opciones del menú */
@@ -233,16 +255,4 @@ body {
 .menu-options a:hover {
   background: #f0f0f0;
   color: #C91A1A;
-}
-
-.menu-user-id {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.menu-user-id .label {
-  font-size: 13px;
-  color: #666;
-  display: block;
-  margin-bottom: 4px;
 }

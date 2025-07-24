@@ -4,29 +4,44 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inicio</title>
-  <link rel="stylesheet" href="../CSS/style.css" />
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="../CSS/style.css" />
 </head>
 <body>
-
   <main class="container py-3">
-    <h2 class="text-center fw-bold">Inicio</h2>
-
-    <!-- Bienvenida -->
-    <div class="welcome-card p-3 rounded mb-4">
-      <h4 class="text-white fw-bold" id="bienvenida">Bienvenido</h4>
-      <p class="text-white-50 mb-0">Nos alegra tenerte aquí.</p>
+    <!-- Tarjeta de bienvenida -->
+    <div class="tcg-card welcome-card d-flex justify-content-between align-items-center p-3 mb-4">
+      <div class="text-start">
+        <h6 class="fw-bold mb-1">Bienvenido</h6>
+        <small>Nos alegra tenerte aquí.</small>
+      </div>
+      <i class="fas fa-bell fs-4"></i>
     </div>
 
-    <!-- Citas programadas -->
-    <h5 class="fw-bold mb-3">Citas programadas</h5>
-    <div id="citasContainer" class="mb-3"></div>
+    <!-- Sección: Próximas H -->
+    <div class="section-label">Próximas Citas</div>
+    <div class="scroll-container-wrapper">
+      <div class="registros-scroll-container">
+        <div class="registros-list px-3 pb-5" id="citasHomeList">Cargando...</div>
+      </div>
+      <button class="scroll-top-btn" onclick="document.querySelector('#citasHomeList').scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+      </button>
+    </div>
 
-    <button class="btn btn-secondary w-100 fw-bold" onclick="window.location.href='../Citas/citas.html'">
-      AGENDAR
-    </button>
+    <!-- Sección: Mis Vehículos -->
+    <div class="section-label">Mis vehículos</div>
+    <div class="scroll-container-wrapper">
+      <div class="registros-scroll-container">
+        <div class="registros-list px-3 pb-5" id="listaVehiculosDashboard"></div>
+      </div>
+      <button class="scroll-top-btn" onclick="document.querySelector('#listaVehiculosDashboard').scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-chevron-up"></i>
+      </button>
+    </div>
   </main>
 
   <!-- Overlay -->

@@ -11,7 +11,6 @@ async function obtenerVehiculos() {
     const lista = document.getElementById("vehiculosLista");
     lista.innerHTML = "";
 
-    // Filtrar solo los vehículos del cliente actual
     const misVehiculos = vehiculos.filter(v => v.idCliente == userId);
 
     if (misVehiculos.length === 0) {
@@ -20,22 +19,24 @@ async function obtenerVehiculos() {
     }
 
     misVehiculos.forEach(v => {
-      const card = document.createElement("div");
-      card.className = "vehiculo-card";
+      const col = document.createElement("div");
+      col.className = "col-6"; // 2 tarjetas por fila
 
-      card.innerHTML = `
-        <div>
-          <strong>${v.marca || "Sin marca"} ${v.modelo || ""}</strong><br>
-          ${v.color || ""}<br>
-          ${v.placa || ""}
-        </div>
-        <div class="acciones">
-          <i class="fas fa-pen" onclick="editarVehiculo(${v.id})"></i>
-          <i class="fas fa-trash" onclick="eliminarVehiculo(${v.id})"></i>
+      col.innerHTML = `
+        <div class="vehiculo-card">
+          <div>
+            <strong>${v.marca || "Sin marca"} ${v.modelo || ""}</strong><br>
+            ${v.color || ""}<br>
+            ${v.placa || ""}
+          </div>
+          <div class="acciones mt-2 d-flex justify-content-end gap-2">
+            <i class="fas fa-pen" title="Editar" onclick="editarVehiculo(${v.id})"></i>
+            <i class="fas fa-trash" title="Eliminar" onclick="eliminarVehiculo(${v.id})"></i>
+          </div>
         </div>
       `;
 
-      lista.appendChild(card);
+      lista.appendChild(col);
     });
   } catch (error) {
     console.error("Error al obtener vehículos:", error);
@@ -96,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   closeMenu?.addEventListener("click", cerrarMenu);
   overlay?.addEventListener("click", cerrarMenu);
 
-  // Cargar datos del usuario
+  // Datos del usuario
   const userId = localStorage.getItem("userId");
   const apiUrl = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
 
