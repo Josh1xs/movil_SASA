@@ -1,114 +1,151 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #d3d3d3;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: url('../IMG/bak.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  font-weight: bold; /* Añadido para que todo el texto esté en negrita */
+  overflow: hidden;
 }
 
 .container {
-  background-color: #d3d3d3;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  padding: 35px 30px;
   border-radius: 20px;
-  padding: 20px;
-  width: 100%;
-  max-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  width: 90%;
+  max-width: 370px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease forwards;
 }
 
 .logo img {
-  width: 100px; /* Ajusta el tamaño de la imagen del logotipo */
-  height: auto;
-  margin-bottom: 20px;
+  width: 90px;
+  margin-bottom: 10px;
+  animation: popIn 1s ease;
 }
 
 .title {
-  font-size: 32px;
-  color: #8b0000;
-  margin-bottom: 10px; /* Redujo el margen para que el título esté más cerca del logo */
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #000;
+  animation: fadeIn 1.3s ease;
 }
 
 .description {
-  font-size: 16px;
+  font-size: 1rem;
   color: #000;
-  text-align: center;
-  margin-bottom: 20px; /* Redujo el margen para que el texto esté más cerca del título */
+  margin-bottom: 20px;
+  animation: fadeIn 1.4s ease;
 }
 
-.label {
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 5px;
-  width: 100%;
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+  animation: fadeIn 1.5s ease;
 }
 
-input {
+.input-group .icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #000;
+  font-size: 1.1rem;
+}
+
+.input-group input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-bottom: 20px; /* Redujo el margen para que el botón esté más cerca del campo de entrada */
+  padding: 12px 15px 12px 45px;
+  border: 1px solid #000;
+  border-radius: 30px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 45px;
+  transform: translateY(-50%);
+  color: #555;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  transform: translate(-10px, -50%);
+  opacity: 0;
 }
 
 .submit-button {
-  background-color: #3C0000;
-  color: #EFDBBF;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 12px;
   width: 100%;
+  background: #e60000;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 1.7s ease;
 }
 
 .submit-button:hover {
-  background-color: #7a0000;
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
 }
 
-.resend-link {
-  font-size: 14px;
-  color: #000; /* Cambio para que el texto sea negro */
-  margin-top: 10px; /* Redujo el margen para que el enlace esté más cerca del botón */
-  width: 100%;
-  text-align: center;
-  text-decoration: underline; /* Añadido para subrayar el texto */
+.forgot-password {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  animation: fadeIn 2s ease;
 }
 
-.resend-link a {
-  color: #000; /* Cambio para que el texto sea negro */
-  text-decoration: underline; /* Añadido para subrayar el texto */
+.forgot-password a {
+  color: #000;
+  text-decoration: underline;
 }
 
-@media (max-width: 320px) {
-  .container {
-    padding: 15px;
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
   }
-
-  .title {
-    font-size: 24px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  .label {
-    font-size: 12px;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
   }
-
-  input {
-    font-size: 12px;
-  }
-
-  .submit-button {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-
-  .resend-link {
-    font-size: 10px;
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

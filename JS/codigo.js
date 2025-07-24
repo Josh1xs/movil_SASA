@@ -20,7 +20,7 @@ document.getElementById('verificationForm').addEventListener('submit', function(
       text: 'Verificación completada con éxito',
       confirmButtonText: 'Continuar'
     }).then(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'login.html';
     });
   } else {
     Swal.fire({

@@ -42,38 +42,42 @@ body {
   border-radius: 50%;
 }
 
+/* Menú inferior flotante */
 .mobile-nav {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  height: 60px;
-  background: rgba(124, 28, 28, 0.25);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  height: 55px;
+  background: #7c1c1c;
   border-radius: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .mobile-nav__link {
-  color: #fff;
-  font-size: 20px;
-  background: none;
-  border: none;
   flex: 1;
   text-align: center;
+  color: white;
   text-decoration: none;
+  font-size: 18px;
+  background: none;
+  border: none;
+}
+
+.mobile-nav__link i {
+  font-size: 20px;
 }
 
 .menu-toggle-btn {
   cursor: pointer;
 }
 
+/* Overlay (fondo tras menú Pokémon) */
 .overlay {
   position: fixed;
   inset: 0;
@@ -81,12 +85,13 @@ body {
   display: none;
   z-index: 1001;
   backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
-
 .overlay.show {
   display: block;
 }
 
+/* Menú tipo Pokémon */
 .profile-menu {
   position: fixed;
   top: 50%;
@@ -103,7 +108,6 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
 .profile-menu.open {
   display: flex;
 }
@@ -118,24 +122,33 @@ body {
   color: #555;
   cursor: pointer;
 }
-
 .profile-menu .close-btn:hover {
   color: #7c1c1c;
   transform: scale(1.1);
 }
 
+/* Datos de usuario dentro del menú */
+.username {
+  font-weight: bold;
+  font-size: 16px;
+}
+.user-pass {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+/* Opciones del menú */
 .menu-options {
   list-style: none;
   padding: 0;
   width: 100%;
   margin-top: 0.5rem;
 }
-
 .menu-options li {
   margin-bottom: 0.8rem;
   text-align: left;
 }
-
 .menu-options a {
   color: #212529;
   text-decoration: none;
@@ -144,13 +157,14 @@ body {
   align-items: center;
   padding: 0.4rem 0.6rem;
   border-radius: 10px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background 0.2s;
+}
+.menu-options a:hover {
+  background: #f0f0f0;
+  color: #C91A1A;
 }
 
-.menu-options a:hover {
-  background-color: rgba(124, 28, 28, 0.08);
-  color: #7c1c1c;
-}
+/* Resto de tus estilos */
 
 .tcg-card {
   background: linear-gradient(145deg, #7c1c1c, #5e1212);
