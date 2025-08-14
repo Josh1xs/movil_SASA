@@ -1,315 +1,272 @@
+// Endpoints
 const API_URL = "https://retoolapi.dev/2Kfhrs/cita";
-let fechaActual = new Date();
+const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
+const API_USER_BASE = "https://retoolapi.dev/DeaUI0/registro/";
 
-document.addEventListener("DOMContentLoaded", () => {
-  cargarCalendario(fechaActual);
-  cargarVehiculosCliente(); // ✅ Solo una vez aquí
-  mostrarCitas();           // ✅ Solo una vez aquí
+// Estado calendario
+let fechaCursor = new Date();           // Mes que se muestra
+let selectedDate = null;                // Fecha elegida
+const today = new Date(); today.setHours(0,0,0,0);
+const maxDate = new Date(today); maxDate.setDate(maxDate.getDate() + 19); // 20 días (0..19 incluidos)
 
-  const userId = localStorage.getItem("userId");
-  document.getElementById("menuUserId").textContent = userId || "Desconocido";
+// Utilidades fecha
+const dOW = d => d.getDay(); // 0=Dom
+const toISO = d => d.toISOString().slice(0,10);
+const sameDay = (a,b) => a?.toDateString() === b?.toDateString();
+const inRange20 = d => d >= today && d <= maxDate;
 
-  // Menú flotante
-  const menuToggle = document.getElementById("menuToggle");
-  const profileMenu = document.getElementById("profileMenu");
-  const overlay = document.getElementById("overlay");
-  const closeMenu = document.getElementById("closeMenu");
+// Ventanas horarias por día
+function dayWindow(date) {
+  const dow = dOW(date);
+  if (dow === 0) return { min: "09:00", max: "13:00", label: "Domingo 09:00–13:00" };
+  if (dow === 6) return { min: "08:00", max: "14:00", label: "Sábado 08:00–14:00" };
+  return { min: "07:00", max: "19:00", label: "Lunes–Viernes 07:00–19:00" };
+}
+const inWindow = (date, hhmm) => {
+  const {min, max} = dayWindow(date);
+  return hhmm >= min && hhmm <= max;
+};
 
-  menuToggle.addEventListener("click", () => {
-    profileMenu.classList.add("open");
-    overlay.classList.add("show");
-  });
+// DOM
+const el = sel => document.querySelector(sel);
+const $cal = el("#calendario");
+const $mes = el("#mesActual");
+const $hora = el("#horaInput");
+const $fechaHidden = el("#fechaSeleccionada");
+const $vehiculos = el("#vehiculoSelect");
+const $estado = el("#estado");
+const $desc = el("#descripcion");
+const $lista = el("#listaCitas");
+const $form = el("#formCita");
+const $timeHint = el("#timeHint");
+const $btnEnviar = el("#btnEnviar");
 
-  closeMenu.addEventListener("click", cerrarMenu);
-  overlay.addEventListener("click", cerrarMenu);
-
-  function cerrarMenu() {
-    profileMenu.classList.remove("open");
-    overlay.classList.remove("show");
-  }
-
-  const nombreElement = document.getElementById("menuNombre");
-  const paseElement = document.getElementById("menuPase");
-
-  fetch(`https://retoolapi.dev/DeaUI0/registro/${userId}`)
-    .then(res => res.json())
-    .then(user => {
-      nombreElement.textContent = `${user.nombre} ${user.apellido}`;
-      paseElement.textContent = user.pase || "Cliente";
-    });
-
-  // Envío de cita
-  document.getElementById("formCita").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const fecha = document.getElementById("fechaSeleccionada").value;
-    const horaInput = document.getElementById("horaInput").value;
-    const meridiano = document.getElementById("meridiano").value;
-    const estado = document.getElementById("estado").value;
-    const descripcion = document.getElementById("descripcion").value;
-    const idVehiculo = document.getElementById("vehiculoSelect").value;
-
-    if (!fecha || !horaInput || !idVehiculo) {
-      return Swal.fire({
-        icon: 'warning',
-        title: 'Datos incompletos',
-        text: 'Debes llenar todos los campos requeridos.',
-        confirmButtonColor: '#c91a1a'
-      });
-    }
-
-    const [horaStr, minutoStr] = horaInput.split(':');
-    let horaNum = parseInt(horaStr);
-    const minuto = parseInt(minutoStr);
-
-    if (meridiano === "PM" && horaNum !== 12) horaNum += 12;
-    else if (meridiano === "AM" && horaNum === 12) horaNum = 0;
-
-    const horaFinal = `${horaNum.toString().padStart(2, "0")}:${minutoStr}`;
-
-    if (horaFinal < "07:00" || horaFinal > "16:00") {
-      return Swal.fire({
-        icon: 'error',
-        title: 'Hora fuera de horario',
-        text: 'Solo se permiten citas entre 07:00 AM y 04:00 PM.',
-        confirmButtonColor: '#c91a1a'
-      });
-    }
-
-    const datos = {
-      fecha,
-      hora: horaFinal,
-      estado,
-      descripcion,
-      idCliente: userId,
-      idVehiculo
-    };
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
-      });
-
-      if (!res.ok) throw new Error("Error al guardar");
-
-      const fechaNoti = new Date().toISOString().split("T")[0];
-
-      const notificaciones = [
-        {
-          titulo: "Cita agendada con éxito",
-          descripcion: `Tu cita fue programada para el ${fecha} a las ${horaFinal}.`,
-          fecha: fechaNoti,
-          idCliente: userId
-        },
-        {
-          titulo: "Nueva cita agendada",
-          descripcion: `El cliente con ID ${userId} ha agendado una cita para el vehículo con ID ${idVehiculo} el ${fecha} a las ${horaFinal}.`,
-          fecha: fechaNoti,
-          idCliente: userId,
-          tipo: "cita"
-        }
-      ];
-
-      for (const noti of notificaciones) {
-        await fetch("https://retoolapi.dev/IOhfB6/notificaciones", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(noti)
-        });
-      }
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Cita registrada',
-        text: 'Tu cita fue guardada y notificada exitosamente.',
-        confirmButtonColor: '#28a745'
-      });
-
-      e.target.reset();
-      document.getElementById("fechaSeleccionada").value = "";
-
-      mostrarCitas(); // ✅ Actualizar después de guardar
-
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo registrar la cita.',
-        confirmButtonColor: '#c91a1a'
-      });
-    }
+// Sidebar + avatar spin
+const overlay = el("#overlay");
+const profileMenu = el("#profileMenu");
+const menuToggle = el("#menuToggle");
+const menuToggleBottom = el("#menuToggleBottom");
+const closeMenu = el("#closeMenu");
+[menuToggle, menuToggleBottom].forEach(btn=>{
+  if(!btn) return;
+  btn.addEventListener("click", ()=>{
+    btn.classList.add("spin"); setTimeout(()=>btn.classList.remove("spin"),600);
+    profileMenu.classList.add("open"); overlay.classList.add("show");
   });
 });
+if (closeMenu) closeMenu.addEventListener("click", closeSidebar);
+if (overlay) overlay.addEventListener("click", closeSidebar);
+function closeSidebar(){ profileMenu.classList.remove("open"); overlay.classList.remove("show"); }
 
-function cargarCalendario(fecha) {
-  const calendario = document.getElementById("calendario");
-  calendario.innerHTML = "";
+// Logout (opcional si usas igual que index)
+const logoutBtn = el("#logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k=>localStorage.removeItem(k));
+    sessionStorage.clear(); document.cookie="authToken=; Max-Age=0; path=/";
+    location.replace(logoutBtn.getAttribute("href") || "../Authenticator/login.html");
+  });
+}
 
-  const mes = fecha.getMonth();
-  const anio = fecha.getFullYear();
-  const primerDia = new Date(anio, mes, 1).getDay();
-  const diasMes = new Date(anio, mes + 1, 0).getDate();
-  const diasSemana = ["L", "M", "M", "J", "V", "S", "D"];
+// Render calendario
+function renderCalendar() {
+  $cal.innerHTML = "";
+  const year = fechaCursor.getFullYear();
+  const month = fechaCursor.getMonth();
 
-  diasSemana.forEach(d => {
-    const div = document.createElement("div");
-    div.classList.add("fw-bold", "text-center", "border-bottom");
-    div.textContent = d;
-    calendario.appendChild(div);
+  $mes.textContent = fechaCursor.toLocaleString("es", { month: "long", year: "numeric" });
+
+  const headers = ["L","M","M","J","V","S","D"];
+  headers.forEach(h=>{
+    const hd = document.createElement("div");
+    hd.className = "cal-cell header";
+    hd.textContent = h;
+    $cal.appendChild(hd);
   });
 
-  for (let i = 0; i < (primerDia + 6) % 7; i++) {
-    calendario.appendChild(document.createElement("div"));
+  // offset: calendario arranca en lunes
+  const first = new Date(year, month, 1);
+  let startIndex = first.getDay(); // 0 dom .. 6 sab
+  startIndex = (startIndex + 6) % 7; // lunes=0
+
+  for (let i=0; i<startIndex; i++){
+    const empty = document.createElement("div");
+    empty.className = "cal-cell muted";
+    $cal.appendChild(empty);
   }
 
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for (let day=1; day<=daysInMonth; day++){
+    const d = new Date(year, month, day);
+    const cell = document.createElement("div");
+    cell.className = "cal-cell";
+    cell.textContent = day;
 
-  for (let dia = 1; dia <= diasMes; dia++) {
-    const fechaCompleta = new Date(anio, mes, dia);
-    const div = document.createElement("div");
-    div.classList.add("text-center", "py-2", "rounded", "calendar-cell");
-    div.textContent = dia;
-    div.style.cursor = "pointer";
-
-    if (fechaCompleta < hoy) {
-      div.classList.add("text-muted");
-      div.style.pointerEvents = "none";
+    if (!inRange20(d)) {
+      cell.classList.add("muted");
     } else {
-      div.onclick = () => seleccionarFecha(dia);
+      cell.classList.add("in-range","selectable");
+      cell.tabIndex = 0;
+      cell.addEventListener("click", ()=>selectDate(d, cell));
+      cell.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" ") selectDate(d, cell); });
     }
 
-    calendario.appendChild(div);
+    if (sameDay(d, selectedDate)) cell.classList.add("selected");
+
+    $cal.appendChild(cell);
   }
 
-  document.getElementById("mesActual").textContent =
-    fecha.toLocaleString("es", { month: "long" }) + " " + anio;
+  // Botones mes (no permitimos navegar fuera del rango de 20 días)
+  const prevBtn = el("#prevMonth");
+  const nextBtn = el("#nextMonth");
+  const monthStart = new Date(year, month, 1);
+  const monthEnd   = new Date(year, month+1, 0);
 
-  fechaActual = fecha;
+  if (prevBtn) prevBtn.disabled = (monthStart <= today && monthEnd <= today);
+  if (nextBtn) nextBtn.disabled = (monthStart >= maxDate && monthEnd >= maxDate);
+}
+function changeMonth(delta){
+  fechaCursor.setMonth(fechaCursor.getMonth()+delta);
+  renderCalendar();
+}
+el("#prevMonth").addEventListener("click", ()=>changeMonth(-1));
+el("#nextMonth").addEventListener("click", ()=>changeMonth(1));
+
+// Selección de fecha
+function selectDate(date, cell){
+  selectedDate = date;
+  $fechaHidden.value = toISO(date);
+
+  // Visual
+  [...$cal.querySelectorAll(".cal-cell")].forEach(c=>c.classList.remove("selected"));
+  cell.classList.add("selected");
+
+  // Ventana de horario
+  const w = dayWindow(date);
+  $hora.min = w.min; $hora.max = w.max; $hora.value = "";
+  $timeHint.textContent = `Horario disponible: ${w.label}`;
 }
 
-function cambiarMes(cambio) {
-  fechaActual.setMonth(fechaActual.getMonth() + cambio);
-  cargarCalendario(fechaActual);
-}
-
-function seleccionarFecha(dia) {
-  const mes = fechaActual.getMonth() + 1;
-  const anio = fechaActual.getFullYear();
-  const fecha = `${anio}-${mes.toString().padStart(2, "0")}-${dia.toString().padStart(2, "0")}`;
-  document.getElementById("fechaSeleccionada").value = fecha;
-
-  document.querySelectorAll("#calendario div").forEach(div =>
-    div.classList.remove("bg-dark", "text-white")
-  );
-  event.target.classList.add("bg-dark", "text-white");
-}
-
-async function mostrarCitas() {
+// Cargar datos de usuario y vehículos
+async function cargarUsuarioYVehiculos(){
   const userId = localStorage.getItem("userId");
-  const contenedor = document.getElementById("listaCitas");
-  contenedor.innerHTML = "<h5 class='mt-4'>Mis Citas</h5>";
+  el("#menuUserId").textContent = userId || "Desconocido";
 
-  try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    const citasUsuario = data.filter(cita => cita.idCliente == userId);
+  if (userId) {
+    try{
+      const u = await fetch(API_USER_BASE+userId).then(r=>r.json());
+      const nombre = `${u?.nombre??""} ${u?.apellido??""}`.trim() || "Usuario";
+      el("#menuNombre").textContent = nombre;
+      el("#menuPase").textContent = u?.pase || "Cliente";
+    }catch{}
+  }
 
-    if (citasUsuario.length === 0) {
-      contenedor.innerHTML += "<p class='text-muted'>No tienes citas registradas.</p>";
+  // Vehículos
+  try{
+    const data = await fetch(API_VEHICULOS).then(r=>r.json());
+    const misVeh = (Array.isArray(data)?data:[]).filter(v=>String(v.idCliente)===String(userId));
+    $vehiculos.innerHTML = "";
+    if (misVeh.length===0){
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "No hay vehículos ingresados";
+      $vehiculos.appendChild(opt);
+      $vehiculos.disabled = true;
+      $btnEnviar.disabled = true;
+    }else{
+      $vehiculos.disabled = false;
+      $btnEnviar.disabled = false;
+      $vehiculos.appendChild(new Option("Selecciona tu vehículo",""));
+      misVeh.forEach(v=>{
+        $vehiculos.appendChild(new Option(`${v.marca||"Vehículo"} ${v.modelo||""} (${v.placa||"—"})`, v.id));
+      });
+    }
+  }catch(e){
+    $vehiculos.innerHTML = `<option value="">Error cargando vehículos</option>`;
+    $btnEnviar.disabled = true;
+  }
+}
+
+// Mostrar listado de citas (boxed + link al detalle)
+async function mostrarCitas(){
+  const userId = localStorage.getItem("userId");
+  $lista.innerHTML = "";
+
+  try{
+    const data  = await fetch(API_URL).then(r=>r.json());
+    const citas = (Array.isArray(data) ? data : [])
+      .filter(c => String(c.idCliente) === String(userId));
+
+    if (!citas.length){
+      $lista.innerHTML = `<p class="muted" style="color:#fff;opacity:.9">No tienes citas registradas.</p>`;
       return;
     }
 
-    citasUsuario.forEach(cita => {
-      contenedor.innerHTML += `
-        <div class="border rounded p-2 mb-2 bg-white position-relative">
-          <strong>${cita.fecha}</strong> a las <strong>${cita.hora}</strong><br>
-          Estado: ${cita.estado}<br>
-          ${cita.descripcion ? `Descripción: ${cita.descripcion}<br>` : ""}
-          <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" onclick="eliminarCita(${cita.id})">
-            <i class="fas fa-trash"></i>
+    citas.sort((a,b) =>
+      (a.fecha || "").localeCompare(b.fecha || "") ||
+      (a.hora  || "").localeCompare(b.hora  || "")
+    );
+
+    // ⭐️ Tarjeta encerrada en “cuadro”
+    $lista.innerHTML = citas.map(cita => `
+      <a class="cita-item" href="./detallecitas.html?id=${encodeURIComponent(cita.id)}">
+        <article class="cita-card">
+          <button class="cita-delete btn-delete" data-id="${cita.id}" title="Eliminar">
+            <i class="fa-regular fa-trash-can"></i>
           </button>
-        </div>
-      `;
+
+          <h4 class="cita-title">
+            ${cita.fecha || "—"} <span style="opacity:.8">a las</span> ${cita.hora || "—"}
+          </h4>
+          ${cita.estado ? `<p class="cita-sub">Tipo: ${cita.estado}</p>` : ""}
+          ${cita.descripcion ? `<p class="cita-sub">Descripción: ${cita.descripcion}</p>` : ""}
+        </article>
+      </a>
+    `).join("");
+
+    // Eliminar sin navegar
+    $lista.querySelectorAll(".btn-delete").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault(); e.stopPropagation();
+        eliminarCita(btn.dataset.id);
+      });
     });
 
-  } catch (err) {
+  }catch(err){
     console.error("Error al cargar citas:", err);
+    $lista.innerHTML = `<p class="muted" style="color:#fff;opacity:.9">No se pudieron cargar las citas.</p>`;
   }
 }
 
-async function eliminarCita(id) {
-  const confirmacion = await Swal.fire({
-    title: '¿Eliminar cita?',
-    text: "Esta acción no se puede deshacer.",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#aaa',
-    confirmButtonText: 'Sí, eliminar'
-  });
 
-  if (confirmacion.isConfirmed) {
-    try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
-      });
-
-      if (!res.ok) throw new Error("Error al eliminar");
-
-      const notificacion = {
-        titulo: "Cita eliminada",
-        descripcion: `Tu cita con ID ${id} fue eliminada correctamente.`,
-        fecha: new Date().toISOString().split("T")[0],
-        idCliente: localStorage.getItem("userId")
-      };
-
-      await fetch("https://retoolapi.dev/Nlb9BE/notificaciones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(notificacion)
-      });
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Cita eliminada',
-        text: 'Tu cita ha sido eliminada.',
-        confirmButtonColor: '#28a745'
-      });
-
-      mostrarCitas(); 
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'No se pudo eliminar la cita.',
-        confirmButtonColor: '#c91a1a'
-      });
-    }
-  }
-}
-
-async function cargarVehiculosCliente() {
-  const userId = localStorage.getItem("userId");
-  const selectVehiculo = document.getElementById("vehiculoSelect");
-  selectVehiculo.innerHTML = '<option value="">Selecciona tu vehículo</option>';
-
-  try {
-    const res = await fetch("https://retoolapi.dev/4XQf28/anadirvehiculo");
-    const data = await res.json();
-
-    const vehiculosCliente = data.filter(v => v.idCliente == userId);
-
-    vehiculosCliente.forEach(v => {
-      const option = document.createElement("option");
-      option.value = v.id;
-      option.textContent = `${v.marca} ${v.modelo} (${v.placa})`;
-      selectVehiculo.appendChild(option);
+// Eliminar
+async function eliminarCita(id){
+  const r = await Swal.fire({title:'¿Eliminar cita?',text:'Esta acción no se puede deshacer.',icon:'warning',showCancelButton:true,confirmButtonColor:'#d33',cancelButtonColor:'#aaa',confirmButtonText:'Sí, eliminar'});
+  if (!r.isConfirmed) return;
+  try{
+    const res = await fetch(`${API_URL}/${id}`, { method:"DELETE" });
+    if (!res.ok) throw new Error("delete");
+    await fetch("https://retoolapi.dev/Nlb9BE/notificaciones", {
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ titulo:"Cita eliminada", descripcion:`Tu cita con ID ${id} fue eliminada.`, fecha: toISO(new Date()), idCliente: localStorage.getItem("userId") })
     });
-
-  } catch (err) {
-    console.error("Error al cargar vehículos:", err);
+    Swal.fire({icon:'success',title:'Cita eliminada',confirmButtonColor:'#28a745'});
+    mostrarCitas();
+  }catch{
+    Swal.fire({icon:'error',title:'Error',text:'No se pudo eliminar la cita.',confirmButtonColor:'#c91a1a'});
   }
 }
+
+// Init
+document.addEventListener("DOMContentLoaded", async ()=>{
+  // Usuario + vehículos
+  await cargarUsuarioYVehiculos();
+
+  // Calendario inicial (cursor en el mes de hoy si la ventana de 20 días cae en dos meses, aún puedes navegar pero no seleccionar fuera del rango)
+  fechaCursor = new Date(today);
+  renderCalendar();
+
+  // Listado
+  await mostrarCitas();
+});

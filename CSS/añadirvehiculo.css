@@ -1,0 +1,134 @@
+:root{
+  --app-bg:#7c1c1c; --brand:#7c1c1c; --brand-2:#8a2424;
+  --card:#fcfbf9; --ink:#121212; --text:#2a2a2a; --muted:#6d6d6d; --white:#fff;
+  --shadow:0 8px 24px rgba(0,0,0,.12);
+  --radius-xl:22px; --radius-lg:18px; --radius-md:14px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--app-bg); color:var(--text)}
+
+.app-shell{max-width:430px; margin:0 auto; min-height:100dvh; padding:20px 16px 96px}
+.section{margin:16px 0}
+
+.topbar{display:grid;grid-template-columns:1fr auto;align-items:center}
+.page-title{color:#fff;margin:0}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);color:#fff;border:none;outline:2px solid rgba(255,255,255,.25)}
+.avatar-gear{font-size:20px}
+.avatar.spin .avatar-gear{animation:spin .6s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.card{background:var(--card); border-radius:var(--radius-xl); box-shadow:var(--shadow); padding:14px; animation:fadeUp .24s ease}
+@keyframes fadeUp{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}}
+
+.form .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .grid.meta{grid-template-columns:1fr 1fr}
+@media (max-width:430px){ .form .grid{grid-template-columns:1fr} }
+
+.label{display:block;font-weight:700;margin-bottom:6px}
+.input,.textarea{
+  width:100%; padding:10px 12px; border-radius:12px; border:1px solid #ddd; outline:none;
+  transition:border .15s ease, box-shadow .15s ease, transform .06s ease;
+  background:#fff; color:#222;
+}
+.input:focus,.textarea:focus{border-color:#e9bdbd; box-shadow:0 0 0 3px rgba(255,255,255,.2); transform:translateY(-1px)}
+.textarea{min-height:88px; resize:vertical}
+
+.btn{height:46px;border:none;border-radius:14px;font-weight:700;cursor:pointer;transition:transform .06s ease, box-shadow .15s ease}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff}
+.btn.ghost{background:#f2f2f2}
+.btn.danger{background:#c91a1a;color:#fff;text-align:center;display:grid;place-items:center;text-decoration:none}
+.w100{width:100%}
+
+.overlay{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:20}
+.overlay.show{opacity:1; pointer-events:auto}
+.profile-menu{
+  position:fixed; top:0; right:0; height:100dvh; width:84%; max-width:360px; background:#141414; color:#f4f4f4;
+  transform:translateX(100%); transition:.25s; z-index:30; padding:18px 16px 24px; box-shadow:-16px 0 40px rgba(0,0,0,.35)
+}
+.profile-menu.open{transform:translateX(0)}
+.close-btn{position:absolute; right:12px; top:12px; width:40px; height:40px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:#fff}
+.menu-header{display:grid; grid-template-columns:56px 1fr; gap:12px; align-items:center; margin-top:8px}
+.menu-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.menu-user h3{margin:0 0 4px}
+.muted{color:#bdbdbd;margin:0} .small{font-size:.85rem}
+.menu-list{display:grid; gap:6px; margin-top:16px}
+.menu-list a{display:flex;align-items:center;gap:12px;padding:12px 10px;text-decoration:none;color:#f4f4f4;border-radius:12px}
+.menu-list a:hover{background:rgba(255,255,255,.06)}
+.menu-list a.danger{color:#ffd5d5}
+
+.tabbar{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
+  width:min(430px - 24px, calc(100% - 24px));
+  background:linear-gradient(180deg, var(--brand), var(--brand-2));
+  border-radius:24px; padding:12px 14px; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; box-shadow:var(--shadow); z-index:25
+}
+.tabbar__btn{height:44px;display:grid;place-items:center;color:#f6f6f6;text-decoration:none;border-radius:14px;font-size:18px;background:transparent;border:none}
+
+/* Uploader */
+.uploader{display:grid; gap:8px}
+.uploader-preview{
+  width:100%; height:160px; border-radius:16px; background:#f1f1f1;
+  display:grid; place-items:center; color:#777; cursor:pointer;
+  border:1px dashed #d8d8d8; transition:transform .06s ease, border-color .2s ease;
+}
+.uploader-preview:hover{ transform:translateY(-1px); border-color:#e9bdbd }
+.uploader-preview.has-img{
+  background-size:cover; background-position:center; color:transparent; border-style:solid; border-color:#eaeaea;
+}
+.uploader-preview i{font-size:28px; margin-bottom:6px}
+.uploader-actions{display:flex; gap:8px}
+.btn.sm{ height:38px; font-size:.95rem; padding:0 12px }
+
+/* (ya los tenías, solo por coherencia) */
+.textarea{min-height:88px; resize:vertical}
+
+/* Inputs select */
+.select{
+  width:100%; height:44px; padding:10px 12px; border-radius:12px; border:1px solid #ddd; background:#fff;
+  transition:border .15s ease, box-shadow .15s ease;
+}
+.select:focus{border-color:#e9bdbd; box-shadow:0 0 0 3px rgba(255,255,255,.2); outline:none}
+
+/* Más aire debajo de la fila meta (fecha/hora) */
+.form .grid.meta{ margin-bottom: 12px; }
+
+/* Barra de acciones separada del contenido */
+.actions-bar{
+  display:grid; gap:10px; margin-top: 12px;
+}
+
+/* Botón moderno con micro-animación */
+.btn.modern{
+  position:relative; overflow:hidden;
+  transform:translateZ(0); will-change:transform;
+}
+.btn.modern::after{
+  content:""; position:absolute; left:0; top:0; width:100%; height:100%;
+  background:radial-gradient(120px 60px at var(--x,50%) var(--y,0%), rgba(255,255,255,.22), transparent 40%);
+  opacity:0; transition:opacity .25s ease;
+}
+.btn.modern:hover::after{ opacity:1 }
+.btn-label{ position:relative; z-index:1 }
+
+/* Variantes (ya usabas .primary/.ghost/.danger) */
+.btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff}
+.btn.ghost{background:#f2f2f2}
+.btn.danger{background:#c91a1a; color:#fff; text-align:center; display:grid; place-items:center; text-decoration:none}
+
+/* Uploader (por si faltaba) */
+.uploader{display:grid; gap:8px}
+.uploader-preview{
+  width:100%; height:160px; border-radius:16px; background:#f1f1f1;
+  display:grid; place-items:center; color:#777; cursor:pointer;
+  border:1px dashed #d8d8d8; transition:transform .06s ease, border-color .2s ease, background-image .2s;
+}
+.uploader-preview:hover{ transform:translateY(-1px); border-color:#e9bdbd }
+.uploader-preview.has-img{
+  background-size:cover; background-position:center; color:transparent; border-style:solid; border-color:#eaeaea;
+}
+.uploader-preview i{font-size:28px; margin-bottom:6px}
+.uploader-actions{display:flex; gap:8px}
+.btn.sm{ height:38px; font-size:.95rem; padding:0 12px }

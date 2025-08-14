@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Datos encontrados</title>
+  <meta name="robots" content="noindex,nofollow" />
+
+  <!-- Iconos / Alerts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Estilos del proyecto -->
+  <link rel="stylesheet" href="../CSS/style.css" />
+  <link rel="stylesheet" href="../CSS/resultados.css" />
+</head>
+<body>
+  <!-- Overlay + Sidebar -->
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="menu-header">
+      <a href="../Ajustes/ajustes.html" class="menu-avatar-link" id="userIconLink" aria-label="Ir a ajustes">
+       <div class="menu-header">
+      <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+    <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+</div>
+      </a>
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
+    </div>
+
+    <nav class="menu-list">
+      <a href="./index.html"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i> Vehículos</a>
+      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i> Citas</a>
+      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i> Añadir Vehículo</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="app-shell">
+    <header class="topbar">
+      <h1 class="page-title">Datos encontrados:</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
+      </button>
+    </header>
+
+    <!-- Término buscado -->
+    <section class="section">
+      <div class="found-chip">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span id="termChip">—</span>
+      </div>
+    </section>
+
+    <!-- Resultados: Vehículos -->
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Vehículos</h2>
+        <span class="counter" id="vehCount">0</span>
+      </div>
+      <div id="vehiculosResultados" class="grid"></div>
+      <p id="vehEmpty" class="muted hidden">No se encontraron vehículos.</p>
+    </section>
+
+    <!-- Resultados: Citas -->
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">Citas</h2>
+        <span class="counter" id="citasCount">0</span>
+      </div>
+      <div id="citasResultados" class="citas-grid"></div>
+      <p id="citasEmpty" class="muted hidden">No se encontraron citas.</p>
+    </section>
+  </main>
+
+  <!-- Barra inferior -->
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="./index.html" aria-current="page">
+      <i class="fa-solid fa-house"></i>
+    </a>
+    <a class="tabbar__btn" href="../Citas/citas.html">
+      <i class="fa-regular fa-calendar"></i>
+    </a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html">
+      <i class="fa-solid fa-car"></i>
+    </a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html">
+      <i class="fa-solid fa-user"></i>
+    </a>
+  </nav>
+
+  <!-- Lógica de resultados -->
+  <script src="../JS/resultados.js"></script>
+</body>
+</html>

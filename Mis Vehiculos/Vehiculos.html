@@ -1,77 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Mis Vehículos</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="../CSS/vehiculos.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <link rel="stylesheet" href="../CSS/vehiculos.css" />
 </head>
+
 <body>
 
-  <!-- Menú Pokémon -->
-  <div id="overlay" class="overlay"></div>
-  <aside id="profileMenu" class="profile-menu">
-    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
-    <p class="text-center small text-muted">ID de usuario<br><strong id="menuUserId">Desconocido</strong></p>
-    <div class="text-center mb-3">
-      <a href="../Ajustes/ajustes.html">
-        <div class="bg-secondary rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
-          <i class="fas fa-user text-white fs-3"></i>
-        </div>
-      </a>
-      <div id="menuNombre" class="username mt-2">Nombre</div>
-      <div id="menuPase" class="user-pass">Pase</div>
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header">
+      <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+        <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
     </div>
-    <ul class="menu-options">
-      <li><a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a></li>
-      <li><a href="Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a></li>
-      <li><a href="AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a></li>
-      <li><a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a></li>
-    </ul>
+    <nav class="menu-list">
+      <a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a>
+      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a>
+      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i
+          class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+    </nav>
   </aside>
 
-  <!-- Contenido -->
-  <main class="p-3">
-    <h1 class="fs-4 mb-3 text-dark">Mis Vehículos</h1>
-    <div id="vehiculosLista" class="row g-3"></div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <h1 class="page-title">Mis Vehículos</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <section class="section head-actions">
+      <a href="AñadirVehiculo.html" class="add-link" id="addLink">
+        <i class="fa-solid fa-plus"></i> Añadir
+      </a>
+    </section>
+
+
+    <section class="section">
+      <div id="vehiculosLista" class="grid"></div>
+    </section>
   </main>
 
-   <!-- Overlay -->
-  <div id="overlay" class="overlay"></div>
-
-  <!-- Menú Pokémon -->
-  <aside id="profileMenu" class="profile-menu">
-    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
-    <p class="text-center small text-muted">ID de usuario<br><strong id="menuUserId">Desconocido</strong></p>
-    <div class="text-center mb-3">
-      <a href="../Ajustes/ajustes.html" id="userIconLink">
-        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 64px; height: 64px;">
-          <i class="fas fa-user text-white fs-3"></i>
-        </div>
-      </a>
-      <div id="menuNombre" class="username mt-2">Nombre</div>
-      <div id="menuPase" class="user-pass">Pase</div>
-    </div>
-    <ul class="menu-options">
-      <li><a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a></li>
-      <li><a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a></li>
-      <li><a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a></li>
-      <li><a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a></li>
-    </ul>
-  </aside>
-
-  <!-- Menú inferior -->
-  <nav class="mobile-nav d-flex justify-content-around">
-    <a href="../Notificaciones/notificaciones.html" class="mobile-nav__link"><i class="fas fa-bell"></i></a>
-    <a href="index.html" class="mobile-nav__link"><i class="fas fa-home"></i></a>
-    <a href="../Facturas/facturas.html" class="mobile-nav__link"><i class="fas fa-receipt"></i></a>
-    <button class="mobile-nav__link menu-toggle-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="../Notificaciones/notificaciones.html"><i class="fas fa-bell"></i></a>
+    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fas fa-home"></i></a>
+    <a class="tabbar__btn" href="../Facturas/facturas.html"><i class="fas fa-receipt"></i></a>
+    <button class="tabbar__btn" id="menuToggleBottom"><i class="fas fa-bars"></i></button>
   </nav>
 
   <script src="../JS/vehiculos.js"></script>
 </body>
+
 </html>
