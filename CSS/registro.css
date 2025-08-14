@@ -11,12 +11,12 @@ body {
 
 .container {
   background-color: white;
-  border-radius: 20px; /* Borde redondeado en las 4 esquinas */
+  border-radius: 20px; 
   padding: 20px;
   width: 90%;
   max-width: 400px;
-  max-height: 90vh; /* Controla la altura total */
-  overflow-y: auto;  /* Por si el contenido se desborda */
+  max-height: 90vh;
+  overflow-y: auto; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
@@ -28,7 +28,7 @@ body {
 }
 
 .logo img {
-  width: 100px; /* Ajusta el tamaño de la imagen del logotipo */
+  width: 100px; 
   height: auto;
   margin-bottom: 20px;
 }
@@ -92,7 +92,7 @@ button:hover {
   text-decoration: none;
 }
 
-/* Media query for smaller screens */
+
 @media (max-width: 320px) {
   .container {
     padding: 15px;
@@ -130,12 +130,12 @@ select {
 }
 
 .container {
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE/Edge */
+  scrollbar-width: none;      
+  -ms-overflow-style: none;   
 }
 
 .container::-webkit-scrollbar {
-  display: none;               /* Chrome/Safari */
+  display: none;             
 }
 
 

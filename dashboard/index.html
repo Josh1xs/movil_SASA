@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SASA — Inicio</title>
 
-  <!-- Fuentes / Iconos -->
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 
-  <!-- Estilos globales -->
+
   <link rel="stylesheet" href="../CSS/style.css" />
 </head>
 <body>
-  <!-- Overlay + Sidebar de configuración -->
+
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
@@ -46,29 +46,27 @@
     </nav>
   </aside>
 
-  <!-- App -->
+  
   <div class="app-shell">
-    <!-- Saludo -->
+
     <header class="topbar">
       <div class="greeting">
         <h1>Hola, <span id="nombreHeader">Usuario</span> <span class="wave">👋</span></h1>
-        <p>Explora tu sistema</p>
       </div>
 
-      <!-- Llanta/engranaje que gira y abre el sidebar -->
       <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
         <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
       </button>
     </header>
 
-    <!-- Buscador -->
+  
     <div class="searchbar">
       <i class="fa-solid fa-magnifying-glass searchbar__icon"></i>
 
       <input id="searchInput" class="searchbar__input"
              type="search" placeholder="Buscar vehículos, citas..." />
 
-      <!-- Botón LUPA (ruta correcta a resultados) -->
+     
       <button id="goSearch"
               class="searchbar__go"
               aria-label="Buscar"
@@ -78,7 +76,6 @@
       </button>
     </div>
 
-    <!-- Próximas Citas -->
     <section class="section">
       <div class="section-head">
         <h2>Próximas Citas</h2>
@@ -93,7 +90,7 @@
 
       <div id="citasHomeList" class="cards-scroll" aria-label="Carrusel de citas"></div>
 
-      <!-- Template de cita (sin icono de ubicación; con botón tiempo restante) -->
+      
       <template id="tplCitaCard">
         <article class="card card-hero">
           <div class="card-hero__img"></div>
@@ -116,7 +113,7 @@
       </template>
     </section>
 
-    <!-- Mis Vehículos -->
+    
     <section class="section">
       <div class="section-head">
         <h2>Mis Vehículos</h2>
@@ -130,7 +127,7 @@
 
       <div id="listaVehiculosDashboard" class="stack"></div>
 
-      <!-- Template vehículo -->
+  
       <template id="tplVehiculoCard">
         <a class="card vehicle" href="../Mis Vehiculos/Vehiculos.html">
           <div class="vehicle__img"></div>
@@ -145,7 +142,7 @@
       </template>
     </section>
 
-    <!-- Barra inferior -->
+   
     <nav class="tabbar" aria-label="Navegación principal">
       <a class="tabbar__btn active" href="./index.html" aria-current="page">
         <i class="fa-solid fa-house"></i>
@@ -161,14 +158,13 @@
       </a>
     </nav>
 
-    <!-- FAB: Añadir vehículo -->
     <a href="../Mis Vehiculos/AñadirVehiculo.html"
        class="fab"
        title="Añadir vehículo"
        aria-label="Añadir vehículo">
       <i class="fa-solid fa-plus"></i>
     </a>
-  </div> <!-- /app-shell -->
+  </div> 
 
   <script src="../JS/script.js"></script>
 </body>

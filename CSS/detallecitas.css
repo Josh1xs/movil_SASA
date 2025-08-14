@@ -48,6 +48,7 @@
   position:fixed; top:0; right:0; height:100dvh; width:84%; max-width:360px; background:#141414; color:#f4f4f4;
   transform:translateX(100%); transition:.25s; z-index:30; padding:18px 16px 24px; box-shadow:-16px 0 40px rgba(0,0,0,.35)
 }
+
 .profile-menu.open{transform:translateX(0)}
 .close-btn{position:absolute; right:12px; top:12px; width:40px; height:40px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:#fff}
 .menu-header{display:grid; grid-template-columns:56px 1fr; gap:12px; align-items:center; margin-top:8px}

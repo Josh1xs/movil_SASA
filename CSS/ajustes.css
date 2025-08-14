@@ -12,7 +12,7 @@ body {
   overflow-x: hidden;
 }
 
-/* CONTENEDOR PRINCIPAL AJUSTES */
+
 .ajustes-container {
   background-color: #f4f4f4;
   min-height: 100vh;
@@ -20,7 +20,6 @@ body {
   padding-bottom: 100px;
 }
 
-/* BOTÓN DE RETROCESO */
 .btn-back {
   background: none;
   border: 2px solid #7c1c1c;
@@ -34,7 +33,6 @@ body {
   justify-content: center;
 }
 
-/* INFO USUARIO */
 .user-info {
   background: #fff;
   border-radius: 16px;
@@ -58,7 +56,7 @@ body {
   margin-top: 1rem;
 }
 
-/* SECCIONES DE EDICIÓN */
+
 .edit-section {
   background: #fff;
   border-radius: 12px;

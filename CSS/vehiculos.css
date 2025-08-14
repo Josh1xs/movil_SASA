@@ -22,7 +22,7 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .avatar.spin .avatar-gear{animation:spin .6s linear}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Botón Añadir (header) */
+
 .head-actions{display:flex;justify-content:flex-end}
 .add-link{
   display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
@@ -30,7 +30,6 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
   background:linear-gradient(180deg,var(--brand),var(--brand-2)); box-shadow:var(--shadow);
 }
 
-/* Grid de tarjetas */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:420px){ .grid{grid-template-columns:1fr} }
 
@@ -50,7 +49,7 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .chip.green{background:var(--chip-green); color:var(--chip-green-ink)}
 .chip.red{background:var(--chip-red); color:var(--chip-red-ink)}
 
-/* Acciones */
+
 .actions{
   position:absolute; right:8px; bottom:8px; display:flex; gap:8px;
 }
@@ -65,7 +64,7 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .btn-icon.delete{ background:linear-gradient(180deg,#fff0f0,#fff) }
 .btn-icon.delete:hover{ background:linear-gradient(180deg,#ffd9d9,#fff) }
 
-/* Ripple */
+
 .btn-icon::after{
   content:""; position:absolute; inset:auto; width:0; height:0; border-radius:50%;
   background:rgba(124,28,28,.18); transform:translate(-50%,-50%); pointer-events:none; opacity:0;
@@ -74,7 +73,7 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
   top:50%; left:50%; width:140%; height:140%; opacity:1; transition:width .35s ease, height .35s ease, opacity .4s ease;
 }
 
-/* Empty state */
+
 .empty{
   background:var(--card); border-radius:var(--radius-xl); box-shadow:var(--shadow); padding:16px; text-align:center;
   color:#555;
@@ -83,7 +82,7 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
   background:linear-gradient(180deg,var(--brand),var(--brand-2)); padding:10px 14px; border-radius:999px; box-shadow:var(--shadow);
 }
 
-/* Sidebar / Overlay / Tabbar (igual index) */
+
 .overlay{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:20}
 .overlay.show{opacity:1; pointer-events:auto}
 .profile-menu{

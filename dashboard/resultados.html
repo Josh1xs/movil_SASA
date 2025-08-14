@@ -6,16 +6,16 @@
   <title>Datos encontrados</title>
   <meta name="robots" content="noindex,nofollow" />
 
-  <!-- Iconos / Alerts -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Estilos del proyecto -->
+  
   <link rel="stylesheet" href="../CSS/style.css" />
   <link rel="stylesheet" href="../CSS/resultados.css" />
 </head>
 <body>
-  <!-- Overlay + Sidebar -->
+
   <div id="overlay" class="overlay" aria-hidden="true"></div>
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
     <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
@@ -47,7 +47,7 @@
     </nav>
   </aside>
 
-  <!-- Contenido -->
+
   <main class="app-shell">
     <header class="topbar">
       <h1 class="page-title">Datos encontrados:</h1>
@@ -56,7 +56,6 @@
       </button>
     </header>
 
-    <!-- Término buscado -->
     <section class="section">
       <div class="found-chip">
         <i class="fa-solid fa-magnifying-glass"></i>
@@ -64,7 +63,6 @@
       </div>
     </section>
 
-    <!-- Resultados: Vehículos -->
     <section class="section">
       <div class="section-head">
         <h2 class="section-title">Vehículos</h2>
@@ -74,7 +72,7 @@
       <p id="vehEmpty" class="muted hidden">No se encontraron vehículos.</p>
     </section>
 
-    <!-- Resultados: Citas -->
+ 
     <section class="section">
       <div class="section-head">
         <h2 class="section-title">Citas</h2>
@@ -85,7 +83,6 @@
     </section>
   </main>
 
-  <!-- Barra inferior -->
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" href="./index.html" aria-current="page">
       <i class="fa-solid fa-house"></i>
@@ -101,7 +98,6 @@
     </a>
   </nav>
 
-  <!-- Lógica de resultados -->
   <script src="../JS/resultados.js"></script>
 </body>
 </html>

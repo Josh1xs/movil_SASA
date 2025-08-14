@@ -1,5 +1,5 @@
 :root{
-  --app-bg: #7c1c1c;     /* rojo suave (sin gradiente) */
+  --app-bg: #7c1c1c;    
   --brand: #7c1c1c;
   --brand-2: #8a2424;
   --ink: #121212;
@@ -14,7 +14,7 @@
   --radius-md: 14px;
 }
 
-/* Reset mínimo */
+
 *{ box-sizing: border-box; }
 html,body{ height:100%; }
 body{
@@ -24,7 +24,7 @@ body{
   background: var(--app-bg);
 }
 
-/* Overlay + Sidebar */
+
 .overlay{
   position: fixed; inset: 0; background: rgba(0,0,0,.35);
   opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 20;
@@ -55,15 +55,15 @@ body{
 .menu-list a:hover{ background:rgba(255,255,255,.06); }
 .menu-list a.danger{ color:#ffd5d5; }
 
-/* Shell */
+
 .app-shell{
   max-width: 430px;
   min-height: 100dvh;
   margin: 0 auto;
-  padding: 20px 18px 96px; /* espacio para tabbar */
+  padding: 20px 18px 96px; 
 }
 
-/* Topbar */
+
 .topbar{
   display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px; margin-top:8px;
 }
@@ -75,7 +75,7 @@ body{
   overflow:hidden; display:inline-flex; background:#fff; border:none; }
 .avatar img{ width:100%; height:100%; object-fit:cover; }
 
-/* Search */
+
 .search-wrap{ margin:16px 0 8px; }
 .search{
   display:grid; grid-template-columns:24px 1fr 40px; align-items:center; gap:10px;
@@ -86,13 +86,13 @@ body{
 .filter-btn{ display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;
   border-radius:999px; background:linear-gradient(180deg, var(--brand), var(--brand-2)); color:#fff; text-decoration:none; }
 
-/* Secciones */
+
 .section{ margin:22px 0; }
 .section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .section h2{ color:#fff; font-size:20px; margin:0; }
 .view-all{ color:#ffe5e5; text-decoration:none; font-weight:600; }
 
-/* Chips */
+
 .chips{ display:flex; gap:10px; margin:10px 0 14px; }
 .chip{
   padding:8px 14px; font-weight:600; text-decoration:none; color:var(--text);
@@ -101,7 +101,7 @@ body{
 .chip:hover{ transform: translateY(-1px); }
 .chip-active{ background:#ffecec; color:var(--brand); box-shadow:0 6px 18px rgba(124,28,28,.18); }
 
-/* Cards scroll (citas) */
+
 .cards-scroll{
   display:grid; grid-auto-flow:column; grid-auto-columns:82%;
   gap:14px; overflow-x:auto; padding-bottom:2px; scroll-snap-type:x mandatory;
@@ -126,12 +126,12 @@ body{
 .fav{ position:absolute; right:12px; top:12px; width:38px; height:38px; border:none; border-radius:999px;
   display:grid; place-items:center; background:rgba(255,255,255,.85); color:var(--brand); box-shadow:var(--shadow); cursor:default; }
 
-/* favoritos estado activo + pin visual */
+
 .fav.is-active{ background:rgba(124,28,28,.95); color:#fff; }
 .fav.is-active i{ font-weight:900; }
 .card.is-pinned{ outline:2px solid rgba(124,28,28,.25); }
 
-/* Lista vertical (vehículos) */
+
 .stack{ display:grid; gap:14px; }
 .vehicle{ display:grid; grid-template-columns:84px 1fr 18px; gap:12px; padding:12px; align-items:center; }
 .vehicle__img{ width:84px; height:84px; border-radius:var(--radius-md); background:center/cover no-repeat; background-color:#e9e9e9; }
@@ -139,7 +139,7 @@ body{
 .vehicle__name{ margin:2px 0 6px; color:var(--ink); font-size:18px; }
 .vehicle__chev{ color:var(--brand); }
 
-/* Tabbar inferior */
+
 .tabbar{
   position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
   width:min(430px - 24px, calc(100% - 24px));
@@ -150,12 +150,12 @@ body{
 .tabbar__btn{ height:44px; display:grid; place-items:center; color:#f6f6f6; text-decoration:none; border-radius:14px; font-size:18px; }
 .tabbar__btn.active{ background:rgba(255,255,255,.14); outline:1px solid rgba(255,255,255,.18); }
 
-/* Focus accesible */
+
 .card:focus-visible, .tabbar__btn:focus-visible, .chip:focus-visible, .filter-btn:focus-visible, .avatar:focus-visible{
   outline:3px solid #ffe2e2; outline-offset:2px;
 }
 
-/* Notch iOS */
+
 @supports (padding: max(0px)){
   .tabbar{ padding-bottom:max(12px, env(safe-area-inset-bottom)); }
 }
@@ -172,14 +172,14 @@ body{
     @media (prefers-reduced-motion: reduce){
       .avatar.spin .avatar-gear{ animation: none; }
     }
-    /* Header de sección con dos acciones */
+   
 .section-head .actions{
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Botón "Añadir" alineado al estilo del index */
+
 .add-link{
   display: inline-flex;
   align-items: center;
@@ -193,7 +193,6 @@ body{
   box-shadow: var(--shadow);
 }
 
-/* Tarjeta de estado vacío -> Añadir vehículo */
 .vehicle.add-card{
   grid-template-columns: 64px 1fr 18px;
 }
@@ -206,12 +205,10 @@ body{
   color: #fff; font-size: 22px;
 }
 
-/* ---------- Floating Action Button (FAB) ---------- */
+
 .fab{
   position: fixed;
-  /* alineado al borde derecho del "app-shell" (máx 430px) o 16px en pantallas pequeñas */
   right: max(16px, calc(50% - 430px/2 + 16px));
-  /* por encima de la tabbar: bottom = margen inferior + alto tabbar aprox + separación */
   bottom: calc(16px + 64px + 12px);
   width: 56px; height: 56px;
   border-radius: 50%;
@@ -226,12 +223,11 @@ body{
 .fab:hover{ box-shadow: var(--shadow), 0 12px 26px rgba(0,0,0,.30); }
 .fab:active{ transform: scale(.96); }
 
-/* Ocultar/mostrar al hacer scroll */
 .fab-hide{
   opacity: 0; pointer-events: none; transform: translateY(10px);
 }
 
-/* Respetar safe-area en iOS */
+
 @supports (padding: env(safe-area-inset-bottom)){
   .fab{
     bottom: calc(env(safe-area-inset-bottom) + 16px + 64px + 12px);
@@ -246,7 +242,6 @@ body{
   position:absolute; left:14px; color:#888; font-size:16px; pointer-events:none;
 }
 
-/* Botón lupa */
 .searchbar__go{
   position:absolute; right:10px; top:50%; transform:translateY(-50%);
   width:40px; height:40px; border:none; border-radius:12px;

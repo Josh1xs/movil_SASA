@@ -4,7 +4,6 @@
   --shadow:0 8px 24px rgba(0,0,0,.12);
   --radius-xl:22px; --radius-lg:18px; --radius-md:14px;
 }
-
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--app-bg); color:var(--text)}
@@ -18,14 +17,11 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .avatar-gear{font-size:20px}
 .avatar.spin .avatar-gear{animation:spin .6s linear}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .card{background:var(--card); border-radius:var(--radius-xl); box-shadow:var(--shadow); padding:14px; animation:fadeUp .24s ease}
 @keyframes fadeUp{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}}
-
 .form .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form .grid.meta{grid-template-columns:1fr 1fr}
 @media (max-width:430px){ .form .grid{grid-template-columns:1fr} }
-
 .label{display:block;font-weight:700;margin-bottom:6px}
 .input,.textarea{
   width:100%; padding:10px 12px; border-radius:12px; border:1px solid #ddd; outline:none;

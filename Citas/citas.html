@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Citas</title>
 
-  <!-- Iconos / SweetAlert -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Estilos -->
+
   <link rel="stylesheet" href="../CSS/citas.css" />
 </head>
 <body>
@@ -22,7 +22,7 @@
       </button>
     </header>
 
-    <!-- Calendario -->
+  
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
@@ -36,7 +36,6 @@
       </div>
     </section>
 
-    <!-- Formulario -->
     <section class="section">
       <form id="formCita" class="form card">
         <input type="hidden" id="fechaSeleccionada" />
@@ -80,7 +79,6 @@
     </section>
   </main>
 
-  <!-- Overlay + Sidebar (igual que index) -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
     <button class="close-btn" id="closeMenu" aria-label="Cerrar menú"><i class="fas fa-times"></i></button>
@@ -103,7 +101,6 @@
     </nav>
   </aside>
 
-  <!-- Menú inferior -->
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" href="../Notificaciones/notificaciones.html" title="Notificaciones"><i class="fas fa-bell"></i></a>
     <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fas fa-home"></i></a>
@@ -111,7 +108,6 @@
     <button class="tabbar__btn" id="menuToggleBottom" title="Menú"><i class="fas fa-bars"></i></button>
   </nav>
 
-  <!-- Lógica -->
   <script src="../JS/citas.js"></script>
 </body>
 </html>
