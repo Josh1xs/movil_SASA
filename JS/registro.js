@@ -8,28 +8,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const hasNumber = document.getElementById("hasNumber");
   const hasSpecial = document.getElementById("hasSpecial");
 
-  // DUI: insertar guion automáticamente
+  // DUI con guion automático
   duiInput.addEventListener("input", () => {
     let value = duiInput.value.replace(/[^\d]/g, "");
     if (value.length > 8) {
-      value = value.slice(0, 8) + '-' + value.slice(8, 9);
+      value = value.slice(0, 8) + "-" + value.slice(8, 9);
     }
     duiInput.value = value;
   });
 
-  // Validación visual en tiempo real para contraseña
+  // Validación visual contraseña
   passwordInput.addEventListener("input", () => {
     const value = passwordInput.value;
 
-    const lengthValid = value.length >= 8;
-    const letterValid = /[A-Za-z]/.test(value);
-    const numberValid = /\d/.test(value);
-    const specialValid = /[@$!%*#?&.]/.test(value);
-
-    charCount.className = lengthValid ? "valid" : "invalid";
-    hasLetter.className = letterValid ? "valid" : "invalid";
-    hasNumber.className = numberValid ? "valid" : "invalid";
-    hasSpecial.className = specialValid ? "valid" : "invalid";
+    charCount.className = value.length >= 8 ? "valid" : "invalid";
+    hasLetter.className = /[A-Za-z]/.test(value) ? "valid" : "invalid";
+    hasNumber.className = /\d/.test(value) ? "valid" : "invalid";
+    hasSpecial.className = /[@$!%*#?&.]/.test(value) ? "valid" : "invalid";
   });
 
   form.addEventListener("submit", async (e) => {
@@ -43,14 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const correo = form.correo.value.trim();
     const password = form.password.value;
 
-    // Validación DUI
-    const duiRegex = /^\d{8}-\d{1}$/;
-    if (!duiRegex.test(dui)) {
+    // Validar DUI
+    if (!/^\d{8}-\d{1}$/.test(dui)) {
       Swal.fire("Error", "El DUI debe tener el formato 12345678-9", "warning");
       return;
     }
 
-    // Validación edad mayor a 18 años
+    // Validar edad (+18)
     const hoy = new Date();
     const fechaNac = new Date(fechaNacimiento);
     const edad = hoy.getFullYear() - fechaNac.getFullYear();
@@ -62,46 +56,29 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validación de correo
-    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!correoRegex.test(correo)) {
+    // Validar correo
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
       Swal.fire("Error", "Ingresa un correo electrónico válido", "warning");
       return;
     }
 
-    // Validación de contraseña fuerte
-    const passRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
-    if (!passRegex.test(password)) {
-      Swal.fire(
-        "Error",
-        "La contraseña debe tener al menos 8 caracteres, incluyendo una letra, un número y un carácter especial",
-        "warning"
-      );
+    // Validar contraseña fuerte
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/.test(password)) {
+      Swal.fire("Error", "La contraseña debe tener al menos 8 caracteres, con letra, número y símbolo", "warning");
       return;
     }
 
     try {
-      // Validar si el correo ya existe en la API
+      // Revisar si correo existe
       const checkResponse = await fetch("https://retoolapi.dev/DeaUI0/registro");
       const usuarios = await checkResponse.json();
-      const correoExiste = usuarios.some(u => u.correo?.toLowerCase() === correo.toLowerCase());
-
-      if (correoExiste) {
+      if (usuarios.some(u => u.correo?.toLowerCase() === correo.toLowerCase())) {
         Swal.fire("Error", "Ese correo ya está registrado", "warning");
         return;
       }
 
-      // Registrar usuario en API
-      const data = {
-        nombre,
-        apellido,
-        dui,
-        fechaNacimiento,
-        genero,
-        correo,
-        contrasena: password
-      };
-
+      // Registrar usuario
+      const data = { nombre, apellido, dui, fechaNacimiento, genero, correo, contrasena: password };
       const response = await fetch("https://retoolapi.dev/DeaUI0/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -120,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         Swal.fire("Error", "Hubo un problema al registrar", "error");
       }
-
     } catch (error) {
       console.error(error);
       Swal.fire("Error", "No se pudo conectar con el servidor", "error");

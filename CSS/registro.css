@@ -1,3 +1,4 @@
+/* ===== Estilos generales ===== */
 body {
   margin: 0;
   padding: 0;
@@ -9,146 +10,115 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+/* ===== Contenedor principal ===== */
 .container {
-  background-color: white;
-  border-radius: 20px; 
-  padding: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 30px 25px;
   width: 90%;
-  max-width: 400px;
+  max-width: 380px;
   max-height: 90vh;
-  overflow-y: auto; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
 }
 
-.header {
-  font-size: 24px;
-  color: #8b0000;
-  margin-bottom: 20px;
+/* ===== Logo y título ===== */
+.logo img {
+  width: 100px;
+  margin-bottom: 15px;
 }
 
-.logo img {
-  width: 100px; 
-  height: auto;
-  margin-bottom: 20px;
+.header {
+  font-size: 22px;
+  font-weight: 600;
+  color: #8b0000;
+  margin-bottom: 10px;
 }
 
 .title {
-  font-size: 32px;
+  font-size: 28px;
   color: #8b0000;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
+/* ===== Formulario ===== */
 form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 15px;
 }
 
 label {
-  font-size: 16px;
+  font-size: 14px;
+  text-align: left;
   color: #333;
-  margin-bottom: 5px;
-  width: 100%;
+  margin-bottom: -5px;
 }
 
-input {
+input,
+select {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-bottom: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s;
 }
 
+input:focus,
+select:focus {
+  border-color: #8b0000;
+}
+
+/* ===== Botón ===== */
 button {
   background-color: #8b0000;
-  color: white;
-  padding: 10px 20px;
+  color: #fff;
+  padding: 10px;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
-  width: 100%;
 }
 
 button:hover {
   background-color: #7a0000;
 }
 
+/* ===== Enlace login ===== */
 .loginLink {
-  font-size: 14px;
+  font-size: 13px;
+  margin-top: 15px;
   color: #8b0000;
-  margin-top: 20px;
-  width: 100%;
 }
 
 .loginLink a {
   color: #8b0000;
+  font-weight: 500;
   text-decoration: none;
 }
 
-
-@media (max-width: 320px) {
-  .container {
-    padding: 15px;
-  }
-
-  .title {
-    font-size: 24px;
-  }
-
-  label {
-    font-size: 12px;
-  }
-
-  input {
-    font-size: 12px;
-  }
-
-  button {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-
-  .loginLink {
-    font-size: 10px;
-  }
+.loginLink a:hover {
+  text-decoration: underline;
 }
 
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.container {
-  scrollbar-width: none;      
-  -ms-overflow-style: none;   
-}
-
-.container::-webkit-scrollbar {
-  display: none;             
-}
-
-
+/* ===== Ayuda de contraseña ===== */
 .password-help {
   text-align: left;
-  font-size: 13px;
+  font-size: 12px;
   margin-top: -5px;
   margin-bottom: 10px;
-  color: #333;
+  color: #444;
 }
 
 .password-help p {
-  margin: 2px 0;
+  margin: 3px 0;
 }
 
 .password-help .valid {
@@ -157,4 +127,36 @@ select {
 
 .password-help .invalid {
   color: red;
+}
+
+/* ===== Scrollbar oculto ===== */
+.container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 320px) {
+  .container {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  input,
+  select,
+  button {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .loginLink {
+    font-size: 11px;
+  }
 }

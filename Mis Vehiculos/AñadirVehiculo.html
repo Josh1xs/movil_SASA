@@ -11,32 +11,46 @@
   <link rel="stylesheet" href="../CSS/añadirvehiculo.css" />
 </head>
 <body>
+  <!-- Overlay -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
-  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
-    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
+
+  <!-- Menú lateral -->
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de usuario">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
     <div class="menu-header">
-    <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-    <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-</div>
+      <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full">
+        <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </div>
       <div class="menu-user">
         <h3 id="menuNombre">Usuario</h3>
         <p id="menuPase" class="muted">Cliente</p>
         <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
       </div>
     </div>
+
     <nav class="menu-list">
-      <a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a>
-      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a>
-      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a>
-      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a>
-      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+      <a href="../Perfil/perfil.html"><i class="fa-regular fa-user me-2"></i> Perfil</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell me-2"></i> Notificaciones</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt me-2"></i> Facturas</a>
+      <a href="../Pagos/pagos.html"><i class="fa-regular fa-credit-card me-2"></i> Pagos</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-right-from-bracket me-2"></i> Cerrar sesión
+      </a>
     </nav>
   </aside>
 
+  <!-- Contenido -->
   <main class="app-shell">
     <header class="topbar">
-      <h1 class="page-title" id="pageTitle">Añadir Vehículo</h1>
-      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+      <h1 class="page-title">Añadir Vehículo</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir menú">
         <i class="fa-solid fa-circle-notch avatar-gear"></i>
       </button>
     </header>
@@ -44,95 +58,70 @@
     <section class="section">
       <form id="formVehiculo" class="card form" autocomplete="off">
 
-  <div class="field">
-    <label class="label">Foto (opcional)</label>
-    <div class="uploader">
-      <div class="uploader-preview" id="fotoPreview" tabindex="0" role="button" aria-label="Subir imagen">
-        <i class="fa-regular fa-image"></i>
-        <span>Subir imagen</span>
-      </div>
-      <div class="uploader-actions">
-        <button type="button" class="btn ghost sm" id="btnCambiarFoto"><i class="fa-solid fa-rotate"></i> Cambiar</button>
-        <button type="button" class="btn danger sm" id="btnQuitarFoto"><i class="fa-solid fa-xmark"></i> Quitar</button>
-      </div>
-      <input type="file" id="fotoInput" accept="image/*" hidden>
-      <input type="hidden" id="fotoData">
-    </div>
-  </div>
+        <div class="grid">
+          <div class="field">
+            <label class="label" for="marca">Marca</label>
+            <input class="input" id="marca" type="text" placeholder="Ej: Toyota" required />
+          </div>
+          <div class="field">
+            <label class="label" for="modelo">Modelo</label>
+            <input class="input" id="modelo" type="text" placeholder="Ej: Corolla" required />
+          </div>
+        </div>
 
-  <div class="grid">
-    <div class="field">
-      <label class="label" for="marca">Marca</label>
-      <input class="input" id="marca" type="text" placeholder="Ej: Toyota" required />
-    </div>
-    <div class="field">
-      <label class="label" for="modelo">Modelo</label>
-      <input class="input" id="modelo" type="text" placeholder="Ej: Corolla" required />
-    </div>
-  </div>
+        <div class="grid">
+          <div class="field">
+            <label class="label" for="anio">Año</label>
+            <input class="input" id="anio" type="number" placeholder="Ej: 2020" required />
+          </div>
+          <div class="field">
+            <label class="label" for="placa">Placa</label>
+            <input class="input" id="placa" type="text" placeholder="Ej: P123-456" required />
+          </div>
+        </div>
 
-  <div class="grid">
-    <div class="field">
-      <label class="label" for="color">Color</label>
-      <input class="input" id="color" type="text" placeholder="Ej: Rojo" required />
-    </div>
-    <div class="field">
-      <label class="label" for="placa">Placa</label>
-      <input class="input" id="placa" type="text" placeholder="Ej: P123-456" required />
-    </div>
-  </div>
+        <div class="field">
+          <label class="label" for="vin">VIN (opcional)</label>
+          <input class="input" id="vin" type="text" placeholder="Ej: 1HGCM82633A123456" />
+        </div>
 
-  <div class="grid">
-    <div class="field">
-      <label class="label" for="vin">VIN</label>
-      <input class="input" id="vin" type="text" placeholder="Ej: 1HGCM82633A123456" />
-    </div>
-    <div class="field">
-      <label class="label" for="tipoMantenimiento">Tipo de mantenimiento</label>
-      <select id="tipoMantenimiento" class="select">
-        <option value="">Seleccionar</option>
-        <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
-        <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="field">
-    <label class="label" for="descripcion">Descripción</label>
-    <textarea class="textarea" id="descripcion" rows="3" placeholder="Detalles del vehículo (opcional)"></textarea>
-  </div>
-
-
-  <div class="grid meta">
-    <div class="field">
-      <label class="label">Fecha de registro</label>
-      <input class="input" id="fechaRegistroVis" type="text" disabled />
-    </div>
-    <div class="field">
-      <label class="label">Hora</label>
-      <input class="input" id="horaRegistroVis" type="text" disabled />
-    </div>
-  </div>
-  <input type="hidden" id="fechaRegistro" />
-  <input type="hidden" id="horaRegistro" />
-
-  <div class="actions-bar">
-    <button type="submit" id="submitBtn" class="btn modern primary w100">
-      <span class="btn-label">Guardar</span>
-    </button>
-    <button type="reset" class="btn modern ghost w100">Limpiar</button>
-    <a href="Vehiculos.html" class="btn modern danger w100">Cancelar</a>
-  </div>
-</form>
+        <!-- Botones -->
+        <div class="actions-bar">
+          <button type="submit" id="submitBtn" class="btn modern primary w100">
+            <span class="btn-label">Guardar</span>
+          </button>
+          <button type="reset" class="btn modern ghost w100">Limpiar</button>
+          <button type="button" class="btn modern danger w100" onclick="window.location.href='Vehiculos.html'">
+            Cancelar
+          </button>
+        </div>
+      </form>
     </section>
   </main>
 
+  <!-- Nav inferior -->
   <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" href="../Notificaciones/notificaciones.html"><i class="fas fa-bell"></i></a>
-    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fas fa-home"></i></a>
-    <a class="tabbar__btn" href="../Facturas/facturas.html"><i class="fas fa-receipt"></i></a>
-    <button class="tabbar__btn" id="menuToggleBottom"><i class="fas fa-bars"></i></button>
+    <a class="tabbar__btn active" href="../dashboard/index.html" aria-current="page">
+      <i class="fa-solid fa-house"></i>
+    </a>
+    <a class="tabbar__btn" href="../Citas/citas.html">
+      <i class="fa-regular fa-calendar"></i>
+    </a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html">
+      <i class="fa-solid fa-car"></i>
+    </a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html">
+      <i class="fa-solid fa-user"></i>
+    </a>
   </nav>
+
+  <!-- FAB botón -->
+  <a href="../Mis Vehiculos/AñadirVehiculo.html"
+     class="fab"
+     title="Añadir vehículo"
+     aria-label="Añadir vehículo">
+    <i class="fa-solid fa-plus"></i>
+  </a>
 
   <script src="../JS/añadirvehiculos.js"></script>
 </body>

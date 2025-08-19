@@ -1,92 +1,97 @@
-* {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #d3d3d3;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      padding: 30px 25px;
-      text-align: center;
-      width: 90%;
-      max-width: 360px;
-      animation: fadeInUp 1s ease forwards;
-    }
+/* ===== Reset básico ===== */
+*{margin:0;padding:0;box-sizing:border-box}
 
-    .logo img {
-      width: 100px;
-      animation: popIn 1.2s ease;
-    }
+/* ===== Paleta consistente con el LOGIN ===== */
+:root{
+  --bg:#f5f6f8;          /* fondo claro */
+  --card:#ffffff;        /* tarjeta blanca */
+  --ink:#111111;         /* títulos */
+  --text:#2a2a2a;        /* texto base */
+  --muted:#555555;       /* descripción */
+  --brand:#c91a1a;       /* rojo principal */
+  --brand-2:#a50f0f;     /* rojo más oscuro (hover) */
+  --shadow:0 10px 28px rgba(0,0,0,.12);
+  --radius:22px;
+}
 
-    .title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin: 20px 0 10px;
-      animation: fadeIn 1.3s ease;
-    }
+/* ===== Página centrada ===== */
+body{
+  font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
 
-    .description {
-      font-size: 1rem;
-      margin-bottom: 25px;
-      animation: fadeIn 1.5s ease;
-    }
+/* ===== Tarjeta (igual al login) ===== */
+.container{
+  width:92%; max-width:380px;
+  background:var(--card);
+  border:1px solid #eee;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:36px 28px;
+  text-align:center;
+  animation:fadeInUp .8s ease both;
+  transition:transform .15s ease, box-shadow .2s ease;
+}
+.container:hover{ transform:translateY(-1px); box-shadow:0 16px 34px rgba(0,0,0,.14); }
 
-    .button {
-      padding: 12px 25px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-      background: #e60000;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeIn 1.7s ease;
-    }
+/* Logo */
+.logo img{ width:96px; height:auto; display:block; margin:0 auto 8px; animation:popIn .9s ease; }
 
-    .button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-    }
+/* Título y descripción */
+.title{
+  font-weight:800;
+  font-size:2rem;
+  color:var(--ink);
+  margin:14px 0 10px;
+  letter-spacing:.3px;
+  animation:fadeIn 1s ease both;
+}
+.description{
+  color:var(--muted);
+  font-size:1rem;
+  line-height:1.55;
+  max-width:28ch;
+  margin:0 auto 22px;
+  animation:fadeIn 1.15s ease both;
+}
 
-    .button:active {
-      transform: scale(0.96);
-    }
+/* Botón rojo como login */
+.button{
+  display:inline-block;
+  padding:12px 26px;
+  font-size:1rem;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(180deg,var(--brand),var(--brand-2));
+  border:none; border-radius:28px;
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .2s ease, filter .15s ease;
+  animation:fadeIn 1.25s ease both;
+}
+.button:hover{ filter:brightness(1.03); box-shadow:0 0 0 4px rgba(201,26,26,.16); }
+.button:active{ transform:scale(.98); }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+/* Accesibilidad al enfocar */
+.button:focus-visible{
+  outline:3px solid rgba(201,26,26,.35);
+  outline-offset:3px;
+}
+.container:focus-within{ box-shadow:0 16px 34px rgba(0,0,0,.14); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+/* ===== Animaciones ===== */
+@keyframes fadeInUp{
+  from{ opacity:0; transform:translateY(36px) }
+  to  { opacity:1; transform:translateY(0) }
+}
+@keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+@keyframes popIn{ 0%{transform:scale(.7);opacity:0} 100%{transform:scale(1);opacity:1} }
 
-    @keyframes popIn {
-      0% {
-        transform: scale(0.6);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
+/* ===== Ajustes responsivos sutiles ===== */
+@media (min-width:480px){
+  .container{ max-width:420px; padding:40px 32px; }
+  .title{ font-size:2.2rem; }
+}

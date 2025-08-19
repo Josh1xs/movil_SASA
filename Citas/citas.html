@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Citas</title>
 
-
+  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+  <!-- Estilos -->
   <link rel="stylesheet" href="../CSS/citas.css" />
 </head>
 <body>
@@ -17,25 +17,25 @@
   <main class="app-shell">
     <header class="topbar">
       <h1 class="page-title">Citas</h1>
-      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
-        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      <button class="avatar" id="menuToggle" aria-label="Abrir menú">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
       </button>
     </header>
 
-  
+    <!-- Calendario -->
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
-          <button class="nav" id="prevMonth" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="nav" id="prevMonth"><i class="fa-solid fa-chevron-left"></i></button>
           <h2 id="mesActual" class="month"></h2>
-          <button class="nav" id="nextMonth" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+          <button class="nav" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-
-        <div id="calendario" class="calendar-grid" aria-label="Calendario de citas"></div>
+        <div id="calendario" class="calendar-grid"></div>
         <p class="hint">Selecciona una fecha. Solo se muestran los próximos <strong>20 días</strong> disponibles.</p>
       </div>
     </section>
 
+    <!-- Formulario -->
     <section class="section">
       <form id="formCita" class="form card">
         <input type="hidden" id="fechaSeleccionada" />
@@ -67,25 +67,32 @@
           <input type="text" id="descripcion" class="input" placeholder="Describe brevemente el motivo de la cita" />
         </div>
 
-        <button type="submit" id="btnEnviar" class="btn primary w100">Enviar</button>
-        <button type="reset" class="btn ghost w100">Limpiar</button>
-        <a href="../dashboard/index.html" class="btn danger w100">Cancelar</a>
+        <!-- Botones alineados -->
+        <div class="actions-bar">
+          <button type="submit" class="btn primary w100">Enviar</button>
+          <button type="reset" class="btn ghost w100">Limpiar</button>
+          <button type="button" class="btn danger w100" onclick="window.location.href='../dashboard/index.html'">
+            Cancelar
+          </button>
+        </div>
       </form>
     </section>
 
+    <!-- Lista de citas -->
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
       <div id="listaCitas" class="list"></div>
     </section>
   </main>
 
+  <!-- Overlay -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
-  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
-    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú"><i class="fas fa-times"></i></button>
+
+  <!-- Menú lateral -->
+  <aside id="profileMenu" class="profile-menu">
+    <button class="close-btn" id="closeMenu"><i class="fa-solid fa-xmark"></i></button>
     <div class="menu-header">
-      <a id="userIconLink" href="../Ajustes/ajustes.html" class="menu-avatar-link" aria-label="Ir a Ajustes">
-        <img src="../IMG/avatar-user.png" alt="Avatar" class="menu-avatar">
-      </a>
+      <img src="../IMG/avatar-user.png" alt="Avatar" class="menu-avatar">
       <div class="menu-user">
         <h3 id="menuNombre">Usuario</h3>
         <p id="menuPase" class="muted">Cliente</p>
@@ -93,20 +100,24 @@
       </div>
     </div>
     <nav class="menu-list">
-      <a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a>
-      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a>
-      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a>
-      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a>
-      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-regular fa-user"></i> Perfil</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Pagos/pagos.html"><i class="fa-regular fa-credit-card"></i> Pagos</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a>
     </nav>
   </aside>
 
-  <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" href="../Notificaciones/notificaciones.html" title="Notificaciones"><i class="fas fa-bell"></i></a>
-    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fas fa-home"></i></a>
-    <a class="tabbar__btn" href="../Facturas/facturas.html" title="Facturas"><i class="fas fa-receipt"></i></a>
-    <button class="tabbar__btn" id="menuToggleBottom" title="Menú"><i class="fas fa-bars"></i></button>
+  <!-- Tabbar -->
+  <nav class="tabbar">
+    <a class="tabbar__btn active" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
+
+  <!-- FAB -->
+  <a href="../Mis Vehiculos/AñadirVehiculo.html" class="fab"><i class="fa-solid fa-plus"></i></a>
 
   <script src="../JS/citas.js"></script>
 </body>
