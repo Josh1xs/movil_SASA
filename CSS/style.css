@@ -1,4 +1,4 @@
-/************  PALETA LOGIN (claro + rojo SASA)  ************/
+/************  PALETA (claro + rojo SASA)  ************/
 :root{
   --app-bg:#f4f6f8;         /* fondo claro */
   --card:#ffffff;           /* tarjetas */
@@ -18,6 +18,8 @@
   --r-lg:18px;
   --r-md:14px;
   --r-pill:999px;
+
+  --max-app-w:430px;        /* ancho máximo del lienzo móvil centrado */
 }
 
 /************  RESETEO Y BASE  ************/
@@ -28,47 +30,59 @@ body{
   font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   color:var(--text);
   background:var(--app-bg);
+  overflow-x:hidden;
+}
+
+/************  CONTENEDOR APP (centrado y con safe-area)  ************/
+.app-shell{
+  max-width:var(--max-app-w);
+  min-height:100dvh;
+  margin:0 auto;
+  padding:20px 18px calc(96px + env(safe-area-inset-bottom));
+  background:var(--app-bg);
+  position:relative;
 }
 
 /************  OVERLAY + MENÚ LATERAL  ************/
 .overlay{
   position:fixed; inset:0; background:rgba(0,0,0,.35);
-  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:20;
+  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:950;
+  backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px);
 }
 .overlay.show{ opacity:1; pointer-events:auto; }
 
+/* Menú lateral derecho tipo “drawer” */
 .profile-menu{
   position:fixed; top:0; right:0; height:100dvh; width:84%; max-width:360px;
   background:#fff; color:var(--text);
   transform:translateX(100%); transition:transform .25s ease;
-  box-shadow:-16px 0 40px rgba(0,0,0,.35); z-index:30; padding:18px 16px 24px;
+  box-shadow:-16px 0 40px rgba(0,0,0,.35); z-index:960; padding:18px 16px 24px;
   border-left:1px solid #ececec;
+  display:flex; flex-direction:column; gap:12px;
 }
 .profile-menu.open{ transform:translateX(0) }
 .close-btn{
   position:absolute; right:12px; top:12px; width:40px; height:40px;
   border:none; border-radius:12px; background:rgba(0,0,0,.06);
-  color:var(--text); display:grid; place-items:center;
+  color:var(--text); display:grid; place-items:center; cursor:pointer;
 }
-.menu-header{ display:grid; grid-template-columns:56px 1fr; gap:12px; align-items:center; margin-top:8px }
-.menu-avatar{ width:56px; height:56px; border-radius:50%; object-fit:cover }
-.menu-user h3{ margin:0 0 4px; color:var(--ink) }
-.muted{ color:var(--muted) }
-.small{ font-size:.85rem }
-.menu-list{ display:grid; gap:6px; margin-top:16px }
-.menu-list a{
-  display:flex; align-items:center; gap:12px; padding:12px 10px; text-decoration:none;
-  color:var(--text); border-radius:12px;
-}
-.menu-list a:hover{ background:rgba(0,0,0,.05) }
-.menu-list a.danger{ color:var(--brand) }
 
-/************  CONTENEDOR APP  ************/
-.app-shell{
-  max-width:430px; min-height:100dvh; margin:0 auto;
-  padding:20px 18px calc(96px + env(safe-area-inset-bottom));
-  background:var(--app-bg);
+/* Encabezado del menú */
+.menu-header{ display:grid; grid-template-columns:56px 1fr; gap:12px; align-items:center; margin-top:8px }
+.avatar-circle{
+  width:56px; height:56px; border-radius:50%; display:grid; place-items:center;
+  background:#f2f2f2; color:#777;
 }
+.menu-name{ margin:0 0 4px; color:var(--ink); font-size:1rem; font-weight:700 }
+.menu-role{ margin:0; color:var(--muted); font-size:.9rem }
+.menu-id{ margin:.25rem 0 0; color:#999; font-size:.85rem }
+.menu-list{ display:grid; gap:6px; margin-top:6px }
+.menu-item{
+  display:flex; align-items:center; gap:12px; padding:12px 10px; text-decoration:none;
+  color:var(--text); border-radius:12px; transition:background .2s,color .2s;
+}
+.menu-item:hover{ background:rgba(0,0,0,.05) }
+.menu-item.danger{ color:var(--brand) }
 
 /************  TOPBAR  ************/
 .topbar{
@@ -76,14 +90,15 @@ body{
 }
 .greeting h1{ margin:0 0 6px; font-size:26px; color:var(--ink) }
 .greeting p{ margin:0; color:var(--muted); font-weight:500 }
+.wave{ display:inline-block; width:1ch; }
 .avatar{
   width:44px; height:44px; border-radius:50%;
   display:grid; place-items:center; background:rgba(0,0,0,.06);
-  color:var(--text); border:none; outline:2px solid rgba(0,0,0,.08);
+  color:var(--text); border:none; outline:2px solid rgba(0,0,0,.08); cursor:pointer;
 }
 .avatar-gear{ font-size:20px }
 
-/************  BUSCADOR (restaurado como “antes”)  ************/
+/************  BUSCADOR  ************/
 .search-wrap{ margin:16px 0 8px }
 .searchbar{ position:relative; }
 .searchbar__input{
@@ -111,9 +126,10 @@ body{
 
 /************  SECCIONES / TÍTULOS  ************/
 .section{ margin:22px 0 }
-.section-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+.section-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px }
 .section h2{ margin:0; font-size:20px; color:var(--ink) }
 .view-all{ color:var(--brand); text-decoration:none; font-weight:700 }
+.actions{ display:flex; align-items:center; gap:10px }
 
 /************  CHIPS (Hoy/Semana/Todas)  ************/
 .chips{ display:flex; gap:10px; margin:10px 0 14px }
@@ -126,34 +142,74 @@ body{
 .chip:hover{ transform:translateY(-1px) }
 .chip-active{ background:var(--brand); color:#fff; box-shadow:0 8px 20px rgba(201,26,26,.18) }
 
-/************  TARJETAS / LISTAS  ************/
+/************  TARJETAS GENERALES  ************/
 .card{
   background:var(--card); border-radius:var(--r-xl); box-shadow:var(--shadow);
   color:var(--text); position:relative; overflow:hidden; text-decoration:none;
   border:1px solid #ececec;
 }
+.cards-scroll{ display:grid; gap:14px; grid-auto-rows:1fr }
 .card-hero__img{ width:100%; height:210px; background:center/cover no-repeat }
 .card-hero__overlay{
   position:absolute; inset:auto 0 0 0; padding:14px; display:grid; gap:8px; color:#fff;
   background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.72) 70%,rgba(0,0,0,.9) 100%);
 }
+.pill{
+  display:inline-flex; align-items:center; gap:8px; padding:6px 10px;
+  background:rgba(255,255,255,.18); border-radius:12px; font-weight:600; font-size:.9rem;
+}
+.title{ font-size:1.1rem; font-weight:800 }
+.meta{ display:flex; align-items:center; justify-content:space-between; gap:8px }
+.cita-remaining-btn{
+  border:none; background:rgba(255,255,255,.18); color:#fff; width:36px; height:36px;
+  border-radius:12px; display:grid; place-items:center; cursor:pointer;
+}
+.cita-code{ font-weight:700; letter-spacing:.4px }
+.fav{
+  position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:50%;
+  display:grid; place-items:center; background:rgba(255,255,255,.9); color:#dd1d1d;
+  border:none; cursor:pointer; box-shadow:0 6px 14px rgba(0,0,0,.18);
+}
+
+/************  LISTA DE VEHÍCULOS  ************/
 .stack{ display:grid; gap:14px }
 .vehicle{
   display:grid; grid-template-columns:84px 1fr 18px; gap:12px; align-items:center;
   padding:12px; background:var(--card); border-radius:var(--r-md);
-  box-shadow:var(--shadow); border:1px solid #ededed;
+  box-shadow:var(--shadow); border:1px solid #ededed; text-decoration:none;
 }
 .vehicle__img{ width:84px; height:84px; border-radius:var(--r-md); background:#e9e9e9 center/cover no-repeat }
-.vehicle__name{ margin:2px 0 6px; color:var(--ink); font-size:18px }
+.vehicle__name{ margin:2px 0 6px; color:var(--ink); font-size:18px; font-weight:700 }
 .vehicle__body p{ margin:2px 0; color:var(--muted) }
 .vehicle__chev{ color:var(--brand) }
+
+/************  FACTURAS (tarjetas)  ************/
+#facturasContainer .card{
+  background-color:#fff;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:15px;
+  box-shadow:var(--shadow);
+  border:1px solid #ececec;
+}
+#facturasContainer .card h5{
+  font-weight:700;
+  color:var(--brand);
+  margin:0 0 10px;
+}
+#facturasContainer .card p{
+  margin:0 0 6px;
+  font-size:15px;
+  color:var(--text);
+}
 
 /************  BOTONES / ACCIONES  ************/
 .btn-primary{
   background:var(--brand); color:#fff; border:none; border-radius:var(--r-pill);
   padding:12px 18px; font-weight:700; text-align:center;
   box-shadow:inset 0 -1px 0 rgba(0,0,0,.08);
-  transition:background .18s ease, transform .08s ease;
+  transition:background .18s ease, transform .08s ease, filter .2s ease;
+  cursor:pointer;
 }
 .btn-primary:hover{ background:var(--brand-2) }
 .btn-primary:active{ transform:scale(.98) }
@@ -168,39 +224,49 @@ body{
   width:64px; height:64px; border-radius:16px; display:grid; place-items:center;
   background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff; font-size:22px;
 }
+
+/************  FAB (botón flotante)  ************/
 .fab{
-  position:fixed; right:max(16px,calc(50% - 430px/2 + 16px));
+  position:fixed;
+  right:max(16px,calc(50% - var(--max-app-w)/2 + 16px));
   bottom:calc(16px + 64px + 12px);
   width:56px; height:56px; border-radius:50%;
   display:grid; place-items:center; color:#fff;
   background:linear-gradient(180deg,var(--brand),var(--brand-2));
   box-shadow:var(--shadow-strong), 0 8px 20px rgba(0,0,0,.25);
-  z-index:40; transition:transform .12s ease, filter .2s ease;
+  z-index:1010; transition:transform .12s ease, filter .2s ease;
+  text-decoration:none;
 }
 .fab:hover{ filter:brightness(1.04) }
 .fab:active{ transform:scale(.97) }
 .fab-hide{ opacity:0; pointer-events:none; transform:translateY(10px) }
 
-/************  TABBAR (restaurado estilo “antes”, pero claro)  ************/
+/************  TABBAR (flotante unificado, “estilo antes”)  ************/
 .tabbar{
   position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
-  width:min(430px - 24px, calc(100% - 24px));
+  width:min(calc(var(--max-app-w) - 24px), calc(100% - 24px));
   background:#fff; border:1px solid #e0e0e0;
   border-radius:24px; padding:12px 14px;
   display:grid; grid-template-columns:repeat(4,1fr); gap:6px;
   box-shadow:0 -4px 18px rgba(0,0,0,.12);
+  z-index:1000;
 }
 .tabbar__btn{
   height:44px; border-radius:14px; display:grid; place-items:center;
   color:#8a8a8a; text-decoration:none; font-size:18px; transition:background .15s,color .15s;
+  outline:none;
 }
+.tabbar__btn i{ pointer-events:none }
 .tabbar__btn.active,
 .tabbar__btn[aria-current="page"]{
   background:rgba(201,26,26,.12); color:var(--brand);
 }
+.tabbar__btn:focus-visible{
+  outline:3px solid rgba(201,26,26,.35); outline-offset:2px;
+}
 
-/************  FOCUS  ************/
-.card:focus-visible, .tabbar__btn:focus-visible, .chip:focus-visible,
+/************  FOCUS ACCESIBLE EN CONTROLES  ************/
+.card:focus-visible, .chip:focus-visible,
 .filter-btn:focus-visible, .avatar:focus-visible, .btn-primary:focus-visible,
 .add-link:focus-visible, .fab:focus-visible, .searchbar__go:focus-visible{
   outline:3px solid rgba(201,26,26,.35); outline-offset:2px;
@@ -211,3 +277,15 @@ body{
   .tabbar{ padding-bottom:max(12px, env(safe-area-inset-bottom)) }
   .fab{ bottom:calc(env(safe-area-inset-bottom) + 16px + 64px + 12px) }
 }
+
+/************  REDUCCIÓN DE MOVIMIENTO  ************/
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important }
+}
+
+/************  UTILIDADES MÍNIMAS  ************/
+.hidden{ display:none !important }
+.center{ display:grid; place-items:center }
+.text-center{ text-align:center }
+.small{ font-size:.85rem }
+.muted{ color:var(--muted) }
