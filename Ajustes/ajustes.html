@@ -2,87 +2,103 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ajustes - Móvil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SASA — Ajustes</title>
 
-  <!-- Bootstrap e Iconos -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="../CSS/ajustes.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-
-  <!-- Contenido principal -->
-  <main class="ajustes-container p-3 text-center">
-   
-    <h1 class="fs-4 fw-bold mb-4">Ajustes</h1>
-
-    <!-- Info Usuario -->
-    <div class="user-info mb-4">
-      <h4 class="mb-0 fw-bold" id="nombreCompleto">Cargando...</h4>
-      <p class="mb-1 fw-semibold" id="rolUsuario">Cliente</p>
-      <p class="small text-muted">ID de usuario: <strong id="userId">Cargando...</strong></p>
-      <i class="fas fa-user-circle fa-4x text-secondary mt-2"></i>
-    </div>
-
-    <!-- Opciones -->
-    <div class="d-grid gap-3 mb-4">
-      <!-- Nombre -->
-      <div class="edit-section">
-        <button class="btn-edit toggle-nombre">Cambiar nombre <i class="fas fa-pen ms-2"></i></button>
-        <div class="form-nombre" style="display: none;">
-          <input type="text" id="nuevoNombre" class="form-control mt-2 mb-2" placeholder="Nuevo nombre completo">
-          <button class="btn-save" id="guardarNombre">Guardar cambios</button>
-        </div>
-      </div>
-
-      <!-- Contraseña -->
-      <div class="edit-section">
-        <button class="btn-edit toggle-pass">Cambiar contraseña <i class="fas fa-pen ms-2"></i></button>
-        <div class="form-pass" style="display: none;">
-          <input type="password" id="nuevaPass" class="form-control mt-2 mb-2" placeholder="Nueva contraseña">
-          <button class="btn-save" id="guardarPass">Guardar cambios</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cerrar sesión -->
-    <button class="btn btn-danger px-4 py-2 cerrar-sesion">Cerrar Sesión</button>
-  </main>
-
+  
   <!-- Overlay -->
-  <div id="overlay" class="overlay"></div>
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+  <!-- Sidebar (sin avatar) -->
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
+      <i class="fas fa-times"></i>
+    </button>
 
-  <!-- Menú perfil -->
-  <aside id="profileMenu" class="profile-menu">
-    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
-    <p class="text-center small text-muted">ID de usuario<br><strong id="menuUserId">Cargando...</strong></p>
-    <div class="text-center mb-3">
-      <div class="text-center mb-2">
-        <i class="fas fa-user-circle fa-4x text-secondary"></i>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
       </div>
-      <div class="username" id="menuNombre">Cargando...</div>
-      <div class="user-pass" id="menuRol">Cargando...</div>
     </div>
-    <ul class="menu-options">
-      <li><a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a></li>
-      <li><a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a></li>
-<li><a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a></li>
-      <li><a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a></li>
-    </ul>
+
+    <nav class="menu-list">
+      <a href="../Ajustes/ajustes.html"><i class="fa-regular fa-user"></i> Perfil</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Soporte/soporte.html"><i class="fa-regular fa-life-ring"></i> Soporte</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
   </aside>
 
-  <!-- Menú inferior -->
-  <nav class="mobile-nav d-flex justify-content-around">
-    <a href="../Notificaciones/notificaciones.html" class="mobile-nav__link"><i class="fas fa-bell"></i></a>
-    <a href="../dashboard/index.html" class="mobile-nav__link"><i class="fas fa-home"></i></a>
-    <a href="../Facturas/facturas.html" class="mobile-nav__link"><i class="fas fa-receipt"></i></a>
-    <button class="mobile-nav__link menu-toggle-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <!-- Contenido -->
+  <main class="app-shell ajustes">
+    <header class="topbar">
+      <h1 class="page-title">Ajustes</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir menú">
+        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <!-- Tarjeta usuario -->
+    <section class="card user-card">
+      <div class="user-ico">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="user-meta">
+        <h4 id="nombreCompleto" class="user-name">—</h4>
+        <p id="rolUsuario" class="user-role">Cliente</p>
+        <p class="user-id">ID: <strong id="userId">—</strong></p>
+      </div>
+    </section>
+
+    <!-- Ediciones -->
+    <section class="stack">
+      <!-- Nombre -->
+      <article class="card edit-card">
+        <button class="btn-edit toggle-nombre" type="button">
+          Cambiar nombre
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <div class="edit-form form-nombre" hidden>
+          <input type="text" id="nuevoNombre" class="form-control" placeholder="Nuevo nombre completo" />
+          <button class="btn btn-primary-solid w-100 mt-2" id="guardarNombre">Guardar cambios</button>
+        </div>
+      </article>
+
+      <!-- Contraseña -->
+      <article class="card edit-card">
+        <button class="btn-edit toggle-pass" type="button">
+          Cambiar contraseña
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <div class="edit-form form-pass" hidden>
+          <input type="password" id="nuevaPass" class="form-control" placeholder="Nueva contraseña" />
+          <div class="hint mt-1">Mín. 8 caracteres, una letra, un número y un caracter especial.</div>
+          <button class="btn btn-primary-solid w-100 mt-2" id="guardarPass">Guardar cambios</button>
+        </div>
+      </article>
+    </section>
+
+    <button class="btn btn-danger-solid w-100 mt-3 cerrar-sesion">Cerrar sesión</button>
+  </main>
+
+  <!-- Tabbar unificada -->
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn active" href="../Ajustes/ajustes.html" aria-current="page"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <!-- Scripts necesarios -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../JS/ajustes.js" defer></script>
 </body>
 </html>

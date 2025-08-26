@@ -5,29 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SASA — Inicio</title>
 
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
 
   <link rel="stylesheet" href="../CSS/style.css" />
 </head>
 <body>
 
+  <!-- Overlay -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
+  <!-- Sidebar (sin avatar) -->
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
     <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
       <i class="fas fa-times"></i>
     </button>
 
-    <div class="menu-header">
-      <a href="../Ajustes/ajustes.html" class="menu-avatar-link" id="userIconLink" aria-label="Ir a ajustes">
-        <div class="menu-header">
-      <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-    <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-</div>
-      </a>
+    <div class="menu-header no-avatar">
       <div class="menu-user">
         <h3 id="menuNombre">Usuario</h3>
         <p id="menuPase" class="muted">Cliente</p>
@@ -46,12 +40,12 @@
     </nav>
   </aside>
 
-  
+  <!-- App -->
   <div class="app-shell">
-
+    <!-- Top -->
     <header class="topbar">
       <div class="greeting">
-        <h1>Hola, <span id="nombreHeader">Usuario</span> <span class="wave">👋</span></h1>
+        <h1>Hola, <span id="nombreHeader">Usuario</span></h1>
       </div>
 
       <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
@@ -59,23 +53,17 @@
       </button>
     </header>
 
-  
+    <!-- Buscador -->
     <div class="searchbar">
       <i class="fa-solid fa-magnifying-glass searchbar__icon"></i>
-
-      <input id="searchInput" class="searchbar__input"
-             type="search" placeholder="Buscar vehículos, citas..." />
-
-     
-      <button id="goSearch"
-              class="searchbar__go"
-              aria-label="Buscar"
-              title="Buscar"
-              data-results-href="./resultados.html">
+      <input id="searchInput" class="searchbar__input" type="search" placeholder="Buscar vehículos, citas..." />
+      <button id="goSearch" class="searchbar__go" aria-label="Buscar" title="Buscar" data-results-href="./resultados.html">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
 
+
+    <!-- Próximas Citas -->
     <section class="section">
       <div class="section-head">
         <h2>Próximas Citas</h2>
@@ -90,9 +78,9 @@
 
       <div id="citasHomeList" class="cards-scroll" aria-label="Carrusel de citas"></div>
 
-      
+      <!-- Template cita (lo convertimos a CARD clicable por JS) -->
       <template id="tplCitaCard">
-        <article class="card card-hero">
+        <article class="card card-hero" tabindex="0" role="link" aria-label="Abrir detalle de cita">
           <div class="card-hero__img"></div>
           <div class="card-hero__overlay">
             <div class="pill">
@@ -113,21 +101,15 @@
       </template>
     </section>
 
-    
+    <!-- Mis Vehículos -->
     <section class="section">
       <div class="section-head">
         <h2>Mis Vehículos</h2>
-        <div class="actions">
-          <a href="../Mis Vehiculos/Vehiculos.html" class="view-all">Ver todos</a>
-          <a href="../Mis Vehiculos/AñadirVehiculo.html" class="add-link">
-            <i class="fa-solid fa-plus"></i> Añadir
-          </a>
-        </div>
+        <a href="../Mis Vehiculos/Vehiculos.html" class="view-all">Ver todos</a>
       </div>
 
       <div id="listaVehiculosDashboard" class="stack"></div>
 
-  
       <template id="tplVehiculoCard">
         <a class="card vehicle" href="../Mis Vehiculos/Vehiculos.html">
           <div class="vehicle__img"></div>
@@ -142,7 +124,7 @@
       </template>
     </section>
 
-   
+    <!-- Tabbar -->
     <nav class="tabbar" aria-label="Navegación principal">
       <a class="tabbar__btn active" href="./index.html" aria-current="page">
         <i class="fa-solid fa-house"></i>
@@ -158,13 +140,11 @@
       </a>
     </nav>
 
-    <a href="../Mis Vehiculos/AñadirVehiculo.html"
-       class="fab"
-       title="Añadir vehículo"
-       aria-label="Añadir vehículo">
+    <!-- FAB -->
+    <a href="../Mis Vehiculos/AñadirVehiculo.html" class="fab" title="Añadir vehículo" aria-label="Añadir vehículo">
       <i class="fa-solid fa-plus"></i>
     </a>
-  </div> 
+  </div>
 
   <script src="../JS/script.js"></script>
 </body>

@@ -1,38 +1,37 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // ====== Endpoints ======
-  const userId = localStorage.getItem("userId");
+  /* ================== Endpoints ================== */
+  const userId        = localStorage.getItem("userId");
   const API_USER      = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
   const API_CITAS     = `https://retoolapi.dev/2Kfhrs/cita`;
   const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
 
-  // ====== DOM ======
-  const overlay   = document.getElementById("overlay");
-  const profileMenu = document.getElementById("profileMenu");
-  const menuToggle  = document.getElementById("menuToggle");
-  const closeMenu   = document.getElementById("closeMenu");
-  const logoutBtn   = document.getElementById("logoutBtn");
+  /* ================== DOM ================== */
+  const overlay      = document.getElementById("overlay");
+  const profileMenu  = document.getElementById("profileMenu");
+  const menuToggle   = document.getElementById("menuToggle");
+  const closeMenu    = document.getElementById("closeMenu");
+  const logoutBtn    = document.getElementById("logoutBtn");
 
   const nombreHeader = document.getElementById("nombreHeader");
-  const menuUserId = document.getElementById("menuUserId");
-  const menuNombre = document.getElementById("menuNombre");
-  const menuPase   = document.getElementById("menuPase");
-  const avatarLink = document.getElementById("userIconLink");
+  const menuUserId   = document.getElementById("menuUserId");
+  const menuNombre   = document.getElementById("menuNombre");
+  const menuPase     = document.getElementById("menuPase");
 
-  const citasHomeList = document.getElementById("citasHomeList");
-  const chipsCitas    = document.getElementById("citasChips");
-  const tplCita       = document.getElementById("tplCitaCard");
+  const citasHomeList  = document.getElementById("citasHomeList");
+  const chipsCitas     = document.getElementById("citasChips");
+  const tplCita        = document.getElementById("tplCitaCard");
 
   const listaVehiculosDashboard = document.getElementById("listaVehiculosDashboard");
   const tplVehiculo   = document.getElementById("tplVehiculoCard");
 
-  // ====== Sidebar ======
-  function abrirMenu() {
+  /* ================== Sidebar ================== */
+  function abrirMenu(){
     profileMenu?.classList.add("open");
     overlay?.classList.add("show");
     overlay?.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   }
-  function cerrarMenu() {
+  function cerrarMenu(){
     profileMenu?.classList.remove("open");
     overlay?.classList.remove("show");
     overlay?.setAttribute("aria-hidden", "true");
@@ -47,42 +46,40 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", cerrarMenu);
   window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
 
-  // ====== Header / Menú ======
+  /* ================== Header / Menú ================== */
   if (menuUserId) menuUserId.textContent = userId || "Desconocido";
-  avatarLink?.addEventListener("click", () => { window.location.href = "../Ajustes/ajustes.html"; });
 
   if (userId) {
     fetch(API_USER)
-      .then(res => res.json())
+      .then(r => r.json())
       .then(user => {
         const nombre = `${user?.nombre ?? ""} ${user?.apellido ?? ""}`.trim() || "Usuario";
-        if (nombreHeader) nombreHeader.textContent = nombre;
-        if (menuNombre)   menuNombre.textContent = nombre;
-        if (menuPase)     menuPase.textContent   = user?.pase || "Cliente";
+        nombreHeader && (nombreHeader.textContent = nombre);
+        menuNombre   && (menuNombre.textContent   = nombre);
+        menuPase     && (menuPase.textContent     = user?.pase || "Cliente");
         localStorage.setItem("nombre", nombre);
         if (user?.email) localStorage.setItem("email", user.email);
       })
       .catch(() => {
-        if (nombreHeader) nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario";
+        nombreHeader && (nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario");
       });
   } else {
-    if (nombreHeader) nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario";
+    nombreHeader && (nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario");
   }
 
-  // ====== Logout ======
+  /* ================== Logout ================== */
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    try { /* opcional: invalida sesión en backend */ } catch {}
+    try { /* opcional: cerrar sesión en backend */ } catch {}
     finally {
       ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
       document.cookie = "authToken=; Max-Age=0; path=/";
-      const redirectTo = logoutBtn.getAttribute("href") || "../Authenticator/login.html";
-      window.location.replace(redirectTo);
+      location.replace(logoutBtn.getAttribute("href") || "../Authenticator/login.html");
     }
   });
 
-  // ====== Helpers ======
+  /* ================== Helpers ================== */
   const setText = (el, v) => { if (el) el.textContent = v ?? "—"; };
   const setBg   = (el, css) => { if (el) el.style.backgroundImage = css; };
 
@@ -105,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const end = new Date(start); end.setDate(end.getDate() + days);
     return d >= start && d <= end;
   };
-
   const fmtLabelHora = (fecha, hora) => {
     if (!fecha) return hora || "—";
     const d = fechaISOaObj(fecha); if (!d) return hora || "—";
@@ -115,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${pre}, ${hora || "—"}`;
   };
 
-  // ====== Favoritos (citas) ======
+  /* ================== Favoritos (citas) ================== */
   const FAV_KEY = "citas_favoritas";
   const getFavs = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } };
   const setFavs = (arr) => localStorage.setItem(FAV_KEY, JSON.stringify(arr));
@@ -128,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return list.includes(sid);
   };
 
-  // ====== Citas (INDEX) ======
+  /* ================== Citas (INDEX) ================== */
   let citasRaw = [];
   let filtro = "hoy"; // hoy | semana | todas
 
@@ -142,23 +138,22 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCitas();
   });
 
-  function filtrarCitasPorFiltro(lista) {
-    if (filtro === "hoy")   return lista.filter(c => isToday(c.fecha));
-    if (filtro === "semana")return lista.filter(c => withinNextDays(c.fecha, 7));
-    return lista;
-  }
+  const filtrarCitas = (arr) => {
+    if (filtro === "hoy")    return arr.filter(c => isToday(c.fecha));
+    if (filtro === "semana") return arr.filter(c => withinNextDays(c.fecha, 7));
+    return arr;
+  };
 
-  function renderCitas() {
+  function renderCitas(){
     if (!citasHomeList) return;
     citasHomeList.innerHTML = "";
 
-    // del usuario + filtro
     let items = (citasRaw || []).filter(c => String(c.idCliente) === String(userId));
-    items = filtrarCitasPorFiltro(items);
+    items = filtrarCitas(items);
 
-    // favoritos primero, luego por fecha
+    // orden: favoritos primero, luego fecha
     const favs = getFavs();
-    items.sort((a, b) => {
+    items.sort((a,b) => {
       const af = favs.includes(String(a.id));
       const bf = favs.includes(String(b.id));
       if (af && !bf) return -1;
@@ -168,10 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return da - db;
     });
 
+    // Si no hay template, mostramos fallback
     if (!tplCita) {
-      // Fallback simple si faltara el template
+      if (!items.length) {
+        citasHomeList.innerHTML = `<div class="empty-state">No hay citas en este filtro.</div>`;
+        return;
+      }
       citasHomeList.innerHTML = items.map(c => `
-        <article class="card card-hero">
+        <article class="card card-hero" role="link" tabindex="0" data-id="${c.id}">
           <div class="card-hero__img"></div>
           <div class="card-hero__overlay">
             <div class="pill"><i class="fa-regular fa-clock"></i><span>${c.hora ?? "—"}</span></div>
@@ -183,9 +182,22 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="cita-code">#CITA-${c.id}</div>
             </div>
           </div>
-          <button class="fav" type="button"><i class="fa-regular fa-heart"></i></button>
         </article>
       `).join("");
+      // navegación a detalle
+      citasHomeList.querySelectorAll(".card-hero").forEach(card=>{
+        card.addEventListener("click",()=>location.href=`../Citas/detallecitas.html?id=${card.dataset.id}`);
+        card.addEventListener("keydown",(e)=>{ if(e.key==="Enter") card.click(); });
+      });
+      return;
+    }
+
+    // Con template
+    if (!items.length) {
+      citasHomeList.innerHTML = `<div class="empty-state">${
+        filtro==="hoy" ? "No tienes citas para hoy." :
+        filtro==="semana" ? "No hay citas esta semana." : "Sin citas registradas."
+      }</div>`;
       return;
     }
 
@@ -193,43 +205,31 @@ document.addEventListener("DOMContentLoaded", () => {
     items.forEach(cita => {
       const el = tplCita.content.firstElementChild.cloneNode(true);
 
-      // link a detalle (si quieres)
-      el.setAttribute("href", `../Citas/citas.html?id=${encodeURIComponent(cita.id)}`);
-
-      // imagen de portada
+      // portada
       const img = el.querySelector(".card-hero__img");
-      if (img) {
-        const cover = cita.cover || cita.imagen || cita.img;
-        cover ? setBg(img, `url('${cover}')`) : setBg(img, "linear-gradient(145deg, #fff6f4, #f2dddb)");
-      }
+      const cover = cita.cover || cita.imagen || cita.img;
+      cover ? setBg(img, `url('${cover}')`) : setBg(img, "none");
 
       // textos
-      const pillSpan = el.querySelector(".pill span");
-      const title    = el.querySelector(".title");
-      const code     = el.querySelector(".cita-code");
-      setText(pillSpan, fmtLabelHora(cita.fecha, cita.hora));
-      setText(title,   cita.descripcion || "Sin descripción");
-      setText(code,    `#CITA-${cita.id}`);
+      setText(el.querySelector(".pill span"), fmtLabelHora(cita.fecha, cita.hora));
+      setText(el.querySelector(".title"), cita.descripcion || "Sin descripción");
+      setText(el.querySelector(".cita-code"), `#CITA-${cita.id}`);
 
-      // botón tiempo restante
+      // botón "tiempo"
       const btnTime = el.querySelector(".cita-remaining-btn");
-      if (btnTime) {
-        btnTime.dataset.fecha = cita.fecha || "";
-        btnTime.dataset.hora  = cita.hora  || "";
-        btnTime.title = "Tiempo restante";
-      }
+      btnTime.dataset.fecha = cita.fecha || "";
+      btnTime.dataset.hora  = cita.hora  || "";
+      btnTime.title = "Tiempo restante";
 
       // favorito
       const btnFav = el.querySelector(".fav");
-      const icon   = btnFav?.querySelector("i");
-      const isFav  = getFavs().includes(String(cita.id));
-      if (isFav) {
-        btnFav?.classList.add("is-active");
+      const icon   = btnFav.querySelector("i");
+      if (getFavs().includes(String(cita.id))) {
+        btnFav.classList.add("is-active");
         el.classList.add("is-pinned");
-        icon?.classList.remove("fa-regular");
-        icon?.classList.add("fa-solid");
+        icon.classList.remove("fa-regular"); icon.classList.add("fa-solid");
       }
-      btnFav?.addEventListener("click", (ev) => {
+      btnFav.addEventListener("click", (ev) => {
         ev.preventDefault(); ev.stopPropagation();
         const active = toggleFav(cita.id);
         if (active) {
@@ -241,24 +241,17 @@ document.addEventListener("DOMContentLoaded", () => {
           el.classList.remove("is-pinned");
           icon.classList.remove("fa-solid"); icon.classList.add("fa-regular");
         }
-        renderCitas(); // reordenar
+        renderCitas();
       });
+
+      // navegar a detalle
+      el.addEventListener("click", () => location.href = `../Citas/detallecitas.html?id=${encodeURIComponent(cita.id)}`);
+      el.addEventListener("keydown", (e) => { if (e.key === "Enter") el.click(); });
 
       frag.appendChild(el);
     });
 
-    if (!items.length) {
-      const empty = document.createElement("div");
-      empty.style.color = "#fff";
-      empty.style.opacity = "0.9";
-      empty.style.padding = "8px 2px";
-      empty.textContent = (filtro === "hoy") ? "No tienes citas para hoy." :
-                          (filtro === "semana") ? "No hay citas esta semana." :
-                          "Sin citas registradas.";
-      citasHomeList.appendChild(empty);
-    } else {
-      citasHomeList.appendChild(frag);
-    }
+    citasHomeList.appendChild(frag);
   }
 
   // Delegado: botón “tiempo restante”
@@ -305,29 +298,28 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(() => { citasRaw = []; renderCitas(); });
   }
 
-  // ====== Vehículos (INDEX) ======
-  function renderVehiculos(vehiculos) {
+  /* ================== Vehículos (INDEX) ================== */
+  function renderVehiculos(vehiculos){
     if (!listaVehiculosDashboard) return;
 
     if (!vehiculos.length) {
       listaVehiculosDashboard.innerHTML = `
         <a class="card vehicle add-card" href="../Mis Vehiculos/AñadirVehiculo.html">
-          <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+          <div class="vehicle__img" style="display:grid;place-items:center;background:#fff;border:1px dashed #e5e7eb;">
+            <i class="fa-solid fa-plus" style="color:var(--brand);font-size:20px"></i>
+          </div>
           <div class="vehicle__body">
             <h3 class="vehicle__name">Añadir vehículo</h3>
             <p>Registra tu primer vehículo para comenzar.</p>
           </div>
           <i class="fa-solid fa-chevron-right vehicle__chev" aria-hidden="true"></i>
-        </a>
-      `;
+        </a>`;
       return;
     }
 
     const frag = document.createDocumentFragment();
     vehiculos.forEach(v => {
       const el = tplVehiculo.content.firstElementChild.cloneNode(true);
-      el.href = "../Mis Vehiculos/Vehiculos.html";
-
       const img = el.querySelector(".vehicle__img");
       if (img && (v.foto || v.cover)) img.style.backgroundImage = `url('${v.foto || v.cover}')`;
 
@@ -350,41 +342,42 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(API_VEHICULOS, { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
-        const vehiculos = (Array.isArray(data) ? data : []).filter(v => String(v.idCliente) === String(userId));
+        const vehiculos = (Array.isArray(data) ? data : [])
+          .filter(v => String(v.idCliente) === String(userId));
         renderVehiculos(vehiculos);
       })
       .catch(() => renderVehiculos([]));
   }
 
-  // ====== FAB: ocultar al bajar, mostrar al subir ======
+  /* ================== FAB show/hide ================== */
   const fab = document.querySelector(".fab");
   if (fab) {
     let lastY = window.scrollY || 0;
     window.addEventListener("scroll", () => {
       const y = window.scrollY || 0;
-      if (y > lastY + 6) fab.classList.add("fab-hide");      // down
-      else if (y < lastY - 6) fab.classList.remove("fab-hide"); // up
+      if (y > lastY + 6) fab.classList.add("fab-hide");
+      else if (y < lastY - 6) fab.classList.remove("fab-hide");
       lastY = y;
-    }, { passive: true });
+    }, { passive:true });
   }
 
-  // ====== Buscador: usa la ruta del botón lupa ======
+  /* ================== Búsqueda ================== */
   (function setupSearchGo(){
     const input = document.getElementById("searchInput");
     const btn   = document.getElementById("goSearch");
     if(!input || !btn) return;
     const RESULTS_PAGE = btn.dataset.resultsHref || "./resultados.html";
-    function go(){
+    const go = () => {
       const q = (input.value || "").trim();
       if(!q){
-        if(window.Swal){
-          Swal.fire({icon:"info", title:"Escribe algo para buscar", confirmButtonColor:"#c91a1a"});
-        }
+        window.Swal
+          ? Swal.fire({icon:"info", title:"Escribe algo para buscar", confirmButtonColor:"#c91a1a"})
+          : alert("Escribe algo para buscar");
         return;
       }
-      window.location.href = `${RESULTS_PAGE}?q=${encodeURIComponent(q)}`;
-    }
+      location.href = `${RESULTS_PAGE}?q=${encodeURIComponent(q)}`;
+    };
     btn.addEventListener("click", go);
-    input.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); go(); }});
+    input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); }});
   })();
 });

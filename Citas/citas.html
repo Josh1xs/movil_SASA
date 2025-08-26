@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Citas</title>
 
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+  <!-- Estilos de esta página -->
   <link rel="stylesheet" href="../CSS/citas.css" />
 </head>
 <body>
@@ -22,7 +21,7 @@
       </button>
     </header>
 
-  
+    <!-- Calendario -->
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
@@ -36,8 +35,9 @@
       </div>
     </section>
 
+    <!-- Formulario -->
     <section class="section">
-      <form id="formCita" class="form card">
+      <form id="formCita" class="form card" autocomplete="off">
         <input type="hidden" id="fechaSeleccionada" />
 
         <div class="field">
@@ -67,47 +67,63 @@
           <input type="text" id="descripcion" class="input" placeholder="Describe brevemente el motivo de la cita" />
         </div>
 
-        <button type="submit" id="btnEnviar" class="btn primary w100">Enviar</button>
-        <button type="reset" class="btn ghost w100">Limpiar</button>
-        <a href="../dashboard/index.html" class="btn danger w100">Cancelar</a>
+        <!-- Botones ordenados y con espaciado -->
+        <div class="form-actions">
+          <button type="submit" id="btnEnviar" class="btn primary w100">
+            <i class="fa-regular fa-paper-plane"></i> Enviar
+          </button>
+          <button type="reset" class="btn ghost w100">
+            <i class="fa-solid fa-eraser"></i> Limpiar
+          </button>
+          <a href="../dashboard/index.html" class="btn danger w100">
+            <i class="fa-solid fa-xmark"></i> Cancelar
+          </a>
+        </div>
       </form>
     </section>
 
+    <!-- Mis Citas -->
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
       <div id="listaCitas" class="list"></div>
     </section>
   </main>
 
+  <!-- Sidebar fijo a la derecha -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
-    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú"><i class="fas fa-times"></i></button>
-    <div class="menu-header">
-      <a id="userIconLink" href="../Ajustes/ajustes.html" class="menu-avatar-link" aria-label="Ir a Ajustes">
-        <img src="../IMG/avatar-user.png" alt="Avatar" class="menu-avatar">
-      </a>
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="menu-header no-avatar">
       <div class="menu-user">
         <h3 id="menuNombre">Usuario</h3>
         <p id="menuPase" class="muted">Cliente</p>
         <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
       </div>
     </div>
+
     <nav class="menu-list">
-      <a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a>
-      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a>
-      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a>
-      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a>
-      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-regular fa-user"></i> Perfil</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Soporte/soporte.html"><i class="fa-regular fa-life-ring"></i> Soporte</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
     </nav>
   </aside>
 
+  <!-- Tabbar UNIFICADO (igual que index) -->
   <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" href="../Notificaciones/notificaciones.html" title="Notificaciones"><i class="fas fa-bell"></i></a>
-    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fas fa-home"></i></a>
-    <a class="tabbar__btn" href="../Facturas/facturas.html" title="Facturas"><i class="fas fa-receipt"></i></a>
-    <button class="tabbar__btn" id="menuToggleBottom" title="Menú"><i class="fas fa-bars"></i></button>
+    <a class="tabbar__btn" data-tab="home" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn active" data-tab="citas" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" data-tab="vehiculos" href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" data-tab="ajustes" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
+  <!-- Tu lógica existente -->
   <script src="../JS/citas.js"></script>
 </body>
 </html>
