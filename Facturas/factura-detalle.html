@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Detalle de Factura</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../CSS/facturas.css" />
+</head>
+<body>
+ 
+   <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <div class="menu-header no-avatar">
+    <div class="menu-user">
+      <h3 id="menuNombre">Usuario</h3>
+      <p id="menuPase" class="muted">Cliente</p>
+      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+    </div>
+  </div>
+
+  <nav class="menu-list">
+    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+    </a>
+  </nav>
+</aside>
+
+  <main class="app-shell">
+    <!-- Topbar -->
+    <header class="topbar">
+      <h1 class="page-title">Detalle de Factura</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
+      </button>
+    </header>
+
+    <!-- Detalle -->
+    <section class="section">
+      <div class="card invoice-card">
+        <div class="invoice-head">
+          <h2 class="invoice-title" id="invTitle">Factura #—</h2>
+          <span class="badge" id="invEstado">Pendiente</span>
+        </div>
+
+        <div class="invoice-grid">
+          <div class="row"><span class="k">Fecha</span><span class="v" id="invFecha">—</span></div>
+          <div class="row"><span class="k">Empleado</span><span class="v" id="invEmpleado">—</span></div>
+          <div class="row"><span class="k">Mantenimiento</span><span class="v" id="invMant">—</span></div>
+          <div class="row"><span class="k">Monto total</span><span class="v" id="invTotal">$0.00</span></div>
+          <div class="row"><span class="k">Pagos aplicados</span><span class="v" id="invPagos">$0.00</span></div>
+          <div class="row strong"><span class="k">Saldo pendiente</span><span class="v" id="invSaldo">$0.00</span></div>
+        </div>
+
+        <div class="invoice-actions">
+          <a href="../Facturas/facturas.html" class="btn ghost" id="btnVolver">Volver</a>
+          <button class="btn primary" id="btnPagar">Pagar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Tabbar unificada -->
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html" title="Vehículos"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
+  </nav>
+
+  <!-- ========= Modal de Pago (limpio, una sola vez) ========= -->
+  <div id="payBackdrop" class="backdrop" aria-hidden="true"></div>
+  <section id="payModal" class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="payTitle" aria-hidden="true">
+    <div class="pay-card" role="document">
+      <header class="pay-head">
+        <h2 id="payTitle">Pagar factura</h2>
+        <button class="icon-btn" id="payClose" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+
+      <div class="pay-body">
+        <div class="pay-summary">
+          <div><span class="k">Factura</span><span class="v" id="pmFactura">#—</span></div>
+          <div><span class="k">Saldo</span><span class="v" id="pmSaldo">$0.00</span></div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Método de pago">
+          <button class="pay-tab" data-tab="card" role="tab" aria-selected="true">Tarjeta</button>
+          <button class="pay-tab" data-tab="paypal" role="tab" aria-selected="false">PayPal</button>
+        </div>
+
+        <!-- Tarjeta -->
+        <form id="formCard" class="pay-form show" novalidate>
+          <label class="label">Número de la tarjeta*
+            <input type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" class="input" id="ccNumber" placeholder="1234 5678 9012 3456" required>
+          </label>
+          <label class="label">Nombre en la tarjeta*
+            <input type="text" autocomplete="cc-name" class="input" id="ccName" placeholder="Nombre Apellido" required>
+          </label>
+          <div class="row">
+            <label class="label">Vencimiento (MM/AA)*
+              <input type="text" inputmode="numeric" maxlength="5" class="input" id="ccExp" placeholder="08/27" required>
+            </label>
+            <label class="label">CVV*
+              <input type="password" inputmode="numeric" maxlength="4" class="input" id="ccCvv" placeholder="123" required>
+            </label>
+          </div>
+
+          <div class="brand-icons" aria-label="Tarjetas aceptadas">
+            <i class="fa-brands fa-cc-visa" title="Visa"></i>
+            <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+            <i class="fa-brands fa-cc-amex" title="American Express"></i>
+          </div>
+
+          <div class="radio-row">
+            <label><input type="radio" name="save" value="si" required> Guardar método</label>
+            <label><input type="radio" name="save" value="no"> No guardar</label>
+          </div>
+        </form>
+
+        <!-- PayPal -->
+        <form id="formPaypal" class="pay-form" novalidate>
+          <label class="label">Correo de PayPal*
+            <input type="email" class="input" id="ppEmail" placeholder="tu@correo.com" required>
+          </label>
+        </form>
+      </div>
+
+      <footer class="pay-footer">
+        <button class="btn ghost" id="btnCancelModal" type="button">Cancelar</button>
+        <button class="btn primary" id="btnSubmitModal" type="submit" form="formCard">Pagar ahora</button>
+      </footer>
+    </div>
+  </section>
+
+  <script src="../JS/factura-detalle.js"></script>
+  <script src="../JS/shell.js"></script>
+
+</body>
+</html>

@@ -2,61 +2,75 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Historial</title>
 
- 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="../CSS/historial.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </head>
 <body>
-
-
-  <main class="main-content p-3">
-    <h1 class="fs-4 mb-3">Historial de mantenimientos</h1>
   
-    <div id="historialContainer"></div>
+   <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <div class="menu-header no-avatar">
+    <div class="menu-user">
+      <h3 id="menuNombre">Usuario</h3>
+      <p id="menuPase" class="muted">Cliente</p>
+      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+    </div>
+  </div>
+
+  <nav class="menu-list">
+    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+    </a>
+  </nav>
+</aside>
+
+  <main class="app-shell">
+    <!-- Topbar -->
+    <header class="topbar">
+      <h1 class="page-title">Historial</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
+      </button>
+    </header>
+
+    <!-- Filtros -->
+    <section class="section">
+      <div class="filters card">
+        <label class="label" for="vehiculoSelect">Filtrar por vehículo</label>
+        <select id="vehiculoSelect" class="select">
+          <option value="">Todos</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Lista -->
+    <section class="section">
+      <div id="historialLista" class="stack" aria-live="polite"></div>
+    </section>
   </main>
 
-
-  <div id="overlay" class="overlay"></div>
-
-  
-  <aside id="profileMenu" class="profile-menu">
-    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
-    <p class="text-center small text-muted">
-      ID de usuario<br>
-      <strong id="menuUserId">Desconocido</strong>
-    </p>
-    <div class="text-center mb-3">
-      <a href="../Ajustes/ajustes.html" class="d-inline-block">
-        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 64px; height: 64px;">
-          <i class="fas fa-user text-white fs-3"></i>
-        </div>
-      </a>
-      <div id="menuNombre" class="username mt-2">Nombre</div>
-      <div id="menuPase" class="user-pass">Pase</div>
-    </div>
-    <ul class="menu-options">
-      <li><a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a></li>
-      <li><a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a></li>
-      <li><a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a></li>
-      <li><a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a></li>
-    </ul>
-  </aside>
-
-  <nav class="mobile-nav d-flex justify-content-around">
-    <a href="../Notificaciones/notificaciones.html" class="mobile-nav__link"><i class="fas fa-bell"></i></a>
-    <a href="../dashboard/index.html" class="mobile-nav__link"><i class="fas fa-home"></i></a>
-    <a href="../Facturas/facturas.html" class="mobile-nav__link"><i class="fas fa-receipt"></i></a>
-    <button class="mobile-nav__link menu-toggle-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+  <!-- Tabbar unificada -->
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../Mis Vehiculos/Vehiculos.html" title="Vehículos"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../JS/historial.js"></script>
+  <script src="../JS/shell.js"></script>
+
 </body>
 </html>

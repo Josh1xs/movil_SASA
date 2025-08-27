@@ -1,46 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Mis Vehículos</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <link rel="stylesheet" href="../CSS/vehiculos.css" />
 </head>
-
 <body>
+<div id="overlay" class="overlay" aria-hidden="true"></div>
 
-  <div id="overlay" class="overlay" aria-hidden="true"></div>
-  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
-    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-    <div class="menu-header">
-      <div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-        <svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-        </svg>
-      </div>
-      <div class="menu-user">
-        <h3 id="menuNombre">Usuario</h3>
-        <p id="menuPase" class="muted">Cliente</p>
-        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
-      </div>
+   <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <div class="menu-header no-avatar">
+    <div class="menu-user">
+      <h3 id="menuNombre">Usuario</h3>
+      <p id="menuPase" class="muted">Cliente</p>
+      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
     </div>
-    <nav class="menu-list">
-      <a href="../Historial/historial.html"><i class="fas fa-clock me-2"></i>Historial</a>
-      <a href="../Mis Vehiculos/Vehiculos.html"><i class="fas fa-car me-2"></i>Vehículos</a>
-      <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-plus-circle me-2"></i>Añadir Vehículo</a>
-      <a href="../Citas/citas.html"><i class="fas fa-calendar-check me-2"></i>Citas</a>
-      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i
-          class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
-    </nav>
-  </aside>
+  </div>
 
+  <nav class="menu-list">
+    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+    </a>
+  </nav>
+</aside>
 
+  <!-- App -->
   <main class="app-shell">
     <header class="topbar">
       <h1 class="page-title">Mis Vehículos</h1>
@@ -54,18 +53,23 @@
         <i class="fa-solid fa-plus"></i> Añadir
       </a>
     </section>
+
     <section class="section">
       <div id="vehiculosLista" class="grid"></div>
+      <p id="vehEmpty" class="muted hidden" style="text-align:center;">No tienes vehículos registrados.</p>
     </section>
   </main>
+
+  <!-- Tabbar unificada -->
   <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" href="../Notificaciones/notificaciones.html"><i class="fas fa-bell"></i></a>
-    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fas fa-home"></i></a>
-    <a class="tabbar__btn" href="../Facturas/facturas.html"><i class="fas fa-receipt"></i></a>
-    <button class="tabbar__btn" id="menuToggleBottom"><i class="fas fa-bars"></i></button>
+    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn active" href="../Mis Vehiculos/Vehiculos.html" title="Vehículos" aria-current="page"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
   </nav>
 
   <script src="../JS/vehiculos.js"></script>
-</body>
+  <script src="../JS/shell.js"></script>
 
+</body>
 </html>

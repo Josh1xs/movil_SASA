@@ -24,16 +24,32 @@
     <h1 class="fs-4">Pagos</h1>
   </main>
 
- 
-  <nav class="mobile-nav">
-    <a href="../dashboard/index.html"><i class="fas fa-home"></i><span>Inicio</span></a>
-    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fas fa-car"></i><span>Añadir Vehículos</span></a>
-    <a href="../Citas/citas.html"><i class="fas fa-calendar"></i><span>Citas</span></a>
-    <a href="../Pagos/pagos.html"><i class="fas fa-credit-card"></i><span>Pagos</span></a>
-    <a href="../Facturas/facturas.html"><i class="fas fa-receipt"></i><span>Facturas</span></a>
-    <a href="../Historial/historial.html"><i class="fas fa-history"></i><span>Historial</span></a>
-    <a href="../Ajustes/ajustes.html"><i class="fas fa-cog"></i><span>Ajustes</span></a>
-  </nav>
+<div id="overlay" class="overlay" aria-hidden="true"></div>
+
+  <!-- Sidebar (sin avatar) -->
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar menú">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
+    </div>
+
+    <nav class="menu-list">
+      <a href="../Ajustes/ajustes.html"><i class="fa-regular fa-user"></i> Perfil</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Facturas/facturas.html"><i class="fa-regular fa-life-ring"></i> Facturas</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
 
 </body>
 </html>

@@ -1,47 +1,44 @@
-// ====== Constantes API ======
-const API_CITAS = "https://retoolapi.dev/2Kfhrs/cita";
-const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
-const API_USER_BASE = "https://retoolapi.dev/DeaUI0/registro/";
+// ====== Constantes API (ajusta rutas reales de tu backend) ======
+const API_CITAS     = "/api/citas";        // devuelve Cita con campos reales BD
+const API_VEHICULOS = "/api/vehiculos";    // devuelve Vehiculo
+const API_ESTADOS   = "/api/estados";      // devuelve EstadoVehiculo (idEstado, nombre)
+const API_CLIENTE   = "/api/clientes/";    // /api/clientes/:id
 
-const qs = (s) => document.querySelector(s);
-const norm = (v) => (v ?? "").toString().toLowerCase();
+const qs   = s => document.querySelector(s);
+const norm = v => (v ?? "").toString().toLowerCase();
 
-// --- Termino de búsqueda y guardia: si no viene, vuelve al index
-const urlParams = new URLSearchParams(location.search);
-const term = (urlParams.get("q") || "").trim();
+// Término de búsqueda (si no hay, vuelve al home)
+const params = new URLSearchParams(location.search);
+const term   = (params.get("q") || "").trim();
 if (!term) location.replace("../dashboard/index.html");
 
-// Usuario actual
+// Usuario
 const userId = localStorage.getItem("userId");
 
 // ====== Sidebar mínima ======
 (function sidebar(){
   const overlay = qs("#overlay"), menu = qs("#profileMenu");
-  const closeMenu = qs("#closeMenu"), toggle = qs("#menuToggle");
-  toggle?.addEventListener("click", () => {
-    toggle.classList.add("spin");
-    setTimeout(() => toggle.classList.remove("spin"), 600);
-    menu?.classList.add("open");
-    overlay?.classList.add("show");
-  });
+  const closeBtn = qs("#closeMenu"), toggle = qs("#menuToggle");
+  function open(){ menu?.classList.add("open"); overlay?.classList.add("show"); }
   function close(){ menu?.classList.remove("open"); overlay?.classList.remove("show"); }
-  closeMenu?.addEventListener("click", close);
+  toggle?.addEventListener("click", open);
+  closeBtn?.addEventListener("click", close);
   overlay?.addEventListener("click", close);
 
-  // user
+  // Info usuario (opcional)
   qs("#menuUserId")?.append(document.createTextNode(userId || "Desconocido"));
   if (userId){
-    fetch(API_USER_BASE + userId).then(r=>r.json()).then(u=>{
-      qs("#menuNombre") && (qs("#menuNombre").textContent = `${u?.nombre??""} ${u?.apellido??""}`.trim() || "Usuario");
-      qs("#menuPase") && (qs("#menuPase").textContent = u?.pase || "Cliente");
+    fetch(API_CLIENTE + userId).then(r=>r.json()).then(u=>{
+      qs("#menuNombre") && (qs("#menuNombre").textContent = `${u?.NOMBRE ?? ""} ${u?.APELLIDO ?? ""}`.trim() || "Usuario");
+      qs("#menuPase")   && (qs("#menuPase").textContent   = "Cliente");
     }).catch(()=>{});
   }
 })();
 
-// Mostrar término en el chip
+// Mostrar término
 qs("#termChip") && (qs("#termChip").textContent = term);
 
-// ====== Nodos de resultados ======
+// ====== Nodos
 const vehWrap   = qs("#vehiculosResultados");
 const vehCount  = qs("#vehCount");
 const vehEmpty  = qs("#vehEmpty");
@@ -49,79 +46,86 @@ const citaWrap  = qs("#citasResultados");
 const citasCount= qs("#citasCount");
 const citasEmpty= qs("#citasEmpty");
 
-// ====== Render helpers ======
+// ====== Helpers
+const fechaCorta = (iso) => {
+  if (!iso) return "—";
+  try {
+    const d  = new Date(iso); // tu API debe serializar DATE a ISO
+    const wk = d.toLocaleDateString("es", { weekday:"short" });
+    const dm = d.toLocaleDateString("es", { day:"2-digit", month:"short" });
+    return `${wk}, ${dm}`;
+  } catch { return iso; }
+};
+
+// Mapea idEstado a texto (carga una vez)
+let ESTADOS = {};
+async function loadEstados(){
+  try {
+    const list = await fetch(API_ESTADOS).then(r=>r.json());
+    ESTADOS = Object.fromEntries(list.map(e => [String(e.idEstado), e.nombre]));
+  } catch { ESTADOS = {}; }
+}
+
+// Cards
 function vehCard(v){
+  const estadoTxt = ESTADOS[String(v.idEstado)] || "—";
   return `
   <article class="vcard">
-    <div class="vimg" style="background-image:url('${v.foto || ""}')"></div>
     <div class="vbody">
       <h3>${(v.marca||"Vehículo")} ${(v.modelo||"")}</h3>
-      <p>Color: ${v.color || "—"}</p>
+      <p>Año: ${v.anio ?? "—"}</p>
       <p>Placa: ${v.placa || "—"}</p>
       <p>VIN: ${v.vin || "—"}</p>
       <div class="meta">
-        <span class="chip">Ingreso ${v.fechaRegistro || "—"}</span>
-        <span class="chip">Hora ${v.horaRegistro || "—"}</span>
-        <span class="chip">Mantenimiento: ${v.tipoMantenimiento || "—"}</span>
+        <span class="chip">Estado: ${estadoTxt}</span>
       </div>
     </div>
   </article>`;
 }
 
-const fechaCorta = (iso)=>{
-  try{
-    const d = new Date(`${iso}T00:00:00`);
-    const wk = d.toLocaleDateString("es", { weekday:"short" });
-    const dd = d.toLocaleDateString("es", { day:"2-digit" });
-    return `${wk}, ${dd}`;
-  }catch{ return iso; }
-};
-
 function citaCard(c){
+  const fecha = fechaCorta(c.fecha);
+  const hora  = c.hora || "—";
+  const code  = c.idCita ? `#CITA-${c.idCita}` : "—";
   return `
   <article class="cita-card">
     <div class="cita-top">
-      <span class="cita-chip"><i class="fa-regular fa-calendar"></i> ${fechaCorta(c.fecha)}</span>
+      <span class="cita-chip"><i class="fa-regular fa-calendar"></i> ${fecha}</span>
     </div>
-    <h4 class="cita-title">${c.descripcion || "Sin descripción"}</h4>
+    <h4 class="cita-title">${c.estado || "Pendiente"}</h4>
     <div class="cita-bottom">
-      <span class="cita-hour"><i class="fa-regular fa-clock"></i> ${c.hora}</span>
-      <span class="cita-code">#CITA-${c.id}</span>
+      <span class="cita-hour"><i class="fa-regular fa-clock"></i> ${hora}</span>
+      <span class="cita-code">${code}</span>
     </div>
   </article>`;
 }
 
 // ====== Buscar y pintar ======
 (async function loadResults(){
-  const q = norm(term);
-
   if (!userId){
     vehEmpty?.classList.remove("hidden");
     citasEmpty?.classList.remove("hidden");
     return;
   }
 
+  await loadEstados();
+
+  const q = norm(term);
+
   const [vehRes, citRes] = await Promise.all([
-    fetch(API_VEHICULOS).then(r=>r.json()).catch(()=>[]),
-    fetch(API_CITAS).then(r=>r.json()).catch(()=>[])
+    fetch(`${API_VEHICULOS}?idCliente=${encodeURIComponent(userId)}`).then(r=>r.json()).catch(()=>[]),
+    fetch(`${API_CITAS}?idCliente=${encodeURIComponent(userId)}`).then(r=>r.json()).catch(()=>[])
   ]);
 
-  // Filtrar por usuario
-  const vehUser = (vehRes||[]).filter(v => String(v.idCliente) === String(userId));
-  const citUser = (citRes||[]).filter(c => String(c.idCliente) === String(userId));
-
-  // Filtrar por término
-  const vehResult = !q ? vehUser : vehUser.filter(v =>
-    [v.marca, v.modelo, v.color, v.placa, v.vin, v.descripcion, v.tipoMantenimiento]
-      .some(x => norm(x).includes(q))
+  const vehResult = !q ? vehRes : vehRes.filter(v =>
+    [v.marca, v.modelo, v.anio, v.placa, v.vin].some(x => norm(x).includes(q))
   );
 
-  const citResult = !q ? citUser : citUser.filter(c =>
-    [c.descripcion, c.estado, c.fecha, c.hora, c.id]
-      .some(x => norm(x).includes(q))
+  const citResult = !q ? citRes : citRes.filter(c =>
+    [c.estado, c.fecha, c.hora, c.idCita].some(x => norm(x).includes(q))
   );
 
-  // Pintar Vehículos
+  // Vehículos
   vehCount && (vehCount.textContent = vehResult.length);
   if (vehResult.length){
     vehWrap && (vehWrap.innerHTML = vehResult.map(vehCard).join(""));
@@ -131,7 +135,7 @@ function citaCard(c){
     vehEmpty?.classList.remove("hidden");
   }
 
-  // Pintar Citas
+  // Citas
   citasCount && (citasCount.textContent = citResult.length);
   if (citResult.length){
     citaWrap && (citaWrap.innerHTML = citResult.map(citaCard).join(""));

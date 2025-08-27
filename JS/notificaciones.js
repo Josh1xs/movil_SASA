@@ -1,68 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const menuToggle = document.getElementById('menuToggle');
-  const profileMenu = document.getElementById('profileMenu');
-  const overlay = document.getElementById('overlay');
-  const closeMenu = document.getElementById('closeMenu');
-
-  function closeProfileMenu() {
-    profileMenu.classList.remove('open');
-    overlay.classList.remove('show');
-  }
-
-  menuToggle.addEventListener('click', () => {
-    profileMenu.classList.add('open');
-    overlay.classList.add('show');
-  });
-
-  closeMenu.addEventListener('click', closeProfileMenu);
-  overlay.addEventListener('click', closeProfileMenu);
-
-  // Cargar datos del usuario
-  const userId = localStorage.getItem("userId");
-  const apiUrl = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
-  const userIdElement = document.getElementById("menuUserId");
-  const nombreElement = document.getElementById("menuNombre");
-  const paseElement = document.getElementById("menuPase");
-
-  if (userIdElement) userIdElement.textContent = userId || "Desconocido";
-
-  if (userId) {
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(user => {
-        if (nombreElement) nombreElement.textContent = `${user.nombre} ${user.apellido}`;
-        if (paseElement) paseElement.textContent = user.pase || "Cliente";
-      })
-      .catch(err => {
-        console.error("Error cargando usuario:", err);
-      });
-  }
-
-  // Mostrar notificaciones
+document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("notificacionesContainer");
+  const usuarioId = localStorage.getItem("usuarioId"); // <-- GUARDA ESTO AL LOGUEARTE EN TABLA USUARIO
 
-  fetch("https://retoolapi.dev/IOhfB6/notificaciones")
-    .then(res => res.json())
-    .then(data => {
-      const notificacionesUsuario = data.filter(n => n.idCliente == userId);
+  if(!usuarioId){
+    container.innerHTML = "<p class='text-center text-muted'>No hay usuario en sesión.</p>";
+    return;
+  }
 
-      if (notificacionesUsuario.length === 0) {
-        container.innerHTML = "<p class='text-center text-muted'>No tienes notificaciones.</p>";
-      } else {
-        notificacionesUsuario.reverse().forEach(n => {
-          const card = document.createElement("div");
-          card.className = "notification-card";
-          card.innerHTML = `
-            <h5 class="fw-bold">${n.titulo}</h5>
-            <p>${n.descripcion}</p>
-            <p class="text-end text-muted small mb-0">${n.fecha}</p>
-          `;
-          container.appendChild(card);
+  try{
+    // Devuelve notificaciones con campos reales: mensaje, fecha, tipoNotificacion, lectura, idUsuario
+    const data = await fetch(`/api/notificaciones?idUsuario=${encodeURIComponent(usuarioId)}`).then(r=>r.json());
+
+    if(!data.length){
+      container.innerHTML = "<p class='text-center text-muted'>No tienes notificaciones.</p>";
+      return;
+    }
+
+    container.innerHTML = data.reverse().map(n => `
+      <div class="notification-card">
+        <h5 class="fw-bold">${n.tipoNotificacion}</h5>
+        <p>${n.mensaje}</p>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <small class="text-muted">${new Date(n.fecha).toLocaleString()}</small>
+          <button class="btn btn-sm ${n.lectura?'btn-outline-secondary':'btn-primary'} mark-btn" data-id="${n.idNotificacion}">
+            ${n.lectura ? "Leída" : "Marcar como leída"}
+          </button>
+        </div>
+      </div>
+    `).join("");
+
+    // Marcar como leída
+    container.addEventListener("click", async (e)=>{
+      const btn = e.target.closest(".mark-btn");
+      if(!btn) return;
+      const id = btn.dataset.id;
+      try{
+        await fetch(`/api/notificaciones/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ lectura: true })
         });
-      }
-    })
-    .catch(err => {
-      console.error("Error al cargar notificaciones:", err);
-      container.innerHTML = "<p class='text-danger text-center'>Error al cargar notificaciones.</p>";
+        btn.classList.remove("btn-primary"); btn.classList.add("btn-outline-secondary");
+        btn.textContent = "Leída";
+      }catch{ /* opcional: feedback */ }
     });
+
+  }catch{
+    container.innerHTML = "<p class='text-danger text-center'>Error al cargar notificaciones.</p>";
+  }
 });

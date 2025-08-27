@@ -1,0 +1,68 @@
+:root{
+  --app-bg:#f3f4f6; --card:#ffffff;
+  --text:#1f2937; --muted:#6b7280; --ink:#111827;
+  --brand:#c91a1a; --brand-2:#c91a1a;
+  --shadow:0 10px 24px rgba(0,0,0,.08);
+  --radius-xl:22px; --radius-lg:18px; --radius-md:14px;
+}
+
+/* Overlay (sidebar) */
+.overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.35);
+  opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:30;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+
+/* Sidebar */
+.profile-menu{
+  position:fixed; top:0; right:0; height:100dvh; width:84%; max-width:360px;
+  background:#141414; color:#f4f4f4; transform:translateX(100%);
+  transition: transform .25s ease; box-shadow:-16px 0 40px rgba(0,0,0,.35);
+  z-index:40; padding:18px 16px 24px;
+}
+.profile-menu.open{ transform: translateX(0); }
+.close-btn{
+  position:absolute; right:12px; top:12px; width:40px; height:40px;
+  border:none; border-radius:12px; background:rgba(255,255,255,.08);
+  color:#fff; display:grid; place-items:center;
+}
+.menu-header.no-avatar{ margin-top:8px; }
+.menu-user h3{ margin:0 0 4px; color:#fff; }
+.muted{ color:#bdbdbd; margin:0; }
+.small{ font-size:.85rem; }
+.menu-list{ display:grid; gap:6px; margin-top:16px; }
+.menu-list a{
+  display:flex; align-items:center; gap:12px; padding:12px 10px; text-decoration:none;
+  color:#f4f4f4; border-radius:12px;
+}
+.menu-list a:hover{ background:rgba(255,255,255,.06); }
+.menu-list a.danger{ color:#ffd5d5; }
+
+/* Avatar botón (topbar) */
+.avatar{
+  width:44px; height:44px; border-radius:50%;
+  display:grid; place-items:center;
+  background:#fff; color:var(--brand); border:none;
+  outline:2px solid #e5e7eb;
+}
+.avatar-gear{ font-size:20px; }
+.avatar.spin .avatar-gear{ animation:spin .6s linear; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* Tabbar unificada */
+.tabbar{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
+  width:min(430px - 24px, calc(100% - 24px));
+  background:#ffffff; border:1px solid #e5e7eb;
+  border-radius:24px; padding:12px 14px;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:6px; box-shadow:var(--shadow);
+  z-index:25;
+}
+.tabbar__btn{
+  height:44px; display:grid; place-items:center;
+  color:#1f2937; text-decoration:none; border-radius:14px; font-size:18px;
+  background:transparent; border:none;
+}
+.tabbar__btn.active{
+  background:#c91a1a; color:#fff; outline:none;
+}

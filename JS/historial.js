@@ -1,117 +1,200 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  // --- Variables del menú Pokémon ---
-  const menuToggle  = document.getElementById("menuToggle");
-  const profileMenu = document.getElementById("profileMenu");
-  const overlay     = document.getElementById("overlay");
-  const closeMenu   = document.getElementById("closeMenu");
+document.addEventListener("DOMContentLoaded", () => {
+  const $  = (s, el=document) => el.querySelector(s);
+  const $$ = (s, el=document) => [...el.querySelectorAll(s)];
 
-  function closeProfileMenu() {
-    profileMenu.classList.remove("open");
-    overlay.classList.remove("show");
+  /* ====== Sidebar ====== */
+  const overlay = $("#overlay");
+  const profileMenu = $("#profileMenu");
+  const menuToggle = $("#menuToggle");
+  const closeMenu = $("#closeMenu");
+  function openMenu(){
+    profileMenu?.classList.add("open");
+    profileMenu?.setAttribute("aria-hidden","false");
+    overlay?.classList.add("show");
+    overlay?.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
   }
-
-  menuToggle.addEventListener("click", () => {
-    profileMenu.classList.add("open");
-    overlay.classList.add("show");
+  function closeSidebar(){
+    profileMenu?.classList.remove("open");
+    profileMenu?.setAttribute("aria-hidden","true");
+    overlay?.classList.remove("show");
+    overlay?.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+  menuToggle?.addEventListener("click", () => {
+    menuToggle.classList.add("spin");
+    setTimeout(()=>menuToggle.classList.remove("spin"), 600);
+    openMenu();
   });
-  closeMenu.addEventListener("click", closeProfileMenu);
-  overlay.addEventListener("click", closeProfileMenu);
+  closeMenu?.addEventListener("click", closeSidebar);
+  overlay?.addEventListener("click", closeSidebar);
+  window.addEventListener("keydown", e => { if(e.key==="Escape") closeSidebar(); });
 
-  // --- Carga de datos del usuario ---
-  const userId       = localStorage.getItem("userId");
-  const userIdEl     = document.getElementById("menuUserId");
-  const nombreEl     = document.getElementById("menuNombre");
-  const paseEl       = document.getElementById("menuPase");
-
-  if (userIdEl) userIdEl.textContent = userId || "Desconocido";
-
-  if (userId) {
-    try {
-      const resUser = await fetch(`https://retoolapi.dev/DeaUI0/registro/${userId}`);
-      if (!resUser.ok) throw new Error("Usuario no encontrado");
-      const user = await resUser.json();
-      if (nombreEl) nombreEl.textContent = `${user.nombre} ${user.apellido}`;
-      if (paseEl)   paseEl.textContent   = user.pase || "Cliente";
-    } catch (err) {
-      console.error("Error cargando usuario:", err);
-    }
+  // Datos de usuario en sidebar
+  const userId = localStorage.getItem("userId");
+  $("#menuUserId").textContent = userId || "Desconocido";
+  if (userId){
+    fetch(`https://retoolapi.dev/DeaUI0/registro/${userId}`)
+      .then(r=>r.json()).then(u=>{
+        $("#menuNombre").textContent = `${u?.nombre??""} ${u?.apellido??""}`.trim() || "Usuario";
+        $("#menuPase").textContent   = u?.pase || "Cliente";
+      }).catch(()=>{});
   }
 
-  // --- Carga y renderizado del Historial con SweetAlert para eliminar ---
-  const container = document.getElementById("historialContainer");
-  const urlHist   = "https://retoolapi.dev/0uphCm/historial";
+  /* ====== Endpoints ====== */
+  // Vehículos (para el combo) — ya lo usaste en dashboard
+  const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
+  // Historial (ajusta este endpoint a tu tabla real en RetoolAPI)
+  const API_HISTORIAL = "https://retoolapi.dev/YOUR_ID/historial"; // TODO: reemplaza YOUR_ID
 
-  try {
-    const res = await fetch(urlHist);
-    if (!res.ok) throw new Error("No se pudo obtener el historial");
-    const data = await res.json();
+  /* ====== DOM ====== */
+  const selVehiculo = $("#vehiculoSelect");
+  const lista = $("#historialLista");
 
-    container.innerHTML = ""; // limpia contenido previo
+  let vehiculosUser = [];
+  let historialUser = [];
+  let filtroVehiculo = ""; // idVehiculo o "" (todos)
 
-    if (!data.length) {
-      container.innerHTML = "<p class='text-center text-muted'>No hay registros de historial.</p>";
+  const money = n => Number(n||0).toLocaleString("en-US",{style:"currency",currency:"USD"});
+  const fmt = s => {
+    if(!s) return "—";
+    const d = new Date(s);
+    return isNaN(d) ? s : d.toLocaleDateString("es", { year:"numeric", month:"short", day:"2-digit" });
+  };
+  const daysDiff = (ini, fin) => {
+    const a = new Date(ini), b = fin ? new Date(fin) : new Date();
+    if(isNaN(a) || isNaN(b)) return null;
+    const diff = Math.round((b-a) / 86400000);
+    return diff < 0 ? null : diff;
+  };
+
+  function render(){
+    lista.innerHTML = "";
+
+    const items = historialUser
+      .filter(h => !filtroVehiculo || String(h.idVehiculo) === String(filtroVehiculo))
+      .sort((a,b) => new Date(b.fechaIngreso||0) - new Date(a.fechaIngreso||0));
+
+    if(!items.length){
+      lista.innerHTML = `<div class="card"><p class="obs">No hay registros de historial para el filtro seleccionado.</p></div>`;
       return;
     }
 
-    data.forEach(item => {
-      // Detecta variantes de nombre de campo
-      const ingreso = item.fecha_ingreso    ?? item["fecha ingreso"]    ?? item.fechaIngreso    ?? "-";
-      const salida  = item.fecha_salida     ?? item["fecha salida"]     ?? item.fechaSalida     ?? "-";
-      const trabajo = item.trabajo_realizado?? item["trabajo realizado"]?? item.trabajoRealizado ?? "-";
-      const obs     = item.observaciones     ?? item.Observaciones        ?? "";
+    const frag = document.createDocumentFragment();
 
-      const card = document.createElement("div");
-      card.className = "historial-item card mb-3 position-relative";
-      card.innerHTML = `
-        <div class="card-body">
-          <button class="delete-btn"><i class="fas fa-trash"></i></button>
-          <h5 class="card-title">Vehículo ID: ${item.idVehiculo ?? item.idvehiculo ?? item.id}</h5>
-          <p><strong>Ingreso:</strong> ${ingreso}</p>
-          <p><strong>Salida:</strong> ${salida}</p>
-          <p><strong>Trabajo:</strong> ${trabajo}</p>
-          <p><strong>Observaciones:</strong> ${obs || "-"}</p>
-        </div>
+    items.forEach(h => {
+      const card = document.createElement("article");
+      card.className = "card hcard";
+
+      // Cabecera (vehículo + chips días)
+      const head = document.createElement("div");
+      head.className = "hhead";
+
+      const v = vehiculosUser.find(v => String(v.id) === String(h.idVehiculo));
+      const vehTitle = document.createElement("h3");
+      vehTitle.className = "hveh";
+      vehTitle.textContent = v
+        ? `${v.marca||"Vehículo"} ${v.modelo||""} ${v.placa?("· "+v.placa):""}`.trim()
+        : `Vehículo #${h.idVehiculo||"—"}`;
+      head.appendChild(vehTitle);
+
+      const chips = document.createElement("div");
+      chips.className = "chips";
+      const ingreso = fmt(h.fechaIngreso);
+      const salida  = fmt(h.fechaSalida);
+      const days = daysDiff(h.fechaIngreso, h.fechaSalida);
+      const chip1 = document.createElement("span");
+      chip1.className = "chip";
+      chip1.textContent = `Ingreso: ${ingreso}`;
+      const chip2 = document.createElement("span");
+      chip2.className = "chip";
+      chip2.textContent = `Salida: ${salida}`;
+      chips.appendChild(chip1);
+      chips.appendChild(chip2);
+      if(days !== null){
+        const chip3 = document.createElement("span");
+        chip3.className = "chip";
+        chip3.textContent = (h.fechaSalida ? `${days} día${days===1?"":"s"} en taller` : `${days} día${days===1?"":"s"} (en curso)`);
+        chips.appendChild(chip3);
+      }
+      head.appendChild(chips);
+      card.appendChild(head);
+
+      // Grid de fechas
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      grid.innerHTML = `
+        <div class="row"><span class="k">Fecha ingreso</span><span class="v">${ingreso}</span></div>
+        <div class="row"><span class="k">Fecha salida</span><span class="v">${salida}</span></div>
       `;
-      container.appendChild(card);
+      card.appendChild(grid);
 
-      // Lógica de eliminación con SweetAlert
-      const btnDel = card.querySelector(".delete-btn");
-      btnDel.addEventListener("click", () => {
-        Swal.fire({
-          title: '¿Eliminar este registro?',
-          text: '¡Esta acción no se puede deshacer!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Sí, eliminar',
-          cancelButtonText: 'Cancelar'
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              const resDel = await fetch(`${urlHist}/${item.id}`, { method: "DELETE" });
-              if (!resDel.ok) throw new Error("Error en DELETE");
-              card.remove();
-              Swal.fire(
-                'Eliminado',
-                'El registro ha sido eliminado.',
-                'success'
-              );
-            } catch (e) {
-              console.error("Error eliminando registro:", e);
-              Swal.fire(
-                'Error',
-                'No se pudo eliminar el registro.',
-                'error'
-              );
-            }
-          }
-        });
-      });
+      // Trabajo
+      const work = document.createElement("div");
+      work.className = "work";
+      work.textContent = `Trabajo: ${h.trabajo || "—"}`;
+      card.appendChild(work);
+
+      // Observaciones
+      const obs = document.createElement("p");
+      obs.className = "obs";
+      obs.textContent = h.observaciones || "Sin observaciones.";
+      card.appendChild(obs);
+
+      frag.appendChild(card);
     });
 
-  } catch (err) {
-    console.error("Historial load failed", err);
-    container.innerHTML = "<p class='text-center text-danger'>Error al cargar historial.</p>";
+    lista.appendChild(frag);
   }
+
+  // Cargar vehículos del usuario
+  function cargarVehiculos(){
+    if(!userId) return Promise.resolve([]);
+    return fetch(API_VEHICULOS, { cache:"no-store" })
+      .then(r=>r.json())
+      .then(data => {
+        vehiculosUser = (Array.isArray(data)?data:[])
+          .filter(v => String(v.idCliente) === String(userId));
+        // Llenar select
+        selVehiculo.innerHTML = `<option value="">Todos</option>` + vehiculosUser.map(v => {
+          const txt = `${v.marca||"Vehículo"} ${v.modelo||""} ${v.placa?("· "+v.placa):""}`.trim();
+          return `<option value="${v.id}">${txt}</option>`;
+        }).join("");
+      })
+      .catch(()=>{ vehiculosUser = []; });
+  }
+
+  // Cargar historial del usuario
+  function cargarHistorial(){
+    if(!userId){
+      historialUser = [];
+      render();
+      return;
+    }
+    fetch(API_HISTORIAL, { cache:"no-store" })
+      .then(r=>r.json())
+      .then(data => {
+        // Estructura esperada:
+        // { id, idCliente, idVehiculo, fechaIngreso, fechaSalida, trabajo, observaciones }
+        historialUser = (Array.isArray(data)?data:[])
+          .filter(h => String(h.idCliente) === String(userId));
+        render();
+      })
+      .catch(err => {
+        console.error("Error cargando historial:", err);
+        historialUser = [];
+        render();
+      });
+  }
+
+  // Cambiar filtro vehículo
+  selVehiculo.addEventListener("change", () => {
+    filtroVehiculo = selVehiculo.value || "";
+    render();
+  });
+
+  // Init
+  Promise.resolve()
+    .then(cargarVehiculos)
+    .then(cargarHistorial);
 });

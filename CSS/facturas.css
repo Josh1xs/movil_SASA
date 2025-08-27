@@ -1,163 +1,134 @@
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root{
+  --app-bg:#f3f4f6; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --ink:#111827;
+  --brand:#c91a1a; --shadow:0 10px 24px rgba(0,0,0,.08);
+  --radius-xl:22px; --radius-lg:18px; --radius-md:14px;
+  --focus:0 0 0 3px rgba(201,26,26,.25);
 }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);background:var(--app-bg)}
+.hidden{display:none!important}
 
-body {
-  font-family: sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
-  padding-bottom: 80px;
-  overflow-x: hidden;
+/* Overlay (sidebar) */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.2s;z-index:30}
+.overlay.show{opacity:1;pointer-events:auto}
+
+/* Sidebar */
+.profile-menu{
+  position:fixed;top:0;right:0;height:100dvh;width:84%;max-width:360px;background:#141414;color:#f4f4f4;
+  transform:translateX(100%);transition:.25s;z-index:40;padding:18px 16px 24px;box-shadow:-16px 0 40px rgba(0,0,0,.35)
 }
+.profile-menu.open{transform:translateX(0)}
+.close-btn{position:absolute;right:12px;top:12px;width:40px;height:40px;border:none;border-radius:12px;background:rgba(255,255,255,.08);color:#fff}
+.menu-header.no-avatar{margin-top:8px}
+.menu-user h3{margin:0 0 4px;color:#fff}
+.muted{color:#bdbdbd;margin:0}.small{font-size:.85rem}
+.menu-list{display:grid;gap:6px;margin-top:16px}
+.menu-list a{display:flex;align-items:center;gap:12px;padding:12px 10px;text-decoration:none;color:#f4f4f4;border-radius:12px}
+.menu-list a:hover{background:rgba(255,255,255,.06)}
+.menu-list a.danger{color:#ffd5d5}
 
-.main-content {
-  padding: 1rem;
+/* Shell */
+.app-shell{max-width:430px;margin:0 auto;min-height:100dvh;padding:20px 16px 120px}
+.topbar{display:grid;grid-template-columns:1fr auto;align-items:center}
+.page-title{margin:0;color:var(--ink)}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--brand);border:none;outline:2px solid rgba(0,0,0,.06)}
+.avatar-gear{font-size:20px}
+.avatar.spin .avatar-gear{animation:spin .6s linear}
+@keyframes spin{to{transform:rotate(360deg)}}
+.section{margin:16px 0}
+
+/* Card detalle */
+.card{background:var(--card);border-radius:var(--radius-xl);box-shadow:var(--shadow);padding:16px}
+.invoice-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.invoice-title{font-size:18px;margin:0;color:var(--ink)}
+.badge{background:#fde68a;color:#7c5e10;border-radius:999px;padding:6px 10px;font-weight:700;font-size:.85rem}
+.invoice-grid{display:grid;gap:8px;margin-top:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k{color:var(--muted)}
+.v{justify-self:end;color:var(--ink)}
+.row.strong .v{font-weight:800}
+.invoice-actions{display:flex;gap:10px;margin-top:14px}
+.btn{height:44px;border:none;border-radius:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:var(--shadow)}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.ghost{background:#eef0f3;color:#1f2937}
+.btn:focus-visible{outline:none;box-shadow:var(--focus)}
+
+/* Tabbar unificada */
+.tabbar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:16px;
+  width:min(430px - 24px, calc(100% - 24px));
+  background:#ffffff;border:1px solid #e5e7eb;border-radius:24px;padding:12px 14px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;box-shadow:var(--shadow)
 }
+.tabbar__btn{height:44px;display:grid;place-items:center;color:#1f2937;text-decoration:none;border-radius:14px;font-size:18px;background:transparent;border:none}
 
-
-.mobile-nav {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  height: 55px;
-  background: #7c1c1c;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+/* ===== Modal de pago (ordenado + fondo difuminado) ===== */
+.backdrop{
+  position:fixed; inset:0;
+  background:rgba(255,255,255,.16);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  opacity:0; pointer-events:none; transition:opacity .18s ease;
+  z-index:60;
 }
+.backdrop.show{opacity:1; pointer-events:auto}
 
-.mobile-nav__link {
-  flex: 1;
-  text-align: center;
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
-  background: none;
-  border: none;
+.pay-modal{
+  position:fixed; inset:0; display:grid; place-items:center; z-index:61;
+  opacity:0; pointer-events:none; transition:opacity .18s ease;
 }
+.pay-modal.show{opacity:1; pointer-events:auto}
 
-.mobile-nav__link i {
-  font-size: 20px;
-}
-
-.menu-toggle-btn {
-  cursor: pointer;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: none;
-  z-index: 1001;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-.overlay.show {
-  display: block;
-}
-
-
-.profile-menu {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 320px;
-  max-width: 90%;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  padding: 1.5rem 1rem 1rem;
-  z-index: 1002;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-}
-.profile-menu.open {
-  display: flex;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #555;
-  cursor: pointer;
+.pay-card{
+  width:min(440px, calc(100% - 24px));
+  background:#fff; border-radius:18px; border:1px solid #eef0f3;
+  box-shadow:0 24px 64px rgba(0,0,0,.28);
+  display:flex; flex-direction:column;
+  max-height:min(88vh, 640px); overflow:hidden;
 }
 
-.username {
-  font-weight: bold;
-  font-size: 16px;
-  text-align: center;
+.pay-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; border-bottom:1px solid #f1f5f9;
 }
+.pay-head h2{margin:0; font-size:18px; color:var(--ink)}
+.icon-btn{width:36px; height:36px; border:none; border-radius:10px; display:grid; place-items:center; background:#f3f4f6; color:#111}
+.icon-btn:active{transform:scale(.98)}
 
-.user-pass {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 1rem;
-  text-align: center;
+.pay-body{padding:14px 16px; display:grid; gap:12px; overflow:auto}
+.pay-summary{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  border:1px solid #e5e7eb; background:#f9fafb;
+  border-radius:12px; padding:10px 12px;
 }
+.pay-summary .k{color:var(--muted)} .pay-summary .v{justify-self:end; font-weight:800}
 
-.menu-options {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-  margin-top: 0.5rem;
+.tabs{display:flex; gap:8px}
+.pay-tab{
+  flex:1; height:40px; border:1px solid #e5e7eb; background:#fff;
+  color:#1f2937; font-weight:800; border-radius:12px; cursor:pointer;
 }
-.menu-options li {
-  margin-bottom: 0.8rem;
-  text-align: left;
-}
-.menu-options a {
-  color: #212529;
-  text-decoration: none;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  padding: 0.4rem 0.6rem;
-  border-radius: 10px;
-  transition: background 0.2s;
-}
-.menu-options a:hover {
-  background: #f0f0f0;
-  color: #C91A1A;
-}
+.pay-tab[aria-selected="true"]{background:var(--brand); border-color:var(--brand); color:#fff}
 
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
+.pay-form{display:none}
+.pay-form.show{display:block}
+.label{display:grid; gap:6px; font-weight:700; color:#374151}
+.input{height:44px; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; outline:none; color:var(--text)}
+.input::placeholder{color:#9ca3af}
+.input:focus{border-color:#d1d5db; box-shadow:0 0 0 3px rgba(201,26,26,.12)}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 
-#facturasContainer .card {
-  background-color: #fff;
-  border-radius: 15px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+.brand-icons{display:flex; gap:10px; align-items:center; margin-top:2px; color:#6b7280}
+.brand-icons i{font-size:24px; line-height:1}
 
-#facturasContainer .card h5 {
-  font-weight: bold;
-  color: #C91A1A;
-  margin-bottom: 10px;
-}
+.radio-row{display:flex; gap:18px; align-items:center}
 
-#facturasContainer .card p {
-  margin-bottom: 6px;
-  font-size: 15px;
+.pay-footer{
+  display:flex; gap:10px; padding:12px 16px 16px;
+  border-top:1px solid #f1f5f9; background:#fff;
 }
+.pay-footer .btn{flex:1}
+
+/* El blur del contenido lo aporta solo el backdrop */
+.app-shell[inert], .tabbar[inert]{filter:none}
