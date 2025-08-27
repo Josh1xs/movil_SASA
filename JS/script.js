@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ================== Endpoints ================== */
   const userId        = localStorage.getItem("userId");
   const API_USER      = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
   const API_CITAS     = `https://retoolapi.dev/2Kfhrs/cita`;
   const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
 
-  /* ================== DOM ================== */
+
   const overlay      = document.getElementById("overlay");
   const profileMenu  = document.getElementById("profileMenu");
   const menuToggle   = document.getElementById("menuToggle");
@@ -24,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const listaVehiculosDashboard = document.getElementById("listaVehiculosDashboard");
   const tplVehiculo   = document.getElementById("tplVehiculoCard");
 
-  /* ================== Sidebar ================== */
+  
   function abrirMenu(){
     profileMenu?.classList.add("open");
     overlay?.classList.add("show");
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", cerrarMenu);
   window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
 
-  /* ================== Header / Menú ================== */
+
   if (menuUserId) menuUserId.textContent = userId || "Desconocido";
 
   if (userId) {
@@ -67,10 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
     nombreHeader && (nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario");
   }
 
-  /* ================== Logout ================== */
+
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    try { /* opcional: cerrar sesión en backend */ } catch {}
+    try {  } catch {}
     finally {
       ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
@@ -79,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ================== Helpers ================== */
+
   const setText = (el, v) => { if (el) el.textContent = v ?? "—"; };
   const setBg   = (el, css) => { if (el) el.style.backgroundImage = css; };
 
@@ -111,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${pre}, ${hora || "—"}`;
   };
 
-  /* ================== Favoritos (citas) ================== */
+  
   const FAV_KEY = "citas_favoritas";
   const getFavs = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } };
   const setFavs = (arr) => localStorage.setItem(FAV_KEY, JSON.stringify(arr));
@@ -124,9 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return list.includes(sid);
   };
 
-  /* ================== Citas (INDEX) ================== */
+  
   let citasRaw = [];
-  let filtro = "hoy"; // hoy | semana | todas
+  let filtro = "hoy";
 
   chipsCitas?.addEventListener("click", (e) => {
     const a = e.target.closest("a[data-filter]");
@@ -151,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let items = (citasRaw || []).filter(c => String(c.idCliente) === String(userId));
     items = filtrarCitas(items);
 
-    // orden: favoritos primero, luego fecha
+  
     const favs = getFavs();
     items.sort((a,b) => {
       const af = favs.includes(String(a.id));
@@ -163,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return da - db;
     });
 
-    // Si no hay template, mostramos fallback
+   
     if (!tplCita) {
       if (!items.length) {
         citasHomeList.innerHTML = `<div class="empty-state">No hay citas en este filtro.</div>`;
@@ -184,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </article>
       `).join("");
-      // navegación a detalle
+
       citasHomeList.querySelectorAll(".card-hero").forEach(card=>{
         card.addEventListener("click",()=>location.href=`../Citas/detallecitas.html?id=${card.dataset.id}`);
         card.addEventListener("keydown",(e)=>{ if(e.key==="Enter") card.click(); });
@@ -192,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Con template
+  
     if (!items.length) {
       citasHomeList.innerHTML = `<div class="empty-state">${
         filtro==="hoy" ? "No tienes citas para hoy." :
@@ -205,23 +204,23 @@ document.addEventListener("DOMContentLoaded", () => {
     items.forEach(cita => {
       const el = tplCita.content.firstElementChild.cloneNode(true);
 
-      // portada
+    
       const img = el.querySelector(".card-hero__img");
       const cover = cita.cover || cita.imagen || cita.img;
       cover ? setBg(img, `url('${cover}')`) : setBg(img, "none");
 
-      // textos
+     
       setText(el.querySelector(".pill span"), fmtLabelHora(cita.fecha, cita.hora));
       setText(el.querySelector(".title"), cita.descripcion || "Sin descripción");
       setText(el.querySelector(".cita-code"), `#CITA-${cita.id}`);
 
-      // botón "tiempo"
+     
       const btnTime = el.querySelector(".cita-remaining-btn");
       btnTime.dataset.fecha = cita.fecha || "";
       btnTime.dataset.hora  = cita.hora  || "";
       btnTime.title = "Tiempo restante";
 
-      // favorito
+     
       const btnFav = el.querySelector(".fav");
       const icon   = btnFav.querySelector("i");
       if (getFavs().includes(String(cita.id))) {
@@ -244,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderCitas();
       });
 
-      // navegar a detalle
+     
       el.addEventListener("click", () => location.href = `../Citas/detallecitas.html?id=${encodeURIComponent(cita.id)}`);
       el.addEventListener("keydown", (e) => { if (e.key === "Enter") el.click(); });
 
@@ -254,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
     citasHomeList.appendChild(frag);
   }
 
-  // Delegado: botón “tiempo restante”
+ 
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".cita-remaining-btn");
     if (!btn) return;
@@ -290,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Cargar citas
+
   if (userId && citasHomeList) {
     fetch(API_CITAS, { cache: "no-store" })
       .then(res => res.json())
@@ -298,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(() => { citasRaw = []; renderCitas(); });
   }
 
-  /* ================== Vehículos (INDEX) ================== */
+
   function renderVehiculos(vehiculos){
     if (!listaVehiculosDashboard) return;
 
@@ -349,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(() => renderVehiculos([]));
   }
 
-  /* ================== FAB show/hide ================== */
+ 
   const fab = document.querySelector(".fab");
   if (fab) {
     let lastY = window.scrollY || 0;
@@ -361,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive:true });
   }
 
-  /* ================== Búsqueda ================== */
+
   (function setupSearchGo(){
     const input = document.getElementById("searchInput");
     const btn   = document.getElementById("goSearch");

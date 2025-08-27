@@ -1,21 +1,19 @@
-// ====== Constantes API (ajusta rutas reales de tu backend) ======
-const API_CITAS     = "/api/citas";        // devuelve Cita con campos reales BD
-const API_VEHICULOS = "/api/vehiculos";    // devuelve Vehiculo
-const API_ESTADOS   = "/api/estados";      // devuelve EstadoVehiculo (idEstado, nombre)
-const API_CLIENTE   = "/api/clientes/";    // /api/clientes/:id
-
+const API_CITAS     = "/api/citas";       
+const API_VEHICULOS = "/api/vehiculos";   
+const API_ESTADOS   = "/api/estados";     
+const API_CLIENTE   = "/api/clientes/";   
 const qs   = s => document.querySelector(s);
 const norm = v => (v ?? "").toString().toLowerCase();
 
-// Término de búsqueda (si no hay, vuelve al home)
+
 const params = new URLSearchParams(location.search);
 const term   = (params.get("q") || "").trim();
 if (!term) location.replace("../dashboard/index.html");
 
-// Usuario
+
 const userId = localStorage.getItem("userId");
 
-// ====== Sidebar mínima ======
+
 (function sidebar(){
   const overlay = qs("#overlay"), menu = qs("#profileMenu");
   const closeBtn = qs("#closeMenu"), toggle = qs("#menuToggle");
@@ -25,7 +23,6 @@ const userId = localStorage.getItem("userId");
   closeBtn?.addEventListener("click", close);
   overlay?.addEventListener("click", close);
 
-  // Info usuario (opcional)
   qs("#menuUserId")?.append(document.createTextNode(userId || "Desconocido"));
   if (userId){
     fetch(API_CLIENTE + userId).then(r=>r.json()).then(u=>{
@@ -35,10 +32,10 @@ const userId = localStorage.getItem("userId");
   }
 })();
 
-// Mostrar término
+
 qs("#termChip") && (qs("#termChip").textContent = term);
 
-// ====== Nodos
+
 const vehWrap   = qs("#vehiculosResultados");
 const vehCount  = qs("#vehCount");
 const vehEmpty  = qs("#vehEmpty");
@@ -46,18 +43,18 @@ const citaWrap  = qs("#citasResultados");
 const citasCount= qs("#citasCount");
 const citasEmpty= qs("#citasEmpty");
 
-// ====== Helpers
+
 const fechaCorta = (iso) => {
   if (!iso) return "—";
   try {
-    const d  = new Date(iso); // tu API debe serializar DATE a ISO
+    const d  = new Date(iso); 
     const wk = d.toLocaleDateString("es", { weekday:"short" });
     const dm = d.toLocaleDateString("es", { day:"2-digit", month:"short" });
     return `${wk}, ${dm}`;
   } catch { return iso; }
 };
 
-// Mapea idEstado a texto (carga una vez)
+
 let ESTADOS = {};
 async function loadEstados(){
   try {
@@ -66,7 +63,7 @@ async function loadEstados(){
   } catch { ESTADOS = {}; }
 }
 
-// Cards
+
 function vehCard(v){
   const estadoTxt = ESTADOS[String(v.idEstado)] || "—";
   return `
@@ -100,7 +97,7 @@ function citaCard(c){
   </article>`;
 }
 
-// ====== Buscar y pintar ======
+
 (async function loadResults(){
   if (!userId){
     vehEmpty?.classList.remove("hidden");
@@ -125,7 +122,7 @@ function citaCard(c){
     [c.estado, c.fecha, c.hora, c.idCita].some(x => norm(x).includes(q))
   );
 
-  // Vehículos
+ 
   vehCount && (vehCount.textContent = vehResult.length);
   if (vehResult.length){
     vehWrap && (vehWrap.innerHTML = vehResult.map(vehCard).join(""));
@@ -135,7 +132,7 @@ function citaCard(c){
     vehEmpty?.classList.remove("hidden");
   }
 
-  // Citas
+  
   citasCount && (citasCount.textContent = citResult.length);
   if (citResult.length){
     citaWrap && (citaWrap.innerHTML = citResult.map(citaCard).join(""));

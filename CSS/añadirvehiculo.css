@@ -63,7 +63,6 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 }
 .tabbar__btn{height:44px;display:grid;place-items:center;color:#f6f6f6;text-decoration:none;border-radius:14px;font-size:18px;background:transparent;border:none}
 
-/* Uploader */
 .uploader{display:grid; gap:8px}
 .uploader-preview{
   width:100%; height:160px; border-radius:16px; background:#f1f1f1;
@@ -78,25 +77,24 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .uploader-actions{display:flex; gap:8px}
 .btn.sm{ height:38px; font-size:.95rem; padding:0 12px }
 
-/* (ya los tenías, solo por coherencia) */
+
 .textarea{min-height:88px; resize:vertical}
 
-/* Inputs select */
 .select{
   width:100%; height:44px; padding:10px 12px; border-radius:12px; border:1px solid #ddd; background:#fff;
   transition:border .15s ease, box-shadow .15s ease;
 }
 .select:focus{border-color:#e9bdbd; box-shadow:0 0 0 3px rgba(255,255,255,.2); outline:none}
 
-/* Más aire debajo de la fila meta (fecha/hora) */
+
 .form .grid.meta{ margin-bottom: 12px; }
 
-/* Barra de acciones separada del contenido */
+
 .actions-bar{
   display:grid; gap:10px; margin-top: 12px;
 }
 
-/* Botón moderno con micro-animación */
+
 .btn.modern{
   position:relative; overflow:hidden;
   transform:translateZ(0); will-change:transform;
@@ -109,12 +107,12 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 .btn.modern:hover::after{ opacity:1 }
 .btn-label{ position:relative; z-index:1 }
 
-/* Variantes (ya usabas .primary/.ghost/.danger) */
+
 .btn.primary{background:linear-gradient(180deg,var(--brand),var(--brand-2)); color:#fff}
 .btn.ghost{background:#f2f2f2}
 .btn.danger{background:#c91a1a; color:#fff; text-align:center; display:grid; place-items:center; text-decoration:none}
 
-/* Uploader (por si faltaba) */
+
 .uploader{display:grid; gap:8px}
 .uploader-preview{
   width:100%; height:160px; border-radius:16px; background:#f1f1f1;

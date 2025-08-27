@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         confirmButtonText: "Continuar"
       }).then(() => {
         localStorage.removeItem("codigoVerificacion");
-        window.location.href = "../dashboard/index.html"; // o a donde continues el flujo
+        window.location.href = "../dashboard/index.html"; 
       });
     } else {
       Swal.fire("Código incorrecto", "El código ingresado no coincide", "error");

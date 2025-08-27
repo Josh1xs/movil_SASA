@@ -1,4 +1,3 @@
-// JS/shell.js
 document.addEventListener("DOMContentLoaded", () => {
   const qs = s => document.querySelector(s);
 
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", closeMenu);
   window.addEventListener("keydown", e => { if(e.key === "Escape") closeMenu(); });
 
-  // Rellena datos de usuario
+
   const userId = localStorage.getItem("userId");
   qs("#menuUserId") && (qs("#menuUserId").textContent = userId || "Desconocido");
 
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Logout
   logout?.addEventListener("click", (e) => {
     e.preventDefault();
-    try { /* opcional: invalidar en backend */ } catch {}
+    try { } catch {}
     finally{
       ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();

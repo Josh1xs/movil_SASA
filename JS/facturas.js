@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const cont = document.getElementById("facturasContainer");
-  const userId = localStorage.getItem("userId"); // Cliente
+  const userId = localStorage.getItem("userId");
 
   if(!userId){ cont.innerHTML = "<p class='text-center text-muted'>Inicia sesión.</p>"; return; }
 
   try{
-    // Endpoint que trae facturas del cliente por join (o pásalo por query en backend)
+   
     const facturas = await fetch(`/api/facturas?cliente=${encodeURIComponent(userId)}`).then(r=>r.json());
 
-    // Carga pagos y agrupa por idFactura (si tu endpoint de facturas ya trae pagado/saldo, omite esto)
+
     const pagos = await fetch(`/api/pagos?cliente=${encodeURIComponent(userId)}`).then(r=>r.json());
     const pagadoPorFactura = pagos.reduce((acc,p)=>{
       acc[p.idFactura] = (acc[p.idFactura] || 0) + Number(p.monto || 0);

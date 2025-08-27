@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hasNumber = document.getElementById("hasNumber");
   const hasSpecial = document.getElementById("hasSpecial");
 
-  // DUI: insertar guion automáticamente
+
   duiInput.addEventListener("input", () => {
     let value = duiInput.value.replace(/[^\d]/g, "");
     if (value.length > 8) {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     duiInput.value = value;
   });
 
-  // Validación visual en tiempo real para contraseña
+
   passwordInput.addEventListener("input", () => {
     const value = passwordInput.value;
 
@@ -43,14 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const correo = form.correo.value.trim();
     const password = form.password.value;
 
-    // Validación DUI
+  
     const duiRegex = /^\d{8}-\d{1}$/;
     if (!duiRegex.test(dui)) {
       Swal.fire("Error", "El DUI debe tener el formato 12345678-9", "warning");
       return;
     }
 
-    // Validación edad mayor a 18 años
+   
     const hoy = new Date();
     const fechaNac = new Date(fechaNacimiento);
     const edad = hoy.getFullYear() - fechaNac.getFullYear();
@@ -62,14 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validación de correo
+   
     const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!correoRegex.test(correo)) {
       Swal.fire("Error", "Ingresa un correo electrónico válido", "warning");
       return;
     }
 
-    // Validación de contraseña fuerte
+  
     const passRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
     if (!passRegex.test(password)) {
       Swal.fire(
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      // Validar si el correo ya existe en la API
+     
       const checkResponse = await fetch("https://retoolapi.dev/DeaUI0/registro");
       const usuarios = await checkResponse.json();
       const correoExiste = usuarios.some(u => u.correo?.toLowerCase() === correo.toLowerCase());
@@ -91,7 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Registrar usuario en API
       const data = {
         nombre,
         apellido,

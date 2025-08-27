@@ -4,37 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SASA — Verificar Código</title>
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Estilos -->
   <link rel="stylesheet" href="../CSS/registro.css">
-
-  <!-- SweetAlert -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
   <div class="container">
-    <!-- Logo -->
+
     <div class="logo">
       <img src="../IMG/SASA.png" alt="Logo SASA">
     </div>
 
-    <!-- Título -->
+
     <div class="title">Verificación de Código</div>
     <p class="subtitle">Hemos enviado un código de verificación a:</p>
     <p><strong id="correoDestino">cargando...</strong></p>
 
-    <!-- Paso 1: Verificar código -->
+
     <form id="codigoForm">
       <label for="codigo">Ingresa el código</label>
       <input type="text" id="codigo" name="codigo" maxlength="6" required>
       <button type="submit" class="boton">Verificar</button>
     </form>
 
-    <!-- Paso 2: Restablecer contraseña (oculto al inicio) -->
+  
     <form id="passwordForm" style="display:none;">
       <label for="nuevaContra">Nueva contraseña</label>
       <input type="password" id="nuevaContra" name="nuevaContra" required>
@@ -46,7 +40,7 @@
     </form>
   </div>
 
-  <!-- JS -->
+
   <script src="../JS/codigocontra.js"></script>
 </body>
 </html>

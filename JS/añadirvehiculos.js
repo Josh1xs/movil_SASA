@@ -4,7 +4,7 @@ const $ = (s)=>document.querySelector(s);
 const userId = localStorage.getItem("userId");
 const editId = localStorage.getItem("vehiculoEditarId") || new URLSearchParams(location.search).get("id");
 
-// Sidebar mínimo
+
 (function sidebar(){
   const overlay=$("#overlay"), menu=$("#profileMenu"), toggle=$("#menuToggle"), closeBtn=$("#closeMenu"), logoutBtn=$("#logoutBtn");
   const open=()=>{menu?.classList.add("open"); overlay?.classList.add("show");};
@@ -27,7 +27,7 @@ const editId = localStorage.getItem("vehiculoEditarId") || new URLSearchParams(l
   });
 })();
 
-// Campos
+
 const $form = $("#formVehiculo");
 const $title= $("#formTitle");
 const $marca= $("#marca");
@@ -39,7 +39,7 @@ const $vin   = $("#vin");
 const $estado= $("#estado");
 const $desc  = $("#descripcion");
 
-// Cargar si edita
+
 async function loadIfEdit(){
   if (!editId) return;
   try{
@@ -62,7 +62,7 @@ async function loadIfEdit(){
 }
 document.addEventListener("DOMContentLoaded", loadIfEdit);
 
-// Validadores simples
+
 function validar(){
   const year = parseInt($anio.value,10);
   const nowY = new Date().getFullYear()+1;
@@ -83,7 +83,7 @@ function validar(){
   return true;
 }
 
-// Submit
+
 $form?.addEventListener("submit", async (e)=>{
   e.preventDefault();
   if (!userId){ Swal.fire("Sesión","Vuelve a iniciar sesión","info"); return; }
@@ -105,7 +105,7 @@ $form?.addEventListener("submit", async (e)=>{
     descripcion: $desc.value.trim(),
   };
 
-  // solo en create añadimos fecha/hora
+
   if (!editId){
     body.fechaRegistro = fechaRegistro;
     body.horaRegistro  = horaRegistro;
@@ -132,7 +132,7 @@ $form?.addEventListener("submit", async (e)=>{
   }
 });
 
-// Limpiar → también olvidamos el id de edición
+
 $form?.addEventListener("reset", ()=>{
   localStorage.removeItem("vehiculoEditarId");
 });

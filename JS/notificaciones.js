@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("notificacionesContainer");
-  const usuarioId = localStorage.getItem("usuarioId"); // <-- GUARDA ESTO AL LOGUEARTE EN TABLA USUARIO
+  const usuarioId = localStorage.getItem("usuarioId"); 
 
   if(!usuarioId){
     container.innerHTML = "<p class='text-center text-muted'>No hay usuario en sesión.</p>";
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try{
-    // Devuelve notificaciones con campos reales: mensaje, fecha, tipoNotificacion, lectura, idUsuario
+  
     const data = await fetch(`/api/notificaciones?idUsuario=${encodeURIComponent(usuarioId)}`).then(r=>r.json());
 
     if(!data.length){
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `).join("");
 
-    // Marcar como leída
+
     container.addEventListener("click", async (e)=>{
       const btn = e.target.closest(".mark-btn");
       if(!btn) return;
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         btn.classList.remove("btn-primary"); btn.classList.add("btn-outline-secondary");
         btn.textContent = "Leída";
-      }catch{ /* opcional: feedback */ }
+      }catch{ }
     });
 
   }catch{

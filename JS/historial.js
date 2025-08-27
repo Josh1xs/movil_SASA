@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const $  = (s, el=document) => el.querySelector(s);
   const $$ = (s, el=document) => [...el.querySelectorAll(s)];
 
-  /* ====== Sidebar ====== */
+
   const overlay = $("#overlay");
   const profileMenu = $("#profileMenu");
   const menuToggle = $("#menuToggle");
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function openMenu(){
     profileMenu?.classList.add("open");
     profileMenu?.setAttribute("aria-hidden","false");
-    overlay?.classList.add("show");
+    overlay?.classList.add("show")
     overlay?.setAttribute("aria-hidden","false");
     document.body.style.overflow = "hidden";
   }
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", closeSidebar);
   window.addEventListener("keydown", e => { if(e.key==="Escape") closeSidebar(); });
 
-  // Datos de usuario en sidebar
+
   const userId = localStorage.getItem("userId");
   $("#menuUserId").textContent = userId || "Desconocido";
   if (userId){
@@ -41,19 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }).catch(()=>{});
   }
 
-  /* ====== Endpoints ====== */
-  // Vehículos (para el combo) — ya lo usaste en dashboard
   const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
-  // Historial (ajusta este endpoint a tu tabla real en RetoolAPI)
-  const API_HISTORIAL = "https://retoolapi.dev/YOUR_ID/historial"; // TODO: reemplaza YOUR_ID
-
-  /* ====== DOM ====== */
+  const API_HISTORIAL = "https://retoolapi.dev/YOUR_ID/historial"; 
   const selVehiculo = $("#vehiculoSelect");
   const lista = $("#historialLista");
 
   let vehiculosUser = [];
   let historialUser = [];
-  let filtroVehiculo = ""; // idVehiculo o "" (todos)
+  let filtroVehiculo = ""; 
 
   const money = n => Number(n||0).toLocaleString("en-US",{style:"currency",currency:"USD"});
   const fmt = s => {
@@ -86,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article");
       card.className = "card hcard";
 
-      // Cabecera (vehículo + chips días)
+ 
       const head = document.createElement("div");
       head.className = "hhead";
 
@@ -120,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       head.appendChild(chips);
       card.appendChild(head);
 
-      // Grid de fechas
+     
       const grid = document.createElement("div");
       grid.className = "grid";
       grid.innerHTML = `
@@ -129,13 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       card.appendChild(grid);
 
-      // Trabajo
+
       const work = document.createElement("div");
       work.className = "work";
       work.textContent = `Trabajo: ${h.trabajo || "—"}`;
       card.appendChild(work);
 
-      // Observaciones
+
       const obs = document.createElement("p");
       obs.className = "obs";
       obs.textContent = h.observaciones || "Sin observaciones.";
@@ -147,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lista.appendChild(frag);
   }
 
-  // Cargar vehículos del usuario
+
   function cargarVehiculos(){
     if(!userId) return Promise.resolve([]);
     return fetch(API_VEHICULOS, { cache:"no-store" })
@@ -155,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(data => {
         vehiculosUser = (Array.isArray(data)?data:[])
           .filter(v => String(v.idCliente) === String(userId));
-        // Llenar select
+
         selVehiculo.innerHTML = `<option value="">Todos</option>` + vehiculosUser.map(v => {
           const txt = `${v.marca||"Vehículo"} ${v.modelo||""} ${v.placa?("· "+v.placa):""}`.trim();
           return `<option value="${v.id}">${txt}</option>`;
@@ -164,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(()=>{ vehiculosUser = []; });
   }
 
-  // Cargar historial del usuario
+
   function cargarHistorial(){
     if(!userId){
       historialUser = [];
@@ -174,8 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(API_HISTORIAL, { cache:"no-store" })
       .then(r=>r.json())
       .then(data => {
-        // Estructura esperada:
-        // { id, idCliente, idVehiculo, fechaIngreso, fechaSalida, trabajo, observaciones }
+
         historialUser = (Array.isArray(data)?data:[])
           .filter(h => String(h.idCliente) === String(userId));
         render();
@@ -187,13 +181,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // Cambiar filtro vehículo
+
   selVehiculo.addEventListener("change", () => {
     filtroVehiculo = selVehiculo.value || "";
     render();
   });
 
-  // Init
+
   Promise.resolve()
     .then(cargarVehiculos)
     .then(cargarHistorial);

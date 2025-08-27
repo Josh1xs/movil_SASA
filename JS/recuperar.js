@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         text: `Se ha enviado un código de recuperación a ${correo}.`,
         confirmButtonText: "Continuar"
       }).then(() => {
-        // Redireccionar al apartado de verificación
+
         window.location.href = "../Authenticator/codigo.html";
       });
     }

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const userId = localStorage.getItem("userId");
   const apiUrl = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
 
-  // Nodos
+
   const $ = (s) => document.querySelector(s);
   const nombreCompleto = $("#nombreCompleto");
   const rolUsuario     = $("#rolUsuario");
@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeMenu  = $("#closeMenu");
   const logoutBtn  = $("#logoutBtn");
 
-  // Guardas
+
   if (userIdEl)  userIdEl.textContent  = userId || "Desconocido";
   if (menuUserId)menuUserId.textContent= userId || "Desconocido";
 
-  // Carga de usuario
+
   try {
     const res = await fetch(apiUrl);
     if (!res.ok) throw new Error("Usuario no encontrado");
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     nombreCompleto && (nombreCompleto.textContent = "Usuario no encontrado");
   }
 
-  // Mostrar/Ocultar formularios
+
   $(".toggle-nombre")?.addEventListener("click", () => {
     $(".toggle-nombre").setAttribute("hidden", "hidden");
     $(".form-nombre").removeAttribute("hidden");
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $(".form-pass").removeAttribute("hidden");
   });
 
-  // Guardar nombre
+
   $("#guardarNombre")?.addEventListener("click", async () => {
     const value = ($("#nuevoNombre")?.value || "").trim();
     if (!value.includes(" ")) {
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Guardar contraseña
+
   $("#guardarPass")?.addEventListener("click", async () => {
     const pass = ($("#nuevaPass")?.value || "").trim();
     const passRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Sidebar
+
   function abrir(){ profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
   function cerrar(){ profileMenu?.classList.remove("open"); overlay?.classList.remove("show"); }
   menuToggle?.addEventListener("click", abrir);
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   overlay?.addEventListener("click", cerrar);
   window.addEventListener("keydown", (e)=> e.key==="Escape" && cerrar());
 
-  // Logout
+
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     const ok = await Swal.fire({
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       cancelButtonText:"Cancelar", confirmButtonColor:"#c91a1a"
     });
     if (ok.isConfirmed){
-      try { /* invalidación opcional */ } catch {}
+      try { } catch {}
       finally {
         localStorage.clear(); sessionStorage.clear();
         document.cookie = "authToken=; Max-Age=0; path=/";

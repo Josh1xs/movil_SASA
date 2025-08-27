@@ -1,12 +1,11 @@
-// ==================== C I T A S  (JS COMPLETO) ====================
 document.addEventListener("DOMContentLoaded", () => {
-  // ====== Endpoints ======
+
   const userId = localStorage.getItem("userId");
   const API_USER      = userId ? `https://retoolapi.dev/DeaUI0/registro/${userId}` : null;
   const API_CITAS     = `https://retoolapi.dev/2Kfhrs/cita`;
   const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
 
-  // ====== DOM ======
+
   const overlay     = document.getElementById("overlay");
   const profileMenu = document.getElementById("profileMenu");
   const menuToggle  = document.getElementById("menuToggle");
@@ -23,12 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const horaInput     = document.getElementById("horaInput");
   const timeHint      = document.getElementById("timeHint");
   const vehiculoSel   = document.getElementById("vehiculoSelect");
-  const estadoSel     = document.getElementById("estado");       // (tipo de servicio)
+  const estadoSel     = document.getElementById("estado");     
   const descripcionIn = document.getElementById("descripcion");
 
   const listaCitas    = document.getElementById("listaCitas");
 
-  // ====== Sidebar ======
+
   function abrirMenu() {
     profileMenu?.classList.add("open");
     overlay?.classList.add("show");
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", cerrarMenu);
   window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
 
-  // ====== Header / Menú ======
+
   if (userId && API_USER) {
     fetch(API_USER)
       .then(r => r.json())
@@ -65,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("menuUserId") && (document.getElementById("menuUserId").textContent = "Desconocido");
   }
 
-  // ====== Logout (opcional) ======
+
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     try {} finally {
@@ -77,18 +76,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ====== Utilidades ======
+
   const fmtMoney = n => Number(n||0).toLocaleString("es-SV",{style:"currency",currency:"USD"});
   const two = n => String(n).padStart(2,"0");
   const toISO = (d) => `${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}`;
 
-  // Próximos N días hábiles (lun-vie)
+
   function nextBusinessDates(limit = 20) {
     const set = new Set();
-    const d = new Date(); // hoy
+    const d = new Date(); 
     while (set.size < limit) {
-      const dow = d.getDay(); // 0=dom ... 6=sab
-      if (dow >= 1 && dow <= 5) { // Lun-Vie
+      const dow = d.getDay(); 
+      if (dow >= 1 && dow <= 5) {
         set.add(toISO(d));
       }
       d.setDate(d.getDate() + 1);
@@ -96,13 +95,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return set;
   }
 
-  // Estado de vista del calendario
+
   const today = new Date();
   let viewYear  = today.getFullYear();
-  let viewMonth = today.getMonth(); // 0..11
-  const disponibles = nextBusinessDates(20); // fechas (YYYY-MM-DD)
+  let viewMonth = today.getMonth();
+  const disponibles = nextBusinessDates(20);
 
-  // Render de calendario
+
   function nombreMesES(y, m) {
     const date = new Date(y, m, 1);
     return date.toLocaleDateString("es", { month: "long", year: "numeric" })
@@ -113,10 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!calendario) return;
     calendario.innerHTML = "";
 
-    // Título
+ 
     if (mesActualEl) mesActualEl.textContent = nombreMesES(viewYear, viewMonth);
 
-    // Cabecera de días
     const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
     const headFrag = document.createDocumentFragment();
     dias.forEach(d => {
@@ -127,20 +125,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     calendario.appendChild(headFrag);
 
-    // Calcular offset (empezando lunes)
+  
     const first = new Date(viewYear, viewMonth, 1);
-    let startDow = first.getDay(); // 0 dom ... 6 sab
-    if (startDow === 0) startDow = 7; // domingo pasa a 7
-    const blanks = startDow - 1; // nº de celdas antes del 1
+    let startDow = first.getDay();
+    if (startDow === 0) startDow = 7; 
+    const blanks = startDow - 1; 
 
-    // Huecos iniciales
+
     for (let i = 0; i < blanks; i++) {
       const div = document.createElement("div");
       div.className = "cal-cell cal-empty";
       calendario.appendChild(div);
     }
 
-    // Días del mes
+
     const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
     const frag = document.createDocumentFragment();
     for (let day = 1; day <= lastDate; day++) {
@@ -152,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.dataset.date = iso;
       cell.textContent = String(day);
 
-      // Estado visual
+
       const isToday = iso === toISO(today);
       const isAvailable = disponibles.has(iso);
       if (isToday) cell.classList.add("is-today");
@@ -161,13 +159,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       cell.addEventListener("click", () => {
         if (!isAvailable) return;
-        // marcar selección única
+
         calendario.querySelectorAll(".cal-day.selected").forEach(el => el.classList.remove("selected"));
         cell.classList.add("selected");
         fechaHidden.value = iso;
-        // pista de horario
+
         if (timeHint) timeHint.textContent = "Horario permitido: 07:00–16:00";
-        // fijar límites de <input type=time>
+     
         if (horaInput) {
           horaInput.min = "07:00";
           horaInput.max = "16:00";
@@ -193,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCalendar();
 
-  // ====== Cargar vehículos del usuario ======
+
   async function loadVehiculos() {
     if (!vehiculoSel) return;
     vehiculoSel.innerHTML = `<option value="">Cargando vehículos…</option>`;
@@ -218,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   loadVehiculos();
 
-  // ====== Listar mis citas ======
+
   async function cargarMisCitas() {
     if (!listaCitas) return;
     listaCitas.innerHTML = "";
@@ -233,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Orden: más próximas primero
+ 
       mias.sort((a, b) => {
         const da = new Date(`${a.fecha}T${a.hora || "00:00"}:00`).getTime();
         const db = new Date(`${b.fecha}T${b.hora || "00:00"}:00`).getTime();
@@ -269,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   cargarMisCitas();
 
-  // ====== Cancelar cita (delegado) ======
+ 
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-cancel");
     if (!btn) return;
@@ -294,24 +292,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ====== Validaciones de hora ======
   function horaValida(hhmm) {
     if (!hhmm) return false;
     const [hh, mm] = hhmm.split(":").map(Number);
     const mins = hh*60 + mm;
-    const min = 7*60;  // 07:00
-    const max = 16*60; // 16:00
+    const min = 7*60; 
+    const max = 16*60; 
     return mins >= min && mins <= max;
   }
 
-  // Si fecha = hoy, que la hora no sea en el pasado
+
   function noPasado(fechaISO, hhmm) {
     const now = new Date();
     const d = new Date(`${fechaISO}T${hhmm}:00`);
     return d.getTime() >= now.getTime();
   }
 
-  // ====== Crear cita ======
+  
   formCita?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!userId) {
@@ -322,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fecha = fechaHidden.value;
     const hora  = horaInput?.value || "";
     const vehId = vehiculoSel?.value || "";
-    const servicio = estadoSel?.value || "";      // select "Tipo de servicio"
+    const servicio = estadoSel?.value || "";    
     const desc     = (descripcionIn?.value || "").trim();
 
     if (!fecha) { window.Swal ? Swal.fire({icon:"info", title:"Selecciona una fecha"}) : alert("Selecciona una fecha."); return; }
@@ -333,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (!vehId) { window.Swal ? Swal.fire({icon:"info", title:"Selecciona tu vehículo"}) : alert("Selecciona tu vehículo."); return; }
 
-    // Adaptado a BD: "estado" => status real. El tipo de servicio lo anexamos a la descripción.
+ 
     const descripcionFinal = servicio ? `[${servicio}] ${desc}`.trim() : desc;
 
     const payload = {
@@ -357,7 +354,6 @@ document.addEventListener("DOMContentLoaded", () => {
         ? await Swal.fire({icon:"success", title:"Cita creada", text:"Tu cita fue registrada correctamente.", confirmButtonColor:"#c91a1a"})
         : alert("Cita creada.");
 
-      // limpiar y refrescar
       formCita.reset();
       fechaHidden.value = "";
       calendario.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));

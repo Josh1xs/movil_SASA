@@ -21,7 +21,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     console.log("Usuario encontrado:", usuarioEncontrado);
 
     if (usuarioEncontrado) {
-      // Guardar el ID para otros módulos
+
       localStorage.setItem("userId", usuarioEncontrado.id);
 
       Swal.fire({

@@ -1,10 +1,9 @@
-// ==================== F A C T U R A   D E T A L L E (JS COMPLETO) ====================
 document.addEventListener("DOMContentLoaded", () => {
   const qs = s => document.querySelector(s);
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
 
-  // ===== Sidebar unificado =====
+
   const overlay     = qs("#overlay");
   const profileMenu = qs("#profileMenu");
   const menuToggle  = qs("#menuToggle");
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", () => { if (profileMenu?.classList.contains("open")) closeSidebar(); });
   window.addEventListener("keydown", e => { if (e.key === "Escape") closeSidebar(); });
 
-  // Relleno de usuario (opcional)
   const userId = localStorage.getItem("userId");
   qs("#menuUserId") && (qs("#menuUserId").textContent = userId || "Desconocido");
   if (userId){
@@ -44,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }).catch(()=>{});
   }
 
-  // ===== Nodos detalle =====
+
   const title = qs("#invTitle");
   const estado = qs("#invEstado");
   const fecha  = qs("#invFecha");
@@ -57,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const money = n => Number(n||0).toLocaleString("es-SV",{style:"currency",currency:"USD"});
 
-  // ===== Cargar factura =====
+
   async function loadInvoice() {
     if (!id) { title.textContent = "Factura —"; return; }
     try {
@@ -87,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pagos.textContent = money(pagosAplic);
       saldo.textContent = money(saldoNum);
 
-      // Info para modal
+    
       qs("#pmFactura").textContent = `#${f.id ?? id}`;
       qs("#pmSaldo").textContent   = money(saldoNum);
       btnPagar.disabled = saldoNum <= 0;
@@ -98,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   loadInvoice();
 
-  // ===== Modal de pago (blur de fondo, sin deslizamientos) =====
+
   const appShell = qs(".app-shell");
   const tabbar   = qs(".tabbar");
   const backdrop = qs("#payBackdrop");
@@ -134,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   backdrop?.addEventListener("click", closeModal);
   window.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
 
-  // Tabs
+
   function setActiveTab(tab){
     tabBtns.forEach(b=>{
       const active = b.dataset.tab === tab;
@@ -150,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   tabBtns.forEach(b => b.addEventListener("click", () => setActiveTab(b.dataset.tab)));
   setActiveTab("card");
 
-  // Formateo suave tarjeta
+  
   const ccNumber = qs("#ccNumber");
   const ccExp    = qs("#ccExp");
   ccNumber?.addEventListener("input", () => {
@@ -163,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ccExp.value = v;
   });
 
-  // Envíos (simulados / placeholder)
   formCard?.addEventListener("submit", e=>{
     e.preventDefault();
     const ok =
