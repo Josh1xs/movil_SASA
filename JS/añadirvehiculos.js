@@ -1,138 +1,111 @@
-const API_URL = "https://retoolapi.dev/4XQf28/anadirvehiculo";
+document.addEventListener("DOMContentLoaded", () => {
+  const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
+  const userId = localStorage.getItem("userId");
 
-const $ = (s)=>document.querySelector(s);
-const userId = localStorage.getItem("userId");
-const editId = localStorage.getItem("vehiculoEditarId") || new URLSearchParams(location.search).get("id");
+  // ===== Sidebar =====
+  const overlay     = document.getElementById("overlay");
+  const profileMenu = document.getElementById("profileMenu");
+  const menuToggle  = document.getElementById("menuToggle");
+  const closeMenu   = document.getElementById("closeMenu");
+  const logoutBtn   = document.getElementById("logoutBtn");
 
-
-(function sidebar(){
-  const overlay=$("#overlay"), menu=$("#profileMenu"), toggle=$("#menuToggle"), closeBtn=$("#closeMenu"), logoutBtn=$("#logoutBtn");
-  const open=()=>{menu?.classList.add("open"); overlay?.classList.add("show");};
-  const close=()=>{menu?.classList.remove("open"); overlay?.classList.remove("show");};
-  toggle?.addEventListener("click",()=>{toggle.classList.add("spin"); setTimeout(()=>toggle.classList.remove("spin"),600); open();});
-  closeBtn?.addEventListener("click",close); overlay?.addEventListener("click",close);
-  window.addEventListener("keydown",(e)=> e.key==="Escape"&&close());
-  $("#menuUserId") && ($("#menuUserId").textContent = userId || "Desconocido");
-  if (userId){
-    fetch(`https://retoolapi.dev/DeaUI0/registro/${userId}`).then(r=>r.json()).then(u=>{
-      $("#menuNombre") && ($("#menuNombre").textContent = `${u?.nombre??""} ${u?.apellido??""}`.trim() || "Usuario");
-      $("#menuPase") && ($("#menuPase").textContent = u?.pase || "Cliente");
-    }).catch(()=>{});
+  function openMenu(){
+    profileMenu?.classList.add("open");
+    profileMenu?.setAttribute("aria-hidden","false");
+    overlay?.classList.add("show");
+    overlay?.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
   }
-  logoutBtn?.addEventListener("click", async (e)=>{
-    e.preventDefault();
-    ["userId","nombre","email","pase","authToken","token","refreshToken"].forEach(k=>localStorage.removeItem(k));
-    sessionStorage.clear(); document.cookie="authToken=; Max-Age=0; path=/";
-    window.location.replace(logoutBtn.getAttribute("href") || "../Authenticator/login.html");
+  function closeSidebar(){
+    profileMenu?.classList.remove("open");
+    profileMenu?.setAttribute("aria-hidden","true");
+    overlay?.classList.remove("show");
+    overlay?.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+  }
+  menuToggle?.addEventListener("click", () => {
+    menuToggle.classList.add("spin");
+    setTimeout(() => menuToggle.classList.remove("spin"), 600);
+    openMenu();
   });
-})();
+  closeMenu?.addEventListener("click", closeSidebar);
+  overlay?.addEventListener("click", closeSidebar);
+  window.addEventListener("keydown", e => { if (e.key === "Escape") closeSidebar(); });
 
-
-const $form = $("#formVehiculo");
-const $title= $("#formTitle");
-const $marca= $("#marca");
-const $modelo=$("#modelo");
-const $anio  = $("#anio");
-const $color = $("#color");
-const $placa = $("#placa");
-const $vin   = $("#vin");
-const $estado= $("#estado");
-const $desc  = $("#descripcion");
-
-
-async function loadIfEdit(){
-  if (!editId) return;
-  try{
-    const r = await fetch(`${API_URL}/${editId}`);
-    if (!r.ok) throw new Error("API");
-    const v = await r.json();
-    $title.textContent = "Editar Vehículo";
-    $marca.value  = v.marca  || "";
-    $modelo.value = v.modelo || "";
-    $anio.value   = v.anio   || "";
-    $color.value  = v.color  || "";
-    $placa.value  = v.placa  || "";
-    $vin.value    = v.vin    || "";
-    $estado.value = v.estado || "";
-    $desc.value   = v.descripcion || "";
-  }catch(err){
-    console.error("No se pudo cargar el vehículo:", err);
-    Swal.fire("Error","No se pudo cargar el vehículo para editar","error");
-  }
-}
-document.addEventListener("DOMContentLoaded", loadIfEdit);
-
-
-function validar(){
-  const year = parseInt($anio.value,10);
-  const nowY = new Date().getFullYear()+1;
-  if (isNaN(year) || year<1980 || year>nowY){
-    Swal.fire("Año inválido",`Debe estar entre 1980 y ${nowY}`,"warning");
-    return false;
-  }
-  const vin = ($vin.value||"").toUpperCase();
-  if (vin.length<11 || vin.length>20){
-    Swal.fire("VIN inválido","Revisa la longitud (≈17).","warning");
-    return false;
-  }
-  const placa = ($placa.value||"").trim();
-  if (placa.length<4){
-    Swal.fire("Placa inválida","Revisa el formato.","warning");
-    return false;
-  }
-  return true;
-}
-
-
-$form?.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  if (!userId){ Swal.fire("Sesión","Vuelve a iniciar sesión","info"); return; }
-  if (!validar()) return;
-
-  const now = new Date();
-  const fechaRegistro = now.toISOString().slice(0,10);
-  const horaRegistro  = now.toTimeString().slice(0,5);
-
-  const body = {
-    idCliente: String(userId),
-    marca: $marca.value.trim(),
-    modelo: $modelo.value.trim(),
-    anio: $anio.value.trim(),
-    color: $color.value.trim(),
-    placa: $placa.value.trim(),
-    vin: $vin.value.trim(),
-    estado: $estado.value,
-    descripcion: $desc.value.trim(),
-  };
-
-
-  if (!editId){
-    body.fechaRegistro = fechaRegistro;
-    body.horaRegistro  = horaRegistro;
+  // Usuario en menú
+  document.getElementById("menuUserId") && (document.getElementById("menuUserId").textContent = userId || "Desconocido");
+  if (userId){
+    fetch(`https://retoolapi.dev/DeaUI0/registro/${userId}`)
+      .then(r=>r.json()).then(u=>{
+        document.getElementById("menuNombre") && (document.getElementById("menuNombre").textContent = `${u?.nombre??""} ${u?.apellido??""}`.trim() || "Usuario");
+        document.getElementById("menuPase")   && (document.getElementById("menuPase").textContent   = u?.pase || "Cliente");
+      }).catch(()=>{});
   }
 
-  try{
-    const r = await fetch(editId ? `${API_URL}/${editId}` : API_URL, {
-      method: editId ? "PATCH" : "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(body)
-    });
-    if (!r.ok){
-      const t = await r.text().catch(()=> "");
-      throw new Error(`API ${r.status}: ${t}`);
+  // Logout (opcional)
+  logoutBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {} finally {
+      ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
+      sessionStorage.clear();
+      document.cookie = "authToken=; Max-Age=0; path=/";
+      const redirectTo = logoutBtn.getAttribute("href") || "../Authenticator/login.html";
+      window.location.replace(redirectTo);
     }
-    Swal.fire("Listo", `Vehículo ${editId ? "actualizado" : "registrado"} correctamente`, "success")
-      .then(()=>{
-        localStorage.removeItem("vehiculoEditarId");
-        window.location.href = "./Vehiculos.html";
-      });
-  }catch(err){
-    console.error(err);
-    Swal.fire("Error","No se pudo guardar el vehículo","error");
+  });
+
+  // ===== Form =====
+  const form = document.getElementById("formVehiculo");
+  const marca  = document.getElementById("marca");
+  const modelo = document.getElementById("modelo");
+  const anio   = document.getElementById("anio");
+  const estado = document.getElementById("estado");
+  const placa  = document.getElementById("placa");
+  const vin    = document.getElementById("vin");
+
+  const y = new Date().getFullYear();
+  if (anio) {
+    anio.setAttribute("min", "1980");
+    anio.setAttribute("max", String(y + 1));
   }
-});
 
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!userId) { alert("Debes iniciar sesión."); return; }
 
-$form?.addEventListener("reset", ()=>{
-  localStorage.removeItem("vehiculoEditarId");
+    const payload = {
+      idCliente: String(userId),
+      marca: (marca.value || "").trim(),
+      modelo: (modelo.value || "").trim(),
+      año: Number(anio.value || 0),       // ← campo año en la BD
+      placa: (placa.value || "").trim(),
+      vin: (vin.value || "").trim(),
+      estado: (estado.value || "").trim() // Excelente / Bueno / Regular / Malo
+    };
+
+    // Validaciones simples
+    if (!payload.marca || !payload.modelo || !payload.año || !payload.placa || !payload.vin || !payload.estado) {
+      alert("Completa todos los campos obligatorios.");
+      return;
+    }
+    if (String(payload.vin).length < 10) {
+      alert("El VIN debe tener al menos 10 caracteres.");
+      return;
+    }
+
+    try {
+      const r = await fetch(API_VEHICULOS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) throw new Error("Bad response");
+
+      alert("Vehículo guardado correctamente.");
+      window.location.href = "./Vehiculos.html";
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo guardar el vehículo.");
+    }
+  });
 });

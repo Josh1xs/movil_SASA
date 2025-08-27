@@ -1,100 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>Vehículo</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Añadir Vehículo</title>
 
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <link rel="stylesheet" href="../CSS/vehiculos.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../CSS/añadirvehiculo.css" />
 </head>
 <body>
-
-   <div id="overlay" class="overlay" aria-hidden="true"></div>
-
-<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-  <div class="menu-header no-avatar">
-    <div class="menu-user">
-      <h3 id="menuNombre">Usuario</h3>
-      <p id="menuPase" class="muted">Cliente</p>
-      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+  <!-- Overlay + Sidebar unificada -->
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
     </div>
-  </div>
-
-  <nav class="menu-list">
-    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
-    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
-    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
-    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-    </a>
-  </nav>
-</aside>
+    <nav class="menu-list">
+      <a href="../dashboard/index.html"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i> Citas</a>
+      <a href="./Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Historial/historial.html"><i class="fa-solid fa-clock"></i> Historial</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
   </aside>
 
-  <!-- App -->
   <main class="app-shell">
+    <!-- Topbar -->
     <header class="topbar">
-      <h1 class="page-title" id="formTitle">Añadir Vehículo</h1>
+      <h1 class="page-title">Añadir Vehículo</h1>
       <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
         <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
       </button>
     </header>
 
+    <!-- Formulario -->
     <section class="section">
       <form id="formVehiculo" class="card form">
-        <div class="grid-form">
-          <div class="field">
-            <label class="label" for="marca">Marca</label>
-            <input id="marca" type="text" class="input" placeholder="Toyota" required>
-          </div>
-          <div class="field">
-            <label class="label" for="modelo">Modelo</label>
-            <input id="modelo" type="text" class="input" placeholder="Corolla" required>
-          </div>
-          <div class="field">
-            <label class="label" for="anio">Año</label>
-            <input id="anio" type="number" class="input" min="1980" max="2099" placeholder="2018" required>
-          </div>
-          <div class="field">
-            <label class="label" for="color">Color (opcional)</label>
-            <input id="color" type="text" class="input" placeholder="Gris">
-          </div>
-          <div class="field">
-            <label class="label" for="placa">Placa</label>
-            <input id="placa" type="text" class="input" placeholder="P123-456" required>
-          </div>
-          <div class="field">
-            <label class="label" for="vin">VIN</label>
-            <input id="vin" type="text" class="input" minlength="11" maxlength="20" placeholder="17 caracteres" required>
-          </div>
-          <div class="field">
-            <label class="label" for="estado">Estado</label>
-            <select id="estado" class="select" required>
+        <div class="row">
+          <label class="label">Marca*
+            <input type="text" id="marca" class="input" placeholder="Toyota, Honda…" required>
+          </label>
+        </div>
+        <div class="row">
+          <label class="label">Modelo*
+            <input type="text" id="modelo" class="input" placeholder="Corolla, Civic…" required>
+          </label>
+        </div>
+        <div class="row grid-2">
+          <label class="label">Año*
+            <input type="number" id="anio" class="input" min="1980" max="2099" placeholder="2020" required>
+          </label>
+          <label class="label">Estado*
+            <select id="estado" class="input" required>
               <option value="">Seleccionar</option>
               <option>Excelente</option>
               <option>Bueno</option>
               <option>Regular</option>
               <option>Malo</option>
             </select>
-          </div>
-          <div class="field full">
-            <label class="label" for="descripcion">Descripción (opcional)</label>
-            <input id="descripcion" type="text" class="input" placeholder="Notas breves del vehículo">
-          </div>
+          </label>
+        </div>
+        <div class="row">
+          <label class="label">Placa*
+            <input type="text" id="placa" class="input" placeholder="P123-456" required>
+          </label>
+        </div>
+        <div class="row">
+          <label class="label">VIN*
+            <input type="text" id="vin" class="input" placeholder="17 caracteres VIN" maxlength="20" required>
+          </label>
         </div>
 
-        <div class="btns">
-          <button type="submit" class="btn primary w100" id="btnGuardar">Guardar</button>
-          <button type="reset" class="btn ghost w100">Limpiar</button>
-          <a href="./Vehiculos.html" class="btn danger w100">Cancelar</a>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Guardar</button>
+          <button type="reset" class="btn ghost">Limpiar</button>
+          <a href="./Vehiculos.html" class="btn danger" id="btnCancelar">Cancelar</a>
         </div>
       </form>
     </section>
@@ -104,12 +94,11 @@
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
-    <a class="tabbar__btn active" href="../Mis Vehiculos/Vehiculos.html" aria-current="page"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="./Vehiculos.html"><i class="fa-solid fa-car"></i></a>
     <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <script src="../JS/añadirvehiculo.js"></script>
-  <script src="../JS/shell.js"></script>
-
+  <!-- MUY IMPORTANTE: sin “ñ” en el nombre del archivo JS -->
+  <script src="../JS/anadirvehiculo.js" defer></script>
 </body>
 </html>
