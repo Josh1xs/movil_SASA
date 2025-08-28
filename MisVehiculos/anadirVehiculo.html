@@ -6,13 +6,12 @@
   <title>Añadir Vehículo</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link rel="stylesheet" href="../CSS/añadirvehiculo.css" />
+  <link rel="stylesheet" href="../CSS/anadirVehiculo.css" />
 </head>
 <body>
-  <!-- Overlay + Sidebar unificada -->
   <div id="overlay" class="overlay" aria-hidden="true"></div>
-  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+  <aside id="profileMenu" class="profile-menu" aria-hidden="true">
+    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
     <div class="menu-header no-avatar">
       <div class="menu-user">
         <h3 id="menuNombre">Usuario</h3>
@@ -35,15 +34,13 @@
   </aside>
 
   <main class="app-shell">
-    <!-- Topbar -->
     <header class="topbar">
       <h1 class="page-title">Añadir Vehículo</h1>
-      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
-        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      <button class="avatar" id="menuToggle">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
       </button>
     </header>
 
-    <!-- Formulario -->
     <section class="section">
       <form id="formVehiculo" class="card form">
         <div class="row">
@@ -63,10 +60,10 @@
           <label class="label">Estado*
             <select id="estado" class="input" required>
               <option value="">Seleccionar</option>
-              <option>Excelente</option>
-              <option>Bueno</option>
-              <option>Regular</option>
-              <option>Malo</option>
+              <option value="1">Excelente</option>
+              <option value="2">Bueno</option>
+              <option value="3">Regular</option>
+              <option value="4">Malo</option>
             </select>
           </label>
         </div>
@@ -80,25 +77,26 @@
             <input type="text" id="vin" class="input" placeholder="17 caracteres VIN" maxlength="20" required>
           </label>
         </div>
-
         <div class="form-actions">
           <button type="submit" class="btn primary">Guardar</button>
           <button type="reset" class="btn ghost">Limpiar</button>
-          <a href="./Vehiculos.html" class="btn danger" id="btnCancelar">Cancelar</a>
+          <a href="./Vehiculos.html" class="btn danger">Cancelar</a>
         </div>
       </form>
     </section>
   </main>
 
-  <!-- Tabbar -->
-  <nav class="tabbar" aria-label="Navegación principal">
+  <nav class="tabbar">
     <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
-    <a class="tabbar__btn" href="./Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn active" href="./Vehiculos.html"><i class="fa-solid fa-car"></i></a>
     <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <!-- MUY IMPORTANTE: sin “ñ” en el nombre del archivo JS -->
-  <script src="../JS/anadirvehiculo.js" defer></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="../JS/anadirVehiculos.js"></script>
+<script type="module" src="../JS/anadirVehiculos.js"></script>
 </body>
 </html>

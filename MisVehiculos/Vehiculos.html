@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mis Vehículos</title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="../CSS/vehiculos.css" />
+</head>
+<body>
+  <!-- Overlay -->
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+  <!-- Menú Perfil -->
+  <aside id="profileMenu" class="profile-menu" aria-hidden="true">
+    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
+    </div>
+    <nav class="menu-list">
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+      <a href="./Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="./anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
+
+  <!-- App -->
+  <main class="app-shell">
+    <header class="topbar">
+      <h1 class="page-title">Mis Vehículos</h1>
+      <button class="avatar" id="menuToggle">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
+      </button>
+    </header>
+
+    <section class="section head-actions">
+      <a href="anadirVehiculo.html" class="add-link">
+        <i class="fa-solid fa-plus"></i> Añadir
+      </a>
+    </section>
+
+    <section class="section">
+      <div id="vehiculosLista" class="grid"></div>
+      <p id="vehEmpty" class="muted hidden" style="text-align:center;">No tienes vehículos registrados.</p>
+    </section>
+  </main>
+
+  <!-- Tabbar -->
+  <nav class="tabbar">
+    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn active" href="./Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
+  </nav>
+
+<script type="module" src="../JS/vehiculos.js"></script>
+</body>
+</html>

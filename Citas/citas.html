@@ -21,7 +21,6 @@
       </button>
     </header>
 
-    <!-- Calendario -->
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
@@ -35,54 +34,48 @@
       </div>
     </section>
 
-    <!-- Formulario -->
-    <section class="section">
-      <form id="formCita" class="form card" autocomplete="off">
-        <input type="hidden" id="fechaSeleccionada" />
 
-        <div class="field">
-          <label class="label" for="horaInput">Hora</label>
-          <input type="time" id="horaInput" class="input" step="900" required />
-          <div id="timeHint" class="subhint">Selecciona una fecha para ver el horario permitido.</div>
-        </div>
+<section class="section">
+  <form id="formCita" class="form card" autocomplete="off">
+    <input type="hidden" id="fechaSeleccionada" />
 
-        <div class="field">
-          <label class="label" for="vehiculoSelect">Selecciona tu vehículo</label>
-          <select id="vehiculoSelect" class="select" required>
-            <option value="">Cargando vehículos…</option>
-          </select>
-        </div>
+    <div class="field">
+      <label class="label" for="horaInput">Hora</label>
+      <input type="time" id="horaInput" class="input" step="900" required />
+      <div id="timeHint" class="subhint">Selecciona una fecha para ver el horario permitido.</div>
+    </div>
 
-        <div class="field">
-          <label class="label" for="estado">Tipo de servicio</label>
-          <select id="estado" class="select" required>
-            <option value="">Seleccionar</option>
-            <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
-            <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
-          </select>
-        </div>
+    <div class="field">
+      <label class="label" for="vehiculoSelect">Selecciona tu vehículo</label>
+      <select id="vehiculoSelect" class="select" required>
+        <option value="">Cargando vehículos…</option>
+      </select>
+    </div>
 
-        <div class="field">
-          <label class="label" for="descripcion">Detalles (opcional)</label>
-          <input type="text" id="descripcion" class="input" placeholder="Describe brevemente el motivo de la cita" />
-        </div>
+    <div class="field">
+      <label class="label" for="estado">Tipo de servicio</label>
+      <select id="estado" class="select" required>
+        <option value="">Seleccionar</option>
+        <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
+        <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" id="btnEnviar" class="btn primary w100">
+        <i class="fa-regular fa-paper-plane"></i> Enviar
+      </button>
+      <button type="reset" class="btn ghost w100">
+        <i class="fa-solid fa-eraser"></i> Limpiar
+      </button>
+      <a href="../dashboard/index.html" class="btn danger w100">
+        <i class="fa-solid fa-xmark"></i> Cancelar
+      </a>
+    </div>
+  </form>
+</section>
 
 
-        <div class="form-actions">
-          <button type="submit" id="btnEnviar" class="btn primary w100">
-            <i class="fa-regular fa-paper-plane"></i> Enviar
-          </button>
-          <button type="reset" class="btn ghost w100">
-            <i class="fa-solid fa-eraser"></i> Limpiar
-          </button>
-          <a href="../dashboard/index.html" class="btn danger w100">
-            <i class="fa-solid fa-xmark"></i> Cancelar
-          </a>
-        </div>
-      </form>
-    </section>
-
-    <!-- Mis Citas -->
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
       <div id="listaCitas" class="list"></div>
@@ -104,8 +97,8 @@
   <nav class="menu-list">
     <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
     <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../Mis Vehiculos/AñadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+    <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+    <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
     <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
     <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
     <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
@@ -115,11 +108,11 @@
   </nav>
 </aside>
   
-  <!-- Tabbar-->
+
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" data-tab="home" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn active" data-tab="citas" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
-    <a class="tabbar__btn" data-tab="vehiculos" href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" data-tab="vehiculos" href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
     <a class="tabbar__btn" data-tab="ajustes" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 

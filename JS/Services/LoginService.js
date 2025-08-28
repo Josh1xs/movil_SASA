@@ -1,16 +1,36 @@
-const API_URL = "http://localhost:8080/apiCliente";
+const API_URL = "http://localhost:8080/apiUsuario";
 
-function parseResponse(json) {
-  if (Array.isArray(json)) return json;                // si ya es array
-  if (json.data?.content) return json.data.content;    // si viene dentro de data.content
-  if (json.content) return json.content;               // si viene como content
-  if (json.data) return json.data;                     // si viene solo en data
-  return [];                                           // vacío o estructura rara
+export async function login(nombreUsuario, contrasena) {
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombreUsuario, contrasena })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json.status !== "success") {
+      throw new Error(json.message || "Error en login");
+    }
+
+    return json; // {status, data, message}
+  } catch (error) {
+    console.error("Error en login:", error);
+    throw error;
+  }
 }
 
-export async function getUsuarios() {
-    const res = await fetch(`${API_URL}/consultar`);
-    if (!res.ok) throw new ("Error al obtener usuarios");
-    const json = await res.json();
-    return parseResponse(json);
+export function getUsuarioLogueado() {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
+}
+
+export function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "../login/login.html";
+}
+
+export function isLoggedIn() {
+  return localStorage.getItem("user") !== null;
 }

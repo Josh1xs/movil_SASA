@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const userId        = localStorage.getItem("userId");
-  const API_USER      = `https://retoolapi.dev/DeaUI0/registro/${userId}`;
-  const API_CITAS     = `https://retoolapi.dev/2Kfhrs/cita`;
-  const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
-
+  const API_USER      = `http://localhost:8080/apiUsuario/${userId}`;
+  const API_CITAS = "http://localhost:8080/apiCitas/consultar";
+  const API_VEHICULOS = "http://localhost:8080/apiVehiculo/consultar";
 
   const overlay      = document.getElementById("overlay");
   const profileMenu  = document.getElementById("profileMenu");
@@ -23,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const listaVehiculosDashboard = document.getElementById("listaVehiculosDashboard");
   const tplVehiculo   = document.getElementById("tplVehiculoCard");
 
-  
   function abrirMenu(){
     profileMenu?.classList.add("open");
     overlay?.classList.add("show");
@@ -45,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", cerrarMenu);
   window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
 
-
   if (menuUserId) menuUserId.textContent = userId || "Desconocido";
 
   if (userId) {
@@ -66,10 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
     nombreHeader && (nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario");
   }
 
-
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
-    try {  } catch {}
+    try { } catch {}
     finally {
       ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
@@ -78,10 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
   const setText = (el, v) => { if (el) el.textContent = v ?? "—"; };
-  const setBg   = (el, css) => { if (el) el.style.backgroundImage = css; };
-
   const fechaISOaObj = (iso) => {
     if (!iso) return null;
     const [y,m,d] = iso.split("-").map(Number);
@@ -110,20 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${pre}, ${hora || "—"}`;
   };
 
-  
-  const FAV_KEY = "citas_favoritas";
-  const getFavs = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch { return []; } };
-  const setFavs = (arr) => localStorage.setItem(FAV_KEY, JSON.stringify(arr));
-  const toggleFav = (id) => {
-    const list = getFavs();
-    const sid = String(id);
-    const i = list.indexOf(sid);
-    i === -1 ? list.push(sid) : list.splice(i, 1);
-    setFavs(list);
-    return list.includes(sid);
-  };
-
-  
   let citasRaw = [];
   let filtro = "hoy";
 
@@ -146,164 +125,38 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderCitas(){
     if (!citasHomeList) return;
     citasHomeList.innerHTML = "";
-
     let items = (citasRaw || []).filter(c => String(c.idCliente) === String(userId));
     items = filtrarCitas(items);
-
-  
-    const favs = getFavs();
-    items.sort((a,b) => {
-      const af = favs.includes(String(a.id));
-      const bf = favs.includes(String(b.id));
-      if (af && !bf) return -1;
-      if (!af && bf) return 1;
-      const da = fechaISOaObj(a.fecha) || new Date(0);
-      const db = fechaISOaObj(b.fecha) || new Date(0);
-      return da - db;
-    });
-
-   
-    if (!tplCita) {
-      if (!items.length) {
-        citasHomeList.innerHTML = `<div class="empty-state">No hay citas en este filtro.</div>`;
-        return;
-      }
-      citasHomeList.innerHTML = items.map(c => `
-        <article class="card card-hero" role="link" tabindex="0" data-id="${c.id}">
-          <div class="card-hero__img"></div>
-          <div class="card-hero__overlay">
-            <div class="pill"><i class="fa-regular fa-clock"></i><span>${c.hora ?? "—"}</span></div>
-            <div class="title">${c.descripcion || "Sin descripción"}</div>
-            <div class="meta">
-              <button class="cita-remaining-btn" data-fecha="${c.fecha||""}" data-hora="${c.hora||""}">
-                <i class="fa-solid fa-hourglass-half"></i>
-              </button>
-              <div class="cita-code">#CITA-${c.id}</div>
-            </div>
-          </div>
-        </article>
-      `).join("");
-
-      citasHomeList.querySelectorAll(".card-hero").forEach(card=>{
-        card.addEventListener("click",()=>location.href=`../Citas/detallecitas.html?id=${card.dataset.id}`);
-        card.addEventListener("keydown",(e)=>{ if(e.key==="Enter") card.click(); });
-      });
-      return;
-    }
-
-  
     if (!items.length) {
-      citasHomeList.innerHTML = `<div class="empty-state">${
-        filtro==="hoy" ? "No tienes citas para hoy." :
-        filtro==="semana" ? "No hay citas esta semana." : "Sin citas registradas."
-      }</div>`;
+      citasHomeList.innerHTML = `<div class="empty-state">Sin citas en este filtro.</div>`;
       return;
     }
-
     const frag = document.createDocumentFragment();
     items.forEach(cita => {
       const el = tplCita.content.firstElementChild.cloneNode(true);
-
-    
-      const img = el.querySelector(".card-hero__img");
-      const cover = cita.cover || cita.imagen || cita.img;
-      cover ? setBg(img, `url('${cover}')`) : setBg(img, "none");
-
-     
       setText(el.querySelector(".pill span"), fmtLabelHora(cita.fecha, cita.hora));
       setText(el.querySelector(".title"), cita.descripcion || "Sin descripción");
       setText(el.querySelector(".cita-code"), `#CITA-${cita.id}`);
-
-     
-      const btnTime = el.querySelector(".cita-remaining-btn");
-      btnTime.dataset.fecha = cita.fecha || "";
-      btnTime.dataset.hora  = cita.hora  || "";
-      btnTime.title = "Tiempo restante";
-
-     
-      const btnFav = el.querySelector(".fav");
-      const icon   = btnFav.querySelector("i");
-      if (getFavs().includes(String(cita.id))) {
-        btnFav.classList.add("is-active");
-        el.classList.add("is-pinned");
-        icon.classList.remove("fa-regular"); icon.classList.add("fa-solid");
-      }
-      btnFav.addEventListener("click", (ev) => {
-        ev.preventDefault(); ev.stopPropagation();
-        const active = toggleFav(cita.id);
-        if (active) {
-          btnFav.classList.add("is-active");
-          el.classList.add("is-pinned");
-          icon.classList.remove("fa-regular"); icon.classList.add("fa-solid");
-        } else {
-          btnFav.classList.remove("is-active");
-          el.classList.remove("is-pinned");
-          icon.classList.remove("fa-solid"); icon.classList.add("fa-regular");
-        }
-        renderCitas();
-      });
-
-     
-      el.addEventListener("click", () => location.href = `../Citas/detallecitas.html?id=${encodeURIComponent(cita.id)}`);
-      el.addEventListener("keydown", (e) => { if (e.key === "Enter") el.click(); });
-
       frag.appendChild(el);
     });
-
     citasHomeList.appendChild(frag);
   }
-
- 
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".cita-remaining-btn");
-    if (!btn) return;
-    const fecha = btn.dataset.fecha;
-    const hora  = btn.dataset.hora;
-    if (!fecha || !hora) return;
-
-    const when = new Date(`${fecha}T${hora}:00`);
-    const now  = new Date();
-    const diff = when - now;
-
-    const msg = (diff <= 0) ? "La cita ya pasó" : (() => {
-      const totalMin = Math.floor(diff / 60000);
-      const d = Math.floor(totalMin / 1440);
-      const h = Math.floor((totalMin % 1440) / 60);
-      const m = totalMin % 60;
-      const parts = [];
-      if (d) parts.push(`${d} día${d>1?"s":""}`);
-      if (h) parts.push(`${h} h`);
-      parts.push(`${m} min`);
-      return parts.join(" ");
-    })();
-
-    if (window.Swal) {
-      Swal.fire({
-        icon: diff > 0 ? "info" : "warning",
-        title: "Tiempo restante",
-        text: `${msg} para tu cita (${fecha} ${hora})`,
-        confirmButtonColor: "#c91a1a"
-      });
-    } else {
-      alert(`${msg} para tu cita (${fecha} ${hora})`);
-    }
-  });
-
 
   if (userId && citasHomeList) {
     fetch(API_CITAS, { cache: "no-store" })
       .then(res => res.json())
-      .then(data => { citasRaw = Array.isArray(data) ? data : []; renderCitas(); })
+      .then(json => {
+        citasRaw = json.data?.content || json;
+        renderCitas();
+      })
       .catch(() => { citasRaw = []; renderCitas(); });
   }
 
-
   function renderVehiculos(vehiculos){
     if (!listaVehiculosDashboard) return;
-
     if (!vehiculos.length) {
       listaVehiculosDashboard.innerHTML = `
-        <a class="card vehicle add-card" href="../Mis Vehiculos/AñadirVehiculo.html">
+        <a class="card vehicle add-card" href="../MisVehiculos/anadirVehiculo.html">
           <div class="vehicle__img" style="display:grid;place-items:center;background:#fff;border:1px dashed #e5e7eb;">
             <i class="fa-solid fa-plus" style="color:var(--brand);font-size:20px"></i>
           </div>
@@ -315,24 +168,17 @@ document.addEventListener("DOMContentLoaded", () => {
         </a>`;
       return;
     }
-
     const frag = document.createDocumentFragment();
     vehiculos.forEach(v => {
       const el = tplVehiculo.content.firstElementChild.cloneNode(true);
-      const img = el.querySelector(".vehicle__img");
-      if (img && (v.foto || v.cover)) img.style.backgroundImage = `url('${v.foto || v.cover}')`;
-
       el.querySelector(".vehicle__name").textContent =
         `${v.marca || "Vehículo"} ${v.modelo || ""}`.trim();
-
       const ps = el.querySelectorAll(".vehicle__body p");
       ps[0].innerHTML = `<span>Color:</span> ${v.color || "—"}`;
       ps[1].innerHTML = `<span>Placa:</span> ${v.placa || "—"}`;
       ps[2].innerHTML = `<span>VIN:</span> ${v.vin || "—"}`;
-
       frag.appendChild(el);
     });
-
     listaVehiculosDashboard.innerHTML = "";
     listaVehiculosDashboard.appendChild(frag);
   }
@@ -340,15 +186,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (userId && listaVehiculosDashboard) {
     fetch(API_VEHICULOS, { cache: "no-store" })
       .then(res => res.json())
-      .then(data => {
-        const vehiculos = (Array.isArray(data) ? data : [])
-          .filter(v => String(v.idCliente) === String(userId));
+      .then(json => {
+        const data = json.data?.content || json;
+        const vehiculos = data.filter(v => String(v.idCliente) === String(userId));
         renderVehiculos(vehiculos);
       })
       .catch(() => renderVehiculos([]));
   }
 
- 
   const fab = document.querySelector(".fab");
   if (fab) {
     let lastY = window.scrollY || 0;
@@ -359,7 +204,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lastY = y;
     }, { passive:true });
   }
-
 
   (function setupSearchGo(){
     const input = document.getElementById("searchInput");
@@ -379,4 +223,50 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", go);
     input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); go(); }});
   })();
+
+  const selectCliente = document.getElementById("selectCliente");
+  if (selectCliente) {
+    selectCliente.addEventListener("change", async (e) => {
+      const clienteId = e.target.value;
+      if (!clienteId) return;
+      try {
+        const respCliente = await fetch(`http://localhost:8080/apiCliente/${clienteId}`);
+        const cliente = await respCliente.json();
+        const respVehiculos = await fetch("http://localhost:8080/apiVehiculo/consultar");
+        const allVehiculos = await respVehiculos.json();
+        const vehiculos = (allVehiculos.data?.content || allVehiculos).filter(v => String(v.idCliente) === String(clienteId));
+        const respCitas = await fetch("http://localhost:8080/apiCitas/consultar");
+        const allCitas = await respCitas.json();
+        const citas = (allCitas.data?.content || allCitas).filter(c => String(c.idCliente) === String(clienteId));
+        const respPagos = await fetch("http://localhost:8080/apiPagos/consultar");
+        const allPagos = await respPagos.json();
+        const pagos = (allPagos.data?.content || allPagos).filter(p => String(p.idCliente) === String(clienteId));
+        const html = `
+          <div style="text-align:left">
+            <p><strong>Vehículos:</strong> ${vehiculos.length}</p>
+            <ul>
+              ${vehiculos.map(v => `<li>${v.marca} ${v.modelo} (${v.placa || "sin placa"})</li>`).join("") || "<li>Ninguno</li>"}
+            </ul>
+            <p><strong>Citas:</strong> ${citas.length}</p>
+            <ul>
+              ${citas.map(c => `<li>${c.fecha} - ${c.descripcion || "sin descripción"}</li>`).join("") || "<li>Ninguna</li>"}
+            </ul>
+            <p><strong>Pagos:</strong> ${pagos.length}</p>
+            <ul>
+              ${pagos.map(p => `<li>Monto: $${p.monto} - ${p.fecha}</li>`).join("") || "<li>Ninguno</li>"}
+            </ul>
+          </div>
+        `;
+        Swal.fire({
+          title: `${cliente.nombre} ${cliente.apellido}`,
+          html,
+          icon: "info",
+          confirmButtonColor: "#c91a1a",
+          width: 600
+        });
+      } catch (err) {
+        Swal.fire("Error", "No se pudo cargar la información del cliente", "error");
+      }
+    });
+  }
 });

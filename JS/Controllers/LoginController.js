@@ -1,51 +1,39 @@
-import { getUsuarios } from "../Services/LoginService.js";
-
-function parseResponse(apiResponse) {
-  if (Array.isArray(apiResponse)) return apiResponse;
-  if (apiResponse.data?.content) return apiResponse.data.content;
-  if (apiResponse.content) return apiResponse.content;
-  if (apiResponse.data) return apiResponse.data;
-  return [];
-}
-
-let usuariosCache = [];
-
-async function loadUsuarios() {
-    try {
-        const usuarios = await getUsuarios();
-        usuariosCache = usuarios;
-    } catch (e) {
-        console.error("Error al cargar usuarios:", e);
-    }
-}
+import { login } from "../Services/LoginService.js";
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+  const nombreUsuario = document.getElementById("email").value.trim();
+  const contrasena = document.getElementById("password").value.trim();
 
-    if (!usuariosCache.length) {
-        try {
-            usuariosCache = await getUsuarios();
-        } catch (e) {
-            console.error(e)
-        }
-    }
+  if (!nombreUsuario || !contrasena) {
+    return Swal.fire({
+      icon: "warning",
+      title: "Campos vacíos",
+      text: "Debes ingresar usuario y contraseña"
+    });
+  }
 
-    const usuario = usuariosCache.find(u => (u.correo === email) && (u.contrasena === password));
-    if (usuario) {
-        localStorage.setItem("userId", String(usuario.id));
-        localStorage.setItem("userCorreo", usuario.correo || "");
-        localStorage.setItem("userNombre", usuario.nombre || "");
+  try {
+    const result = await login(nombreUsuario, contrasena);
 
-        window.location.href = "../../dashboard/index.html"
-    } else {
-        Swal.fire({
-            icon: "error",
-            title: "Error de autenticación",
-            text: "Correo o contraseña incorrectos"
-        })
-    }
+    // Guardamos en localStorage
+    localStorage.setItem("user", JSON.stringify(result.data));
+    localStorage.setItem("userId", result.data.id);
+
+    Swal.fire({
+      icon: "success",
+      title: "Bienvenido",
+      text: `Hola ${result.data.nombreUsuario}`
+    }).then(() => {
+      window.location.href = "../../dashboard/index.html";
+    });
+
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error de autenticación",
+      text: "Usuario o contraseña incorrectos"
+    });
+  }
 });
-document.addEventListener("DOMContentLoaded", loadUsuarios);

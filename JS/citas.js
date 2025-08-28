@@ -1,146 +1,286 @@
 document.addEventListener("DOMContentLoaded", () => {
-
   const userId = localStorage.getItem("userId");
-  const API_USER      = userId ? `https://retoolapi.dev/DeaUI0/registro/${userId}` : null;
-  const API_CITAS     = `https://retoolapi.dev/2Kfhrs/cita`;
-  const API_VEHICULOS = "https://retoolapi.dev/4XQf28/anadirvehiculo";
 
+  const API_CITAS     = "http://localhost:8080/apiCitas";
+  const API_VEHICULOS = "http://localhost:8080/apiVehiculo/consultar";
 
-  const overlay     = document.getElementById("overlay");
-  const profileMenu = document.getElementById("profileMenu");
-  const menuToggle  = document.getElementById("menuToggle");
-  const closeMenu   = document.getElementById("closeMenu");
-  const logoutBtn   = document.getElementById("logoutBtn");
+  // === DOM ===
+  const formCita      = document.getElementById("formCita");
+  const fechaHidden   = document.getElementById("fechaSeleccionada");
+  const horaInput     = document.getElementById("horaInput");
+  const vehiculoSel   = document.getElementById("vehiculoSelect");
+  const estadoSel     = document.getElementById("estado");
+  const listaCitas    = document.getElementById("listaCitas");
+  const timeHint      = document.getElementById("timeHint");
+  const btnEnviar     = document.getElementById("btnEnviar");
 
+  // Banner dinámico de edición
+  let editBanner = null;
+  let editingId = null;
+
+  // === Vehículos ===
+  async function loadVehiculos() {
+    vehiculoSel.innerHTML = `<option value="">Cargando vehículos…</option>`;
+    try {
+      const r = await fetch(API_VEHICULOS);
+      const data = await r.json();
+      const mis = (data.data?.content || data).filter(v => String(v.idCliente) === String(userId));
+      if (!mis.length) {
+        vehiculoSel.innerHTML = `<option value="">No tienes vehículos registrados</option>`;
+        vehiculoSel.disabled = true;
+        return;
+      }
+      vehiculoSel.disabled = false;
+      vehiculoSel.innerHTML = `<option value="">Selecciona</option>` + mis.map(v =>
+        `<option value="${v.idVehiculo}">${v.marca} ${v.modelo} — ${v.placa}</option>`).join("");
+    } catch {
+      vehiculoSel.innerHTML = `<option value="">Error cargando vehículos</option>`;
+      vehiculoSel.disabled = true;
+    }
+  }
+  loadVehiculos();
+
+  // === Cargar mis citas ===
+  async function cargarMisCitas() {
+    listaCitas.innerHTML = "";
+    try {
+      const r = await fetch(`${API_CITAS}/consultar`);
+      const json = await r.json();
+      const mias = (json.data?.content || json).filter(c => String(c.idCliente) === String(userId));
+
+      if (!mias.length) {
+        listaCitas.innerHTML = `<div class="card"><p class="muted">Aún no tienes citas.</p></div>`;
+        localStorage.setItem("citas", "[]");
+        return;
+      }
+
+      // ✅ Guardar en localStorage
+      localStorage.setItem("citas", JSON.stringify(mias));
+
+      mias.sort((a,b)=> new Date(`${a.fecha}T${a.hora||"00:00"}`) - new Date(`${b.fecha}T${b.hora||"00:00"}`));
+
+      listaCitas.innerHTML = mias.map(c => `
+        <div class="card cita-item">
+          <div class="cita-top-row">
+            <strong>#CITA-${c.id}</strong>
+            <span class="pill">${c.estado||"Pendiente"}</span>
+          </div>
+          <div class="cita-row"><span class="k">Fecha</span><span class="v">${c.fecha} ${c.hora||""}</span></div>
+          <div class="cita-actions" style="margin-top:8px;display:flex;gap:8px;">
+            <button class="btn ghost btn-edit" 
+              data-id="${c.id}" 
+              data-fecha="${c.fecha}" 
+              data-hora="${c.hora}" 
+              data-vehiculo="${c.idVehiculo}">
+              Editar
+            </button>
+            <button class="btn danger btn-del" data-id="${c.id}">Eliminar</button>
+          </div>
+        </div>
+      `).join("");
+    } catch {
+      listaCitas.innerHTML = `<div class="card"><p class="muted">Error cargando tus citas.</p></div>`;
+    }
+  }
+  cargarMisCitas();
+
+  // === Crear o Editar cita ===
+  formCita?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!userId) {
+      Swal.fire({icon:"info",title:"Debes iniciar sesión"});
+      return;
+    }
+
+    const fecha = fechaHidden.value;
+    const hora  = horaInput.value;
+    const vehId = vehiculoSel.value;
+    const servicio = estadoSel.value;
+
+    if (!fecha || !hora || !vehId || !servicio) {
+      Swal.fire({icon:"info",title:"Campos incompletos"});
+      return;
+    }
+
+    const payload = {
+      fecha,
+      hora: hora.length === 5 ? hora + ":00" : hora,
+      estado: "Pendiente",
+      idCliente: Number(userId),
+      idVehiculo: Number(vehId)
+    };
+
+    try {
+      if (editingId) {
+        // actualizar
+        const r = await fetch(`${API_CITAS}/actualizar/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error();
+        Swal.fire({icon:"success",title:"Cita actualizada"});
+
+        // ✅ actualizar localStorage
+        let citas = JSON.parse(localStorage.getItem("citas") || "[]");
+        citas = citas.map(c => c.id == editingId ? {...c, ...payload} : c);
+        localStorage.setItem("citas", JSON.stringify(citas));
+
+      } else {
+        // crear
+        const r = await fetch(`${API_CITAS}/registrar`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!r.ok) throw new Error();
+        const nueva = await r.json();
+        Swal.fire({icon:"success",title:"Cita creada"});
+
+        // ✅ guardar en localStorage
+        let citas = JSON.parse(localStorage.getItem("citas") || "[]");
+        citas.push(nueva.data || payload);
+        localStorage.setItem("citas", JSON.stringify(citas));
+      }
+
+      resetForm();
+      cargarMisCitas();
+    } catch {
+      Swal.fire({icon:"error",title:"Error",text:"No se pudo guardar la cita"});
+    }
+  });
+
+  // === Delegación para Editar y Eliminar ===
+  document.addEventListener("click", async (e) => {
+    const btnEdit = e.target.closest(".btn-edit");
+    const btnDel  = e.target.closest(".btn-del");
+
+    // Eliminar
+    if (btnDel) {
+      const id = btnDel.dataset.id;
+      const confirm = await Swal.fire({
+        icon:"warning",
+        title:"¿Eliminar cita?",
+        text:"Esta acción no se puede deshacer",
+        showCancelButton:true,
+        confirmButtonColor:"#c91a1a",
+        confirmButtonText:"Sí, eliminar",
+        cancelButtonText:"Cancelar"
+      });
+      if (confirm.isConfirmed) {
+        try {
+          const r = await fetch(`${API_CITAS}/eliminar/${id}`, { method:"DELETE" });
+          if (!r.ok) throw new Error();
+          Swal.fire({icon:"success",title:"Cita eliminada"});
+
+          // ✅ actualizar localStorage
+          let citas = JSON.parse(localStorage.getItem("citas") || "[]");
+          citas = citas.filter(c => c.id != id);
+          localStorage.setItem("citas", JSON.stringify(citas));
+
+          cargarMisCitas();
+        } catch {
+          Swal.fire({icon:"error",title:"Error",text:"No se pudo eliminar"});
+        }
+      }
+    }
+
+    // Editar
+    if (btnEdit) {
+      editingId = btnEdit.dataset.id;
+      fechaHidden.value = btnEdit.dataset.fecha;
+      horaInput.value   = btnEdit.dataset.hora;
+      vehiculoSel.value = btnEdit.dataset.vehiculo || "";
+
+      btnEnviar.innerHTML = `<i class="fa-solid fa-pen"></i> Actualizar`;
+
+      if (!editBanner) {
+        editBanner = document.createElement("div");
+        editBanner.style.background = "#fef2f2";
+        editBanner.style.color = "#c91a1a";
+        editBanner.style.padding = "10px";
+        editBanner.style.marginBottom = "10px";
+        editBanner.style.borderRadius = "12px";
+        editBanner.style.fontWeight = "600";
+        editBanner.innerHTML = `
+          Estás editando una cita. 
+          <button id="btnCancelEdit" class="btn ghost" style="margin-left:10px;">Cancelar</button>
+        `;
+        formCita.prepend(editBanner);
+      }
+    }
+  });
+
+  // Cancelar edición
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "btnCancelEdit") {
+      resetForm();
+    }
+  });
+
+  // === Reset formulario ===
+  function resetForm() {
+    formCita.reset();
+    fechaHidden.value = "";
+    editingId = null;
+    btnEnviar.innerHTML = `<i class="fa-regular fa-paper-plane"></i> Enviar`;
+
+    if (editBanner) {
+      editBanner.remove();
+      editBanner = null;
+    }
+  }
+
+  // === Calendar ===
   const mesActualEl   = document.getElementById("mesActual");
   const prevMonthBtn  = document.getElementById("prevMonth");
   const nextMonthBtn  = document.getElementById("nextMonth");
   const calendario    = document.getElementById("calendario");
 
-  const formCita      = document.getElementById("formCita");
-  const fechaHidden   = document.getElementById("fechaSeleccionada");
-  const horaInput     = document.getElementById("horaInput");
-  const timeHint      = document.getElementById("timeHint");
-  const vehiculoSel   = document.getElementById("vehiculoSelect");
-  const estadoSel     = document.getElementById("estado");     
-  const descripcionIn = document.getElementById("descripcion");
-
-  const listaCitas    = document.getElementById("listaCitas");
-
-
-  function abrirMenu() {
-    profileMenu?.classList.add("open");
-    overlay?.classList.add("show");
-    overlay?.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-  function cerrarMenu() {
-    profileMenu?.classList.remove("open");
-    overlay?.classList.remove("show");
-    overlay?.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-  }
-  menuToggle?.addEventListener("click", () => {
-    menuToggle.classList.add("spin");
-    setTimeout(() => menuToggle.classList.remove("spin"), 600);
-    abrirMenu();
-  });
-  closeMenu?.addEventListener("click", cerrarMenu);
-  overlay?.addEventListener("click", cerrarMenu);
-  window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
-
-
-  if (userId && API_USER) {
-    fetch(API_USER)
-      .then(r => r.json())
-      .then(user => {
-        const nombre = `${user?.nombre ?? ""} ${user?.apellido ?? ""}`.trim() || "Usuario";
-        document.getElementById("menuNombre") && (document.getElementById("menuNombre").textContent = nombre);
-        document.getElementById("menuPase")   && (document.getElementById("menuPase").textContent   = user?.pase || "Cliente");
-        document.getElementById("menuUserId") && (document.getElementById("menuUserId").textContent = userId);
-      })
-      .catch(()=>{});
-  } else {
-    document.getElementById("menuUserId") && (document.getElementById("menuUserId").textContent = "Desconocido");
-  }
-
-
-  logoutBtn?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    try {} finally {
-      ["userId","nombre","name","email","pase","authToken","token","refreshToken"].forEach(k => localStorage.removeItem(k));
-      sessionStorage.clear();
-      document.cookie = "authToken=; Max-Age=0; path=/";
-      const redirectTo = logoutBtn.getAttribute("href") || "../Authenticator/login.html";
-      window.location.replace(redirectTo);
-    }
-  });
-
-
-  const fmtMoney = n => Number(n||0).toLocaleString("es-SV",{style:"currency",currency:"USD"});
   const two = n => String(n).padStart(2,"0");
   const toISO = (d) => `${d.getFullYear()}-${two(d.getMonth()+1)}-${two(d.getDate())}`;
 
-
   function nextBusinessDates(limit = 20) {
-    const set = new Set();
-    const d = new Date(); 
-    while (set.size < limit) {
-      const dow = d.getDay(); 
-      if (dow >= 1 && dow <= 5) {
-        set.add(toISO(d));
-      }
+    const list = [];
+    const d = new Date();
+    while (list.length < limit) {
+      const dow = d.getDay();
+      if (dow >= 1 && dow <= 5) list.push(toISO(new Date(d)));
       d.setDate(d.getDate() + 1);
     }
-    return set;
+    return list;
   }
-
 
   const today = new Date();
   let viewYear  = today.getFullYear();
   let viewMonth = today.getMonth();
   const disponibles = nextBusinessDates(20);
 
-
   function nombreMesES(y, m) {
-    const date = new Date(y, m, 1);
-    return date.toLocaleDateString("es", { month: "long", year: "numeric" })
+    return new Date(y, m, 1).toLocaleDateString("es", { month: "long", year: "numeric" })
       .replace(/^\w/, c => c.toUpperCase());
   }
 
   function renderCalendar() {
     if (!calendario) return;
     calendario.innerHTML = "";
-
- 
-    if (mesActualEl) mesActualEl.textContent = nombreMesES(viewYear, viewMonth);
+    mesActualEl.textContent = nombreMesES(viewYear, viewMonth);
 
     const dias = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"];
-    const headFrag = document.createDocumentFragment();
     dias.forEach(d => {
       const h = document.createElement("div");
       h.className = "cal-head";
       h.textContent = d;
-      headFrag.appendChild(h);
+      calendario.appendChild(h);
     });
-    calendario.appendChild(headFrag);
 
-  
     const first = new Date(viewYear, viewMonth, 1);
-    let startDow = first.getDay();
-    if (startDow === 0) startDow = 7; 
-    const blanks = startDow - 1; 
-
-
-    for (let i = 0; i < blanks; i++) {
-      const div = document.createElement("div");
-      div.className = "cal-cell cal-empty";
-      calendario.appendChild(div);
+    let startDow = first.getDay(); if (startDow === 0) startDow = 7;
+    for (let i = 0; i < startDow - 1; i++) {
+      calendario.appendChild(Object.assign(document.createElement("div"),{className:"cal-cell cal-empty"}));
     }
 
-
     const lastDate = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const frag = document.createDocumentFragment();
     for (let day = 1; day <= lastDate; day++) {
       const cell = document.createElement("button");
       cell.type = "button";
@@ -150,216 +290,29 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.dataset.date = iso;
       cell.textContent = String(day);
 
+      if (iso === toISO(today)) cell.classList.add("is-today");
 
-      const isToday = iso === toISO(today);
-      const isAvailable = disponibles.has(iso);
-      if (isToday) cell.classList.add("is-today");
-      if (isAvailable) cell.classList.add("is-available");
-      else cell.classList.add("is-disabled");
-
-      cell.addEventListener("click", () => {
-        if (!isAvailable) return;
-
-        calendario.querySelectorAll(".cal-day.selected").forEach(el => el.classList.remove("selected"));
-        cell.classList.add("selected");
-        fechaHidden.value = iso;
-
-        if (timeHint) timeHint.textContent = "Horario permitido: 07:00–16:00";
-     
-        if (horaInput) {
+      if (disponibles.includes(iso)) {
+        cell.classList.add("is-available");
+        cell.addEventListener("click", () => {
+          calendario.querySelectorAll(".cal-day.selected").forEach(el => el.classList.remove("selected"));
+          cell.classList.add("selected");
+          fechaHidden.value = iso;
+          timeHint.textContent = "Horario permitido: 07:00–16:00";
           horaInput.min = "07:00";
           horaInput.max = "16:00";
           if (!horaInput.value) horaInput.value = "07:00";
-        }
-      });
+        });
+      } else {
+        cell.classList.add("is-disabled");
+      }
 
-      frag.appendChild(cell);
+      calendario.appendChild(cell);
     }
-    calendario.appendChild(frag);
   }
 
-  prevMonthBtn?.addEventListener("click", () => {
-    viewMonth--;
-    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-    renderCalendar();
-  });
-  nextMonthBtn?.addEventListener("click", () => {
-    viewMonth++;
-    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-    renderCalendar();
-  });
+  prevMonthBtn?.addEventListener("click", () => { viewMonth--; if (viewMonth<0){viewMonth=11;viewYear--;} renderCalendar(); });
+  nextMonthBtn?.addEventListener("click", () => { viewMonth++; if (viewMonth>11){viewMonth=0;viewYear++;} renderCalendar(); });
 
   renderCalendar();
-
-
-  async function loadVehiculos() {
-    if (!vehiculoSel) return;
-    vehiculoSel.innerHTML = `<option value="">Cargando vehículos…</option>`;
-    try {
-      const r = await fetch(API_VEHICULOS, { cache: "no-store" });
-      const data = await r.json();
-      const mis = (Array.isArray(data) ? data : []).filter(v => String(v.idCliente) === String(userId));
-      if (!mis.length) {
-        vehiculoSel.innerHTML = `<option value="">No tienes vehículos registrados</option>`;
-        vehiculoSel.disabled = true;
-        return;
-      }
-      vehiculoSel.disabled = false;
-      vehiculoSel.innerHTML = `<option value="">Selecciona</option>` + mis.map(v => {
-        const label = `${v.marca || "Vehículo"} ${v.modelo || ""} — ${v.placa || "s/placa"}`.trim();
-        return `<option value="${v.id}">${label}</option>`;
-      }).join("");
-    } catch (e) {
-      vehiculoSel.innerHTML = `<option value="">Error cargando vehículos</option>`;
-      vehiculoSel.disabled = true;
-    }
-  }
-  loadVehiculos();
-
-
-  async function cargarMisCitas() {
-    if (!listaCitas) return;
-    listaCitas.innerHTML = "";
-
-    try {
-      const r = await fetch(API_CITAS, { cache: "no-store" });
-      const data = await r.json();
-      const mias = (Array.isArray(data) ? data : []).filter(c => String(c.idCliente) === String(userId));
-
-      if (!mias.length) {
-        listaCitas.innerHTML = `<div class="card"><p class="muted">Aún no tienes citas.</p></div>`;
-        return;
-      }
-
- 
-      mias.sort((a, b) => {
-        const da = new Date(`${a.fecha}T${a.hora || "00:00"}:00`).getTime();
-        const db = new Date(`${b.fecha}T${b.hora || "00:00"}:00`).getTime();
-        return da - db;
-      });
-
-      const frag = document.createDocumentFragment();
-      mias.forEach(c => {
-        const card = document.createElement("div");
-        card.className = "card cita-item";
-        const estado = (c.estado || "Pendiente");
-        const badge = (estado.toLowerCase()==="cancelada")
-          ? `<span class="pill pill-warn">Cancelada</span>`
-          : `<span class="pill pill-ok">${estado}</span>`;
-
-        card.innerHTML = `
-          <div class="cita-top-row">
-            <strong>#CITA-${c.id}</strong>
-            ${badge}
-          </div>
-          <div class="cita-row"><span class="k">Fecha</span><span class="v">${c.fecha || "—"} ${c.hora || ""}</span></div>
-          <div class="cita-row"><span class="k">Descripción</span><span class="v">${c.descripcion || "—"}</span></div>
-          <div class="cita-actions">
-            <button class="btn ghost btn-cancel" data-id="${c.id}" ${estado.toLowerCase()==="cancelada" ? "disabled" : ""}>Cancelar</button>
-          </div>
-        `;
-        frag.appendChild(card);
-      });
-      listaCitas.appendChild(frag);
-    } catch (e) {
-      listaCitas.innerHTML = `<div class="card"><p class="muted">Error cargando tus citas.</p></div>`;
-    }
-  }
-  cargarMisCitas();
-
- 
-  document.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".btn-cancel");
-    if (!btn) return;
-    const id = btn.dataset.id;
-    if (!id) return;
-
-    const confirm = window.Swal
-      ? await Swal.fire({icon:"warning", title:"Cancelar cita", text:"¿Seguro que deseas cancelar esta cita?", showCancelButton:true, confirmButtonColor:"#c91a1a", confirmButtonText:"Sí, cancelar"})
-      : { isConfirmed: window.confirm("¿Cancelar cita?") };
-
-    if (confirm.isConfirmed || confirm === true) {
-      try {
-        await fetch(`${API_CITAS}/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ estado: "Cancelada" })
-        });
-        cargarMisCitas();
-      } catch (e) {
-        window.Swal ? Swal.fire({icon:"error", title:"Error", text:"No se pudo cancelar."}) : alert("No se pudo cancelar.");
-      }
-    }
-  });
-
-  function horaValida(hhmm) {
-    if (!hhmm) return false;
-    const [hh, mm] = hhmm.split(":").map(Number);
-    const mins = hh*60 + mm;
-    const min = 7*60; 
-    const max = 16*60; 
-    return mins >= min && mins <= max;
-  }
-
-
-  function noPasado(fechaISO, hhmm) {
-    const now = new Date();
-    const d = new Date(`${fechaISO}T${hhmm}:00`);
-    return d.getTime() >= now.getTime();
-  }
-
-  
-  formCita?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!userId) {
-      window.Swal ? Swal.fire({icon:"info", title:"Debes iniciar sesión"}) : alert("Debes iniciar sesión.");
-      return;
-    }
-
-    const fecha = fechaHidden.value;
-    const hora  = horaInput?.value || "";
-    const vehId = vehiculoSel?.value || "";
-    const servicio = estadoSel?.value || "";    
-    const desc     = (descripcionIn?.value || "").trim();
-
-    if (!fecha) { window.Swal ? Swal.fire({icon:"info", title:"Selecciona una fecha"}) : alert("Selecciona una fecha."); return; }
-    if (!horaValida(hora)) { window.Swal ? Swal.fire({icon:"info", title:"Hora inválida", text:"Debe estar entre 07:00 y 16:00"}) : alert("Hora fuera de rango (07:00–16:00)."); return; }
-    if (fecha === toISO(today) && !noPasado(fecha, hora)) {
-      window.Swal ? Swal.fire({icon:"info", title:"Hora pasada", text:"La hora seleccionada ya pasó."}) : alert("La hora seleccionada ya pasó.");
-      return;
-    }
-    if (!vehId) { window.Swal ? Swal.fire({icon:"info", title:"Selecciona tu vehículo"}) : alert("Selecciona tu vehículo."); return; }
-
- 
-    const descripcionFinal = servicio ? `[${servicio}] ${desc}`.trim() : desc;
-
-    const payload = {
-      fecha,
-      hora,
-      descripcion: descripcionFinal || "—",
-      estado: "Pendiente",
-      idCliente: String(userId),
-      idVehiculo: String(vehId)
-    };
-
-    try {
-      const r = await fetch(API_CITAS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!r.ok) throw new Error("Bad response");
-
-      window.Swal
-        ? await Swal.fire({icon:"success", title:"Cita creada", text:"Tu cita fue registrada correctamente.", confirmButtonColor:"#c91a1a"})
-        : alert("Cita creada.");
-
-      formCita.reset();
-      fechaHidden.value = "";
-      calendario.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
-      cargarMisCitas();
-    } catch (e) {
-      window.Swal ? Swal.fire({icon:"error", title:"Error", text:"No se pudo crear la cita."}) : alert("No se pudo crear la cita.");
-    }
-  });
 });
