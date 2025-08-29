@@ -125,3 +125,77 @@ body{margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial
 }
 .tabbar__btn{height:44px;display:grid;place-items:center;color:#1f2937;text-decoration:none;border-radius:14px;font-size:18px;background:transparent;border:none}
 .tabbar__btn.active{background:#c91a1a;color:#fff;outline:none}
+.vcard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 16px;
+  margin: 10px;
+  transition: transform 0.2s;
+}
+
+.vcard:hover {
+  transform: translateY(-3px);
+}
+
+.vbody h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.vbody p {
+  margin: 2px 0;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.meta {
+  margin-top: 8px;
+}
+
+.chip {
+  background: #f1f1f1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Editar */
+.actions .edit-btn {
+  background: #e9ecef;
+  color: #333;
+}
+
+.actions .edit-btn:hover {
+  background: #d6d6d6;
+}
+
+/* Eliminar */
+.actions .delete-btn {
+  background: #dc3545;
+  color: #fff;
+}
+
+.actions .delete-btn:hover {
+  background: #b02a37;
+}

@@ -3,9 +3,9 @@ const API_URL = "http://localhost:8080/apiVehiculo";
 function parseResponse(json) {
   if (Array.isArray(json)) return json;
   if (json.data?.content) return json.data.content; // Paginado
-  if (json.data) return json.data;                 
-  if (json.content) return json.content;           
-  return [];
+  if (json.data) return json.data;
+  if (json.content) return json.content;
+  return json;
 }
 
 export async function getVehiculos(page = 0, size = 20) {
@@ -13,6 +13,16 @@ export async function getVehiculos(page = 0, size = 20) {
   if (!res.ok) throw new Error("Error al obtener vehículos");
   const json = await res.json();
   return parseResponse(json);
+}
+
+export async function getVehiculoById(id) {
+  const res = await fetch(`${API_URL}/consultar/${id}`);
+  if (!res.ok) throw new Error("Error al obtener vehículo");
+  const json = await res.json();
+
+  // devolver directamente el objeto dentro de data si existe
+  if (json.data) return json.data;
+  return json;
 }
 
 export async function createVehiculo(data) {
@@ -23,7 +33,7 @@ export async function createVehiculo(data) {
   });
   if (!res.ok) throw new Error("Error al registrar vehículo");
   const json = await res.json();
-  return json.data;
+  return json.data || json;
 }
 
 export async function updateVehiculo(id, data) {
@@ -34,7 +44,7 @@ export async function updateVehiculo(id, data) {
   });
   if (!res.ok) throw new Error("Error al actualizar vehículo");
   const json = await res.json();
-  return json.data;
+  return json.data || json;
 }
 
 export async function deleteVehiculo(id) {
