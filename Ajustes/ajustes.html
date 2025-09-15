@@ -1,45 +1,38 @@
-z<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SASA — Ajustes</title>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../CSS/ajustes.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-   <div id="overlay" class="overlay" aria-hidden="true"></div>
-
-<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-  <div class="menu-header no-avatar">
-    <div class="menu-user">
-      <h3 id="menuNombre">Usuario</h3>
-      <p id="menuPase" class="muted">Cliente</p>
-      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+  <aside id="profileMenu" class="profile-menu" aria-hidden="true">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuRol" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">—</span></p>
+      </div>
     </div>
-  </div>
+    <nav class="menu-list">
+      <a href="../dashboard/index.html"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i> Citas</a>
+      <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+    </nav>
+  </aside>
 
-  <nav class="menu-list">
-    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
-    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
-    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
-    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-    </a>
-  </nav>
-</aside>
-
-  <!-- Contenido -->
   <main class="app-shell ajustes">
     <header class="topbar">
       <h1 class="page-title">Ajustes</h1>
@@ -48,42 +41,53 @@ z<!DOCTYPE html>
       </button>
     </header>
 
-    <!-- Tarjeta usuario -->
-    <section class="card user-card">
+    <section class="card user-card fancy">
       <div class="user-ico">
-        <i class="fa-solid fa-user"></i>
+        <span id="userInitials">U</span>
       </div>
       <div class="user-meta">
         <h4 id="nombreCompleto" class="user-name">—</h4>
-        <p id="rolUsuario" class="user-role">Cliente</p>
+        <div class="user-badges">
+          <span class="pill">Cliente</span>
+          <span class="pill light">Activo</span>
+        </div>
         <p class="user-id">ID: <strong id="userId">—</strong></p>
       </div>
     </section>
 
-    <!-- Ediciones -->
     <section class="stack">
-      <!-- Nombre -->
       <article class="card edit-card">
         <button class="btn-edit toggle-nombre" type="button">
           Cambiar nombre
           <i class="fa-solid fa-pen"></i>
         </button>
         <div class="edit-form form-nombre" hidden>
-          <input type="text" id="nuevoNombre" class="form-control" placeholder="Nuevo nombre completo" />
-          <button class="btn btn-primary-solid w-100 mt-2" id="guardarNombre">Guardar cambios</button>
+          <div class="field">
+            <label class="label" for="nuevoNombre">Nuevo nombre completo</label>
+            <input type="text" id="nuevoNombre" class="input" placeholder="Nombre Apellido" autocomplete="name" />
+            <div class="hint" id="hintNombre">Debe incluir al menos nombre y apellido. Solo letras y espacios.</div>
+          </div>
+          <button class="btn btn-primary-solid w-100" id="guardarNombre">Guardar cambios</button>
         </div>
       </article>
 
-      <!-- Contraseña -->
       <article class="card edit-card">
         <button class="btn-edit toggle-pass" type="button">
           Cambiar contraseña
           <i class="fa-solid fa-pen"></i>
         </button>
         <div class="edit-form form-pass" hidden>
-          <input type="password" id="nuevaPass" class="form-control" placeholder="Nueva contraseña" />
-          <div class="hint mt-1">Mín. 8 caracteres, una letra, un número y un caracter especial.</div>
-          <button class="btn btn-primary-solid w-100 mt-2" id="guardarPass">Guardar cambios</button>
+          <div class="field">
+            <label class="label" for="nuevaPass">Nueva contraseña</label>
+            <input type="password" id="nuevaPass" class="input" placeholder="********" autocomplete="new-password" />
+            <div class="meter"><div class="meter-bar" id="passMeter"></div></div>
+            <div class="hint">Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo.</div>
+          </div>
+          <div class="field">
+            <label class="label" for="repitePass">Confirmar contraseña</label>
+            <input type="password" id="repitePass" class="input" placeholder="********" autocomplete="new-password" />
+          </div>
+          <button class="btn btn-primary-solid w-100" id="guardarPass">Guardar cambios</button>
         </div>
       </article>
     </section>
@@ -91,7 +95,6 @@ z<!DOCTYPE html>
     <button class="btn btn-danger-solid w-100 mt-3 cerrar-sesion">Cerrar sesión</button>
   </main>
 
-  <!-- Tabbar  -->
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
@@ -100,7 +103,5 @@ z<!DOCTYPE html>
   </nav>
 
   <script src="../JS/ajustes.js" defer></script>
-  <script src="../JS/shell.js"></script>
-
 </body>
 </html>

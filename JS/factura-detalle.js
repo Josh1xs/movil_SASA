@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       estado.className = "badge";
       if ((f.estado||"").toLowerCase() === "pagada") {
         estado.style.background = "#dcfce7";
-        estado.style.color = "#166534";
+        estado.style.color = "#166534";  
       } else {
         estado.style.background = "#fde68a";
         estado.style.color = "#7c5e10";

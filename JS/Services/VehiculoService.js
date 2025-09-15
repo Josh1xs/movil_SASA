@@ -20,7 +20,7 @@ export async function getVehiculoById(id) {
   if (!res.ok) throw new Error("Error al obtener vehículo");
   const json = await res.json();
 
-  // devolver directamente el objeto dentro de data si existe
+ 
   if (json.data) return json.data;
   return json;
 }
@@ -51,4 +51,9 @@ export async function deleteVehiculo(id) {
   const res = await fetch(`${API_URL}/eliminar/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Error al eliminar vehículo");
   return true;
+}
+export async function existsPlaca(placa) {
+  const res = await fetch(`http://localhost:8080/api/vehiculos/exists/placa/${placa}`);
+  if (!res.ok) throw new Error("Error verificando placa");
+  return await res.json(); 
 }

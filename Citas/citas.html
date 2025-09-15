@@ -4,77 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Citas</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
   <link rel="stylesheet" href="../CSS/citas.css" />
 </head>
 <body>
-
   <main class="app-shell">
     <header class="topbar">
       <h1 class="page-title">Citas</h1>
-      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
-        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      <button class="avatar" id="menuToggle">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
       </button>
     </header>
 
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
-          <button class="nav" id="prevMonth" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="nav" id="prevMonth"><i class="fa-solid fa-chevron-left"></i></button>
           <h2 id="mesActual" class="month"></h2>
-          <button class="nav" id="nextMonth" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button>
+          <button class="nav" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-
-        <div id="calendario" class="calendar-grid" aria-label="Calendario de citas"></div>
-        <p class="hint">Selecciona una fecha. Solo se muestran los próximos <strong>20 días</strong> disponibles.</p>
+        <div id="calendario" class="calendar-grid"></div>
+        <p class="hint">Selecciona una fecha disponible dentro de los próximos <strong>20 días hábiles</strong>.</p>
       </div>
     </section>
 
-
-<section class="section">
-  <form id="formCita" class="form card" autocomplete="off">
-    <input type="hidden" id="fechaSeleccionada" />
-
-    <div class="field">
-      <label class="label" for="horaInput">Hora</label>
-      <input type="time" id="horaInput" class="input" step="900" required />
-      <div id="timeHint" class="subhint">Selecciona una fecha para ver el horario permitido.</div>
-    </div>
-
-    <div class="field">
-      <label class="label" for="vehiculoSelect">Selecciona tu vehículo</label>
-      <select id="vehiculoSelect" class="select" required>
-        <option value="">Cargando vehículos…</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label class="label" for="estado">Tipo de servicio</label>
-      <select id="estado" class="select" required>
-        <option value="">Seleccionar</option>
-        <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
-        <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
-      </select>
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" id="btnEnviar" class="btn primary w100">
-        <i class="fa-regular fa-paper-plane"></i> Enviar
-      </button>
-      <button type="reset" class="btn ghost w100">
-        <i class="fa-solid fa-eraser"></i> Limpiar
-      </button>
-      <a href="../dashboard/index.html" class="btn danger w100">
-        <i class="fa-solid fa-xmark"></i> Cancelar
-      </a>
-    </div>
-  </form>
-</section>
-
+    <section class="section">
+      <form id="formCita" class="form card">
+        <input type="hidden" id="fechaSeleccionada" />
+        <div class="field">
+          <label class="label" for="horaInput">Hora</label>
+          <input type="time" id="horaInput" class="input" step="1800" required />
+          <div id="timeHint" class="subhint">Horario permitido: 07:00–16:00</div>
+        </div>
+        <div class="field">
+          <label class="label" for="vehiculoSelect">Vehículo</label>
+          <select id="vehiculoSelect" class="select" required>
+            <option value="">Cargando vehículos…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="estado">Tipo de servicio</label>
+          <select id="estado" class="select" required>
+            <option value="">Seleccionar</option>
+            <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
+            <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="btnEnviar" class="btn primary w100"><i class="fa-regular fa-paper-plane"></i> Enviar</button>
+          <button type="reset" class="btn ghost w100"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+          <a href="../dashboard/index.html" class="btn danger w100"><i class="fa-solid fa-xmark"></i> Cancelar</a>
+        </div>
+      </form>
+    </section>
 
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
@@ -82,43 +65,36 @@
     </section>
   </main>
 
-  <div id="overlay" class="overlay" aria-hidden="true"></div>
-
-<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-  <div class="menu-header no-avatar">
-    <div class="menu-user">
-      <h3 id="menuNombre">Usuario</h3>
-      <p id="menuPase" class="muted">Cliente</p>
-      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+  <div id="overlay" class="overlay"></div>
+  <aside id="profileMenu" class="profile-menu">
+    <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
     </div>
-  </div>
+    <nav class="menu-list">
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+      <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión</a>
+    </nav>
+  </aside>
 
-  <nav class="menu-list">
-    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
-    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
-    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
-    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-    </a>
+  <nav class="tabbar">
+    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn active" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
-</aside>
-  
-
-  <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" data-tab="home" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
-    <a class="tabbar__btn active" data-tab="citas" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
-    <a class="tabbar__btn" data-tab="vehiculos" href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
-    <a class="tabbar__btn" data-tab="ajustes" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
-  </nav>
-
 
   <script src="../JS/citas.js"></script>
   <script src="../JS/shell.js"></script>
-
 </body>
 </html>
