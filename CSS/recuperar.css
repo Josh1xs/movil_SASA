@@ -1,83 +1,24 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #cfcfcf;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.container {
-  background-color: #cfcfcf;
-  padding: 30px 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 360px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo-sasa {
-  width: 50px;
-  align-self: flex-end;
-}
-
-.icono-carro {
-  width: 120px;
-  margin: 20px 0 10px;
-}
-
-.titulo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #880000;
-  margin-bottom: 25px;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.label {
-  font-size: 14px;
-  margin-bottom: 8px;
-  align-self: flex-start;
-}
-
-.input {
-  width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  border: none;
-  border-radius: 4px;
-  margin-bottom: 20px;
-}
-
-.boton {
-  width: 100%;
-  background-color: #600000;
-  color: white;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.boton:hover {
-  background-color: #8a0000;
-}
-
-.logo img {
-  width: 100px; 
-  height: auto;
-  margin-bottom: 20px;
-}
+/* ../CSS/recuperar.css */
+:root{--bg:#f3f4f6;--card:#ffffff;--ink:#111827;--text:#1f2937;--muted:#6b7280;--line:#e5e7eb;--accent:#c91a1a;--accent-2:#e23b3b;--shadow:0 12px 28px rgba(17,24,39,.08);--r-xl:22px;--r-md:14px}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:linear-gradient(180deg,#ffffff 0%,#f9fafc 40%,#f3f4f6 100%);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text)}
+.shell{min-height:100dvh;display:grid;place-items:center;padding:24px}
+.card{width:min(440px,calc(100% - 24px));background:radial-gradient(120% 140% at 100% 0%,rgba(201,26,26,.06) 0%,transparent 40%),var(--card);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow);padding:18px}
+.brand{display:grid;place-items:center;gap:8px;margin:4px 0 12px}
+.logo{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(201,26,26,.15))}
+.title{margin:0;font-weight:800;color:var(--ink);font-size:22px;text-align:center}
+.subtitle{margin:2px 0 0;color:var(--muted);font-size:.95rem;text-align:center}
+form{display:grid;gap:12px;margin-top:10px}
+.field{display:grid;gap:6px}
+.label{font-weight:700;color:var(--ink)}
+.input{height:48px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;outline:none;background:#fff;color:var(--text)}
+.input:focus{border-color:#d1d5db;box-shadow:0 0 0 3px rgba(201,26,26,.15)}
+.input.invalid{border-color:#b3261e;box-shadow:0 0 0 3px rgba(179,38,30,.12)}
+.err{min-height:18px;font-size:.88rem;color:#b3261e}
+.btn{height:48px;border:none;border-radius:14px;font-weight:800;display:grid;place-items:center;cursor:pointer;transition:transform .06s ease,filter .16s ease,box-shadow .18s ease}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:linear-gradient(180deg,var(--accent) 0%,var(--accent-2) 100%);color:#fff;box-shadow:0 12px 24px rgba(201,26,26,.22)}
+.btn[disabled]{opacity:.7;cursor:not-allowed}
+.alt{margin:4px 0 0;text-align:center;color:var(--muted)}
+.link{color:var(--accent);font-weight:700;text-decoration:none}

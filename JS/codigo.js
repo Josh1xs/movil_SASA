@@ -1,40 +1,43 @@
-const codigoCorrecto = "123456";
+// ../JS/codigo.js
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("verificationForm");
+  const codeInput = document.getElementById("code");
+  const resendLink = document.getElementById("resendLink");
 
-const script = document.createElement("script");
-script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
-document.head.appendChild(script);
+  if (!form || !codeInput) return;
 
-document.getElementById('verificationForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+  const storedCode = localStorage.getItem("recoveryCode");
+  const expectedCode = (storedCode && /^\d{6}$/.test(storedCode)) ? storedCode : "123456";
+  const email = localStorage.getItem("recoveryEmail") || "";
 
-  const codigoIngresado = document.getElementById('code').value.trim();
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const code = (codeInput.value || "").trim();
 
-  if (codigoIngresado === codigoCorrecto) {
-    Swal.fire({
-      icon: 'success',
-      title: 'Código correcto',
-      text: 'Verificación completada con éxito',
-      confirmButtonText: 'Continuar'
-    }).then(() => {
-      window.location.href = 'login.html';
-    });
-  } else {
-    Swal.fire({
-      icon: 'error',
-      title: 'Código incorrecto',
-      text: 'Por favor, verifique el código ingresado.'
-    });
-  }
-});
+    if (!/^\d{6}$/.test(code)) {
+      Swal.fire({ icon: "warning", title: "Código inválido", text: "Ingresa los 6 dígitos." });
+      return;
+    }
 
-document.querySelector('.resend-link a').addEventListener('click', function(e) {
-  e.preventDefault();
-
-  Swal.fire({
-    icon: 'info',
-    title: 'Código reenviado',
-    text: 'Se ha reenviado un nuevo código a su correo electrónico.'
+    if (code === expectedCode) {
+      Swal.fire({ icon: "success", title: "Código verificado", text: "Verificación completada." })
+        .then(() => { window.location.href = "login.html"; });
+    } else {
+      Swal.fire({ icon: "error", title: "Código incorrecto", text: "Revisa el código e inténtalo de nuevo." });
+    }
   });
 
-
+  if (resendLink) {
+    resendLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+      localStorage.setItem("recoveryCode", newCode);
+      Swal.fire({
+        icon: "info",
+        title: "Código reenviado",
+        text: email ? `Se envió un nuevo código a ${email}.` : "Se generó un nuevo código.",
+        confirmButtonText: "OK"
+      });
+    });
+  }
 });
