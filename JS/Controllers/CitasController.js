@@ -1,3 +1,9 @@
+// ===============================
+// citas.js
+// ===============================
+import { getUserId, getToken } from "../Services/LoginService.js";
+import { getCitas } from "../Services/CitasService.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const fechaHidden = document.getElementById("fechaSeleccionada");
   const horaInput   = document.getElementById("horaInput");
@@ -5,7 +11,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn     = document.getElementById("prevMonth");
   const nextBtn     = document.getElementById("nextMonth");
   const calendario  = document.getElementById("calendario");
+  const listaCitas  = document.getElementById("listaCitas");
 
+  const userId = getUserId();
+  const token  = getToken();
+
+  if (!userId || !token) {
+    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
+      .then(() => location.replace("../Autenticacion/login.html"));
+    return;
+  }
+
+  // -------------------------------
+  // CALENDARIO
+  // -------------------------------
   const feriadosES = [
     "2025-01-01","2025-03-24","2025-03-25","2025-03-26",
     "2025-05-01","2025-06-17","2025-08-06","2025-09-15",
@@ -108,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
   };
 
-
   horaInput.addEventListener("input", () => {
     if(!horaInput.value) return;
     const [hh, mm] = horaInput.value.split(":").map(Number);
@@ -121,59 +139,57 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderCalendar();
-});
-const API_CITAS = "http://localhost:8080/apiCitas";
-const userId = localStorage.getItem("userId");
-const listaCitas = document.getElementById("listaCitas");
 
-async function cargarMisCitas(){
-  listaCitas.innerHTML = "";
-  try{
-    const r = await fetch(`${API_CITAS}/consultar`);
-    const json = await r.json();
-    const citas = (json.data?.content || json).filter(c => String(c.idCliente) === String(userId));
+  // -------------------------------
+  // CARGAR CITAS
+  // -------------------------------
+  async function cargarMisCitas(){
+    listaCitas.innerHTML = "";
+    try{
+      const citas = await getCitas(token);
 
-    if(!citas.length){
+      const misCitas = citas.filter(c => String(c.idCliente) === String(userId));
+
+      if(!misCitas.length){
+        listaCitas.innerHTML = `
+          <div class="card empty-state">
+            <i class="fa-regular fa-calendar-xmark"></i>
+            <p>Sin citas</p>
+          </div>`;
+        localStorage.setItem("citas","[]");
+        return;
+      }
+
+      misCitas.sort((a,b)=> new Date(`${a.fecha}T${a.hora||"00:00"}`) - new Date(`${b.fecha}T${b.hora||"00:00"}`));
+      localStorage.setItem("citas", JSON.stringify(misCitas));
+
+      listaCitas.innerHTML = misCitas.map(c => `
+        <button class="card cita-item" data-id="${c.id}">
+          <div class="cita-top-row">
+            <strong>#CITA-${c.id}</strong>
+            <span class="pill">${c.estado || "Pendiente"}</span>
+          </div>
+          <div class="cita-row">
+            <span class="k">Fecha</span>
+            <span class="v">${c.fecha} ${c.hora || ""}</span>
+          </div>
+        </button>
+      `).join("");
+    }catch{
       listaCitas.innerHTML = `
         <div class="card empty-state">
-          <i class="fa-regular fa-calendar-xmark"></i>
-          <p>Sin citas</p>
+          <i class="fa-regular fa-face-frown"></i>
+          <p>Error al cargar tus citas</p>
         </div>`;
-      localStorage.setItem("citas","[]");
-      return;
     }
-
-    citas.sort((a,b)=> new Date(`${a.fecha}T${a.hora||"00:00"}`) - new Date(`${b.fecha}T${b.hora||"00:00"}`));
-    localStorage.setItem("citas", JSON.stringify(citas));
-
-    listaCitas.innerHTML = citas.map(c => `
-      <button class="card cita-item" data-id="${c.id}">
-        <div class="cita-top-row">
-          <strong>#CITA-${c.id}</strong>
-          <span class="pill">${c.estado || "Pendiente"}</span>
-        </div>
-        <div class="cita-row">
-          <span class="k">Fecha</span>
-          <span class="v">${c.fecha} ${c.hora || ""}</span>
-        </div>
-      </button>
-    `).join("");
-  }catch{
-    listaCitas.innerHTML = `
-      <div class="card empty-state">
-        <i class="fa-regular fa-face-frown"></i>
-        <p>Error al cargar tus citas</p>
-      </div>`;
   }
-}
 
+  cargarMisCitas();
 
-cargarMisCitas();
-
-
-document.addEventListener("click", (e) => {
-  const item = e.target.closest(".cita-item");
-  if(!item) return;
-  const id = item.dataset.id;
-  if(id) location.href = `./detallecitas.html?id=${encodeURIComponent(id)}`;
+  document.addEventListener("click", (e) => {
+    const item = e.target.closest(".cita-item");
+    if(!item) return;
+    const id = item.dataset.id;
+    if(id) location.href = `./detallecitas.html?id=${encodeURIComponent(id)}`;
+  });
 });

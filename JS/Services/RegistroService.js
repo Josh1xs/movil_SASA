@@ -30,6 +30,24 @@ export function isAdult(dateStr) {
   return age >= 18;
 }
 
+export function validDUI(dui) {
+  return /^\d{8}-\d{1}$/.test(dui);
+}
+
+export function passwordStrength(pass) {
+  let fuerza = 0;
+
+  if (pass.length >= 8) fuerza++;           // mínimo 8 caracteres
+  if (/[A-Z]/.test(pass)) fuerza++;         // mayúscula
+  if (/[a-z]/.test(pass)) fuerza++;         // minúscula
+  if (/[0-9]/.test(pass)) fuerza++;         // número
+  if (/[^A-Za-z0-9]/.test(pass)) fuerza++;  // símbolo
+
+  if (fuerza <= 2) return "Baja";
+  if (fuerza <= 4) return "Media";
+  return "Alta";
+}
+
 // -------- Registrar Cliente --------
 export async function registrarCliente(cliente) {
   const res = await fetch(`${API_URL}/register`, {
@@ -46,5 +64,5 @@ export async function registrarCliente(cliente) {
     throw new Error(err.message || "Error al registrar cliente");
   }
 
-  return res.json(); // devuelve {status, cliente, token?}
+  return res.json(); // {status, cliente, token?}
 }

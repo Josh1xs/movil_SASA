@@ -1,59 +1,79 @@
+// ===============================
+// Services/VehiculoService.js
+// ===============================
 const API_URL = "http://localhost:8080/apiVehiculo";
 
-function parseResponse(json) {
-  if (Array.isArray(json)) return json;
-  if (json.data?.content) return json.data.content; // Paginado
-  if (json.data) return json.data;
-  if (json.content) return json.content;
-  return json;
+// --- Manejo de errores y JSON ---
+async function fetchJsonOrThrow(url, options = {}) {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    let errorMsg = `Error ${res.status} -> ${url}`;
+    try {
+      const errorData = await res.json();
+      errorMsg += "\n" + JSON.stringify(errorData);
+    } catch {}
+    throw new Error(errorMsg);
+  }
+  return res.json();
 }
 
-export async function getVehiculos(page = 0, size = 20) {
-  const res = await fetch(`${API_URL}/consultar?page=${page}&size=${size}`);
-  if (!res.ok) throw new Error("Error al obtener vehículos");
-  const json = await res.json();
-  return parseResponse(json);
+// --- OBTENER VEHÍCULOS PAGINADOS ---
+export async function getVehiculos(
+  token,
+  page = 0,
+  size = 20,
+  sortBy = "idVehiculo",
+  sortDir = "asc"
+) {
+  const url = `${API_URL}/consultar?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;
+  return fetchJsonOrThrow(url, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  // 👉 devuelve el objeto completo {status, data: { content, totalPages, ... }}
 }
 
-export async function getVehiculoById(id) {
-  const res = await fetch(`${API_URL}/consultar/${id}`);
-  if (!res.ok) throw new Error("Error al obtener vehículo");
-  const json = await res.json();
-
- 
-  if (json.data) return json.data;
-  return json;
+// --- OBTENER POR ID ---
+export async function getVehiculoById(token, id) {
+  const url = `${API_URL}/consultar/${id}`;
+  const data = await fetchJsonOrThrow(url, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return data.data ?? null;
 }
 
-export async function createVehiculo(data) {
-  const res = await fetch(`${API_URL}/registrar`, {
+// --- REGISTRAR ---
+export async function addVehiculo(token, vehiculo) {
+  const url = `${API_URL}/registrar`;
+  const data = await fetchJsonOrThrow(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(vehiculo)
   });
-  if (!res.ok) throw new Error("Error al registrar vehículo");
-  const json = await res.json();
-  return json.data || json;
+  return data.data ?? null;
 }
 
-export async function updateVehiculo(id, data) {
-  const res = await fetch(`${API_URL}/actualizar/${id}`, {
+// --- ACTUALIZAR ---
+export async function updateVehiculo(token, id, vehiculo) {
+  const url = `${API_URL}/actualizar/${id}`;
+  const data = await fetchJsonOrThrow(url, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(vehiculo)
   });
-  if (!res.ok) throw new Error("Error al actualizar vehículo");
-  const json = await res.json();
-  return json.data || json;
+  return data.data ?? null;
 }
 
-export async function deleteVehiculo(id) {
-  const res = await fetch(`${API_URL}/eliminar/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Error al eliminar vehículo");
-  return true;
-}
-export async function existsPlaca(placa) {
-  const res = await fetch(`http://localhost:8080/api/vehiculos/exists/placa/${placa}`);
-  if (!res.ok) throw new Error("Error verificando placa");
-  return await res.json(); 
+// --- ELIMINAR ---
+export async function deleteVehiculo(token, id) {
+  const url = `${API_URL}/eliminar/${id}`;
+  return fetchJsonOrThrow(url, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  });
 }

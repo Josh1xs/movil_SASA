@@ -8,22 +8,25 @@ import { login, logout, isLoggedIn, getUsuarioLogueado } from "../Services/Login
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const correo = document.getElementById("email").value;
+  const correo = document.getElementById("email").value.trim();
   const contrasena = document.getElementById("password").value;
 
   try {
     const data = await login(correo, contrasena);
 
     if (data.status === "OK") {
+      const cliente = data.cliente;
+
       // ✅ Guardar datos esenciales en localStorage
-      localStorage.setItem("userId", data.cliente.idCliente);   // o data.cliente.id según backend
-      localStorage.setItem("nombre", data.cliente.nombre);
-      localStorage.setItem("apellido", data.cliente.apellido);
+      localStorage.setItem("userId", cliente.id);  // 👈 usar id, no idCliente
+      localStorage.setItem("nombre", cliente.nombre);
+      localStorage.setItem("apellido", cliente.apellido);
+      localStorage.setItem("correo", cliente.correo);
       localStorage.setItem("token", data.token);
 
       Swal.fire({
         icon: "success",
-        title: "Bienvenido " + data.cliente.nombre,
+        title: "Bienvenido " + cliente.nombre,
         showConfirmButton: true,
         confirmButtonColor: "#C91A1A"
       }).then(() => {
@@ -49,7 +52,9 @@ document.getElementById("btnLogout")?.addEventListener("click", () => {
 window.addEventListener("DOMContentLoaded", () => {
   if (isLoggedIn()) {
     const user = getUsuarioLogueado();
-    document.getElementById("userName")?.innerText ==
-      `${user.nombre} ${user.apellido}`;
+    if (user) {
+      document.getElementById("userName").innerText =
+        `${user.nombre} ${user.apellido}`;
+    }
   }
 });

@@ -1,13 +1,16 @@
 // ===============================
-// script.js (Dashboard)
+// script.js (Dashboard) corregido
 // ===============================
+import { getToken, getUserId } from "../JS/Services/LoginService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // CONSTANTES Y ENDPOINTS
   // ===============================
-  const userId        = localStorage.getItem("userId");
-  const API_USER      = `http://localhost:8080/apiUsuario/${userId}`;
+  const userId        = getUserId();
+  const token         = getToken();
+
+  const API_USER      = `http://localhost:8080/apiCliente/${userId}`;
   const API_CITAS     = "http://localhost:8080/apiCitas/consultar";
   const API_VEHICULOS = "http://localhost:8080/apiVehiculo/consultar";
 
@@ -64,7 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (menuUserId) menuUserId.textContent = userId || "Desconocido";
 
   if (userId) {
-    fetch(API_USER)
+    fetch(API_USER, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
       .then((r) => r.json())
       .then((user) => {
         const nombre = `${user?.nombre ?? ""} ${user?.apellido ?? ""}`.trim() || "Usuario";
@@ -96,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       sessionStorage.clear();
       document.cookie = "authToken=; Max-Age=0; path=/";
-      location.replace(logoutBtn.getAttribute("href") || "../Authenticator/login.html");
+      location.replace(logoutBtn.getAttribute("href") || "../Autenticacion/login.html");
     }
   });
 
@@ -187,7 +195,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (userId && citasHomeList) {
-    fetch(API_CITAS, { cache: "no-store" })
+    fetch(API_CITAS, {
+      cache: "no-store",
+      headers: { "Authorization": `Bearer ${token}` }
+    })
       .then((res) => res.json())
       .then((json) => {
         citasRaw = json.data?.content || json;
@@ -232,7 +243,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (userId && listaVehiculosDashboard) {
-    fetch(API_VEHICULOS, { cache: "no-store" })
+    fetch(API_VEHICULOS, {
+      cache: "no-store",
+      headers: { "Authorization": `Bearer ${token}` }
+    })
       .then((res) => res.json())
       .then((json) => {
         const data = json.data?.content || json;
@@ -293,20 +307,28 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!clienteId) return;
 
       try {
-        const respCliente = await fetch(`http://localhost:8080/apiCliente/${clienteId}`);
+        const respCliente = await fetch(`http://localhost:8080/apiCliente/${clienteId}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const cliente = await respCliente.json();
 
-        const respVehiculos = await fetch("http://localhost:8080/apiVehiculo/consultar");
+        const respVehiculos = await fetch("http://localhost:8080/apiVehiculo/consultar", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const allVehiculos = await respVehiculos.json();
         const vehiculos = (allVehiculos.data?.content || allVehiculos)
           .filter((v) => String(v.idCliente) === String(clienteId));
 
-        const respCitas = await fetch("http://localhost:8080/apiCitas/consultar");
+        const respCitas = await fetch("http://localhost:8080/apiCitas/consultar", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const allCitas = await respCitas.json();
         const citas = (allCitas.data?.content || allCitas)
           .filter((c) => String(c.idCliente) === String(clienteId));
 
-        const respPagos = await fetch("http://localhost:8080/apiPagos/consultar");
+        const respPagos = await fetch("http://localhost:8080/apiPagos/consultar", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         const allPagos = await respPagos.json();
         const pagos = (allPagos.data?.content || allPagos)
           .filter((p) => String(p.idCliente) === String(clienteId));

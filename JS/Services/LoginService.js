@@ -1,5 +1,5 @@
 // ===============================
-// clienteAuthService.js
+// LoginService.js
 // ===============================
 
 const API_URL = "http://localhost:8080/auth/cliente";
@@ -12,19 +12,28 @@ export async function login(correo, contrasena) {
     const res = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ correo, contrasena })
+      body: JSON.stringify({ correo, contrasena }),
     });
 
     const json = await res.json();
+
+    // 🔍 Debug: ver respuesta del backend
+    console.log("Respuesta del login:", json);
 
     if (!res.ok || json.status !== "OK") {
       throw new Error(json.message || "Credenciales incorrectas");
     }
 
-    // Guardar en localStorage
+    // ✅ Guardar datos en localStorage
     localStorage.setItem("user", JSON.stringify(json.cliente));
-    localStorage.setItem("userId", json.cliente.idCliente); // 👈 ID separado
+localStorage.setItem("userId", json.cliente.id);  // 👈 usa id correcto
     localStorage.setItem("token", json.token);
+
+    // 🔍 Debug: ver qué quedó guardado
+    console.log("Guardado en localStorage:");
+    console.log("userId:", localStorage.getItem("userId"));
+    console.log("token:", localStorage.getItem("token"));
+    console.log("user:", localStorage.getItem("user"));
 
     return json; // {status, token, cliente}
   } catch (error) {
@@ -37,8 +46,8 @@ export async function login(correo, contrasena) {
 // LOGOUT
 // -------------------------------
 export function logout() {
-  ["user", "userId", "token"].forEach(k => localStorage.removeItem(k));
-  window.location.href = "../Authenticator/login.html";
+  ["user", "userId", "token"].forEach((k) => localStorage.removeItem(k));
+  window.location.href = "../Autenticacion/login.html";
 }
 
 // -------------------------------
@@ -58,5 +67,8 @@ export function getToken() {
 }
 
 export function isLoggedIn() {
-  return localStorage.getItem("user") !== null;
+  return (
+    localStorage.getItem("user") !== null &&
+    localStorage.getItem("token") !== null
+  );
 }

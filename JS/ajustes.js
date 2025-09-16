@@ -1,18 +1,20 @@
 // ===============================
 // ajustes.js
 // ===============================
+import { getUserId, getToken, getUsuarioLogueado } from "../JS/Services/LoginService.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const $ = (s) => document.querySelector(s);
 
   // =============================== 
   // DATOS DE SESIÓN
   // ===============================
-  const userId = localStorage.getItem("userId");
-  const token  = localStorage.getItem("token");
+  const userId = getUserId();
+  const token  = getToken();
 
   if (!userId || !token) {
     Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
-      .then(() => location.replace("../Authenticator/login.html"));
+      .then(() => location.replace("../Autenticacion/login.html"));
     return;
   }
 
@@ -33,7 +35,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileMenu  = $("#profileMenu");
   const menuToggle   = $("#menuToggle");
   const closeMenu    = $("#closeMenu");
-  const logoutBtn    = $("#logoutBtn");
 
   const toggleNombre    = $(".toggle-nombre");
   const formNombre      = $(".form-nombre");
@@ -48,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const passMeter     = $("#passMeter");
   const btnGuardarPass= $("#guardarPass");
 
-  if (userIdEl) userIdEl.textContent   = userId || "—";
+  if (userIdEl)   userIdEl.textContent   = userId || "—";
   if (menuUserId) menuUserId.textContent = userId || "—";
 
   // =============================== 
@@ -81,7 +82,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const s = scorePass(p);
     const w = [0, 20, 40, 60, 80, 100][s];
     passMeter.style.width = w + "%";
-    passMeter.style.background = s <= 2 ? "#ef4444" : s <= 4 ? "#f59e0b" : "#16a34a";
+    passMeter.style.background =
+      s <= 2 ? "#ef4444" : s <= 4 ? "#f59e0b" : "#16a34a";
   }
 
   function setSaving(btn, saving, labelIdle, labelSaving) {
@@ -111,29 +113,42 @@ document.addEventListener("DOMContentLoaded", async () => {
       const res = await fetch(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Error al cargar usuario");
 
-      const u = await res.json();
-      const nombre = `${u?.nombre ?? ""} ${u?.apellido ?? ""}`.trim() || "Usuario";
+      let u = null;
+      if (res.ok) {
+        u = await res.json();
+      }
+
+      const localUser = getUsuarioLogueado();
+      const nombre = `${u?.nombre ?? localUser?.nombre ?? ""} ${u?.apellido ?? localUser?.apellido ?? ""}`.trim() || "Usuario";
+      const rol    = localUser?.rol || "Cliente";
 
       if (nombreCompleto) nombreCompleto.textContent = nombre;
-      if (menuNombre) menuNombre.textContent = nombre;
-      if (rolUsuario) rolUsuario.textContent = "Cliente";
-      if (menuRol) menuRol.textContent = "Cliente";
-      if (userInitials) userInitials.textContent = initialsFromName(nombre);
+      if (menuNombre)     menuNombre.textContent     = nombre;
+      if (rolUsuario)     rolUsuario.textContent     = rol;
+      if (menuRol)        menuRol.textContent        = rol;
+      if (userInitials)   userInitials.textContent   = initialsFromName(nombre);
 
     } catch (err) {
       console.error("Error cargar usuario:", err);
-      if (nombreCompleto) nombreCompleto.textContent = "Usuario";
-      if (userInitials) userInitials.textContent = "U";
+
+      const localUser = getUsuarioLogueado();
+      const nombre = `${localUser?.nombre ?? ""} ${localUser?.apellido ?? ""}`.trim() || "Usuario";
+      const rol    = localUser?.rol || "Cliente";
+
+      if (nombreCompleto) nombreCompleto.textContent = nombre;
+      if (menuNombre)     menuNombre.textContent     = nombre;
+      if (rolUsuario)     rolUsuario.textContent     = rol;
+      if (menuRol)        menuRol.textContent        = rol;
+      if (userInitials)   userInitials.textContent   = initialsFromName(nombre);
     }
   }
 
   // =============================== 
   // MENU PERFIL
   // ===============================
-  function abrir() { profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
-  function cerrar(){ profileMenu?.classList.remove("open"); overlay?.classList.remove("show"); }
+  function abrir()  { profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
+  function cerrar() { profileMenu?.classList.remove("open"); overlay?.classList.remove("show"); }
 
   menuToggle?.addEventListener("click", abrir);
   closeMenu?.addEventListener("click", cerrar);
@@ -180,7 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       setSaving(btnGuardarNombre, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(apiUrl, {
+      const r = await fetch(`http://localhost:8080/apiCliente/actualizar-parcial/${userId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +203,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         body: JSON.stringify({ nombre, apellido }),
       });
+
       if (!r.ok) throw new Error();
+
+      // 🔑 Sincronizar con localStorage
+      const user = getUsuarioLogueado();
+      if (user) {
+        user.nombre = nombre;
+        user.apellido = apellido;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
       await Swal.fire({ icon: "success", title: "Nombre actualizado" });
       location.reload();
     } catch {
@@ -213,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   btnGuardarPass?.addEventListener("click", async () => {
-    const p = inputPass.value.trim();
+    const p  = inputPass.value.trim();
     const p2 = inputPass2.value.trim();
     const ok = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&._-]).{8,}$/.test(p);
     inputPass.classList.toggle("invalid", !ok);
@@ -230,7 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       setSaving(btnGuardarPass, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(apiUrl, {
+      const r = await fetch(`http://localhost:8080/apiCliente/actualizar-parcial/${userId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +263,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         body: JSON.stringify({ contrasena: p }),
       });
+
       if (!r.ok) throw new Error();
+
+      // 🔑 Sincronizar con localStorage (opcional, normalmente no guardamos contraseña)
+      const user = getUsuarioLogueado();
+      if (user) {
+        user.contrasena = p;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
       await Swal.fire({ icon: "success", title: "Contraseña actualizada" });
       location.reload();
     } catch {

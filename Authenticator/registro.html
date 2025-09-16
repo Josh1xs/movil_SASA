@@ -5,10 +5,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SASA — Registro</title>
+
+  <!-- Fuentes e íconos -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Estilos -->
   <link rel="stylesheet" href="../CSS/registro.css" />
 </head>
 
@@ -22,6 +28,7 @@
       </div>
 
       <form id="registerForm" novalidate>
+        <!-- Nombre y Apellido -->
         <div class="grid-2">
           <label class="field">
             <span class="label">Nombre</span>
@@ -33,6 +40,7 @@
           </label>
         </div>
 
+        <!-- DUI y Fecha de nacimiento -->
         <div class="grid-2">
           <label class="field">
             <span class="label">DUI</span>
@@ -45,6 +53,7 @@
           </label>
         </div>
 
+        <!-- Género -->
         <label class="field">
           <span class="label">Género</span>
           <select id="genero" name="genero" class="input" required>
@@ -55,12 +64,14 @@
           </select>
         </label>
 
+        <!-- Correo -->
         <label class="field">
           <span class="label">Correo electrónico</span>
           <input type="email" id="correo" name="correo" class="input" autocomplete="email"
             placeholder="tucorreo@ejemplo.com" required>
         </label>
 
+        <!-- Contraseña -->
         <label class="field">
           <span class="label">Contraseña</span>
           <div class="pwd-wrap">
@@ -70,11 +81,13 @@
             </button>
           </div>
 
+          <!-- Barra de fuerza -->
           <div class="passbar">
             <div id="passMeter"></div>
           </div>
           <div id="passStrengthLabel" class="pass-strength"></div>
 
+          <!-- Ayuda de contraseña -->
           <div id="passwordHelp" class="password-help">
             <p><span id="charCount" class="invalid">●</span> Mínimo 8 y máximo 15 caracteres</p>
             <p><span id="hasLetter" class="invalid">●</span> Al menos una letra</p>
@@ -83,6 +96,7 @@
           </div>
         </label>
 
+        <!-- Botón -->
         <button type="submit" id="btnRegistrar" class="btn primary">Registrarse</button>
         <p class="alt">¿Ya tienes una cuenta? <a class="link" href="./login.html">Inicia sesión</a></p>
       </form>
@@ -91,7 +105,5 @@
 
   <!-- Controlador -->
   <script type="module" src="../JS/Controllers/RegisterController.js"></script>
-
 </body>
-
 </html>
