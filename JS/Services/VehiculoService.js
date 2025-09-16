@@ -22,7 +22,7 @@ export async function getVehiculos(
   token,
   page = 0,
   size = 20,
-  sortBy = "idVehiculo",
+  sortBy = "idVehiculo", // 👈 debe coincidir con el Entity
   sortDir = "asc"
 ) {
   const url = `${API_URL}/consultar?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;

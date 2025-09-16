@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     // 🔹 Traer vehículos paginados desde la API
     const response = await getVehiculos(token, 0, 50, "idVehiculo", "asc");
-    const vehiculos = response.data?.content || response; // algunos services devuelven directo []
+    const vehiculos = response.data?.content || response;
 
     // 🔹 Filtrar solo los del cliente logueado
     const misVehiculos = vehiculos.filter(v => String(v.idCliente) === String(userId));
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     emptyMsg.classList.add("hidden");
     lista.innerHTML = misVehiculos.map(v => `
-      <div class="vcard" data-id="${v.idVehiculo}">
+      <div class="vcard" data-id="${v.id}">
         <div class="vbody">
           <h3>${v.marca} ${v.modelo}</h3>
           ${v.anio ? `<p><strong>Año:</strong> ${v.anio}</p>` : ""}
@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           <p><strong>VIN:</strong> ${v.vin}</p>
         </div>
         <div class="actions">
-          <button class="btn edit-btn editar" data-id="${v.idVehiculo}">
+          <button class="btn edit-btn editar">
             <i class="fa fa-pen"></i> Editar
           </button>
-          <button class="btn delete-btn eliminar" data-id="${v.idVehiculo}">
+          <button class="btn delete-btn eliminar">
             <i class="fa fa-trash"></i> Eliminar
           </button>
         </div>
@@ -61,8 +61,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // EVENTO ELIMINAR
   // ===============================
   lista.addEventListener("click", async (e) => {
-    if (e.target.closest(".eliminar")) {
-      const id = e.target.closest(".eliminar").dataset.id;
+    const card = e.target.closest(".vcard");
+    if (e.target.closest(".eliminar") && card) {
+      const id = Number(card.dataset.id);
+
+      if (!id || isNaN(id)) {
+        Swal.fire("Error", "ID de vehículo no válido", "error");
+        return;
+      }
 
       const conf = await Swal.fire({
         title: "¿Eliminar vehículo?",
@@ -91,15 +97,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   // EVENTO EDITAR
   // ===============================
   lista.addEventListener("click", (e) => {
-    if (e.target.closest(".editar")) {
-      const id = e.target.closest(".editar").dataset.id;
+    const card = e.target.closest(".vcard");
+    if (e.target.closest(".editar") && card) {
+      const id = Number(card.dataset.id);
+
+      if (!id || isNaN(id)) {
+        Swal.fire("Error", "ID de vehículo no válido", "error");
+        return;
+      }
 
       // ✅ Redirección segura con ID correcto
-      if (id && id !== "undefined") {
-        location.href = `./anadirVehiculo.html?id=${encodeURIComponent(id)}`;
-      } else {
-        Swal.fire("Error", "ID de vehículo no válido", "error");
-      }
+      location.href = `./anadirVehiculo.html?id=${encodeURIComponent(id)}`;
     }
   });
 });

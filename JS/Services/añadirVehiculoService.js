@@ -1,5 +1,5 @@
 // ===============================
-// añadirVehiculoService.js
+// Services/añadirVehiculoService.js
 // ===============================
 const API_URL = "http://localhost:8080/apiVehiculo";
 
@@ -8,9 +8,11 @@ const API_URL = "http://localhost:8080/apiVehiculo";
 // vehiculo = {
 //   marca: "Toyota",
 //   modelo: "Corolla",
+//   anio: 2020,
 //   placa: "P123-456",
 //   vin: "1HGBH41JXMN109186",
-//   idCliente: 5
+//   idCliente: 5,
+//   idEstado: 1
 // }
 // -------------------------------------
 export async function addVehiculo(token, vehiculo) {
@@ -18,7 +20,7 @@ export async function addVehiculo(token, vehiculo) {
     const res = await fetch(`${API_URL}/registrar`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`, // 👈 JWT que ya tienes en localStorage
+        "Authorization": `Bearer ${token}`, // 👈 JWT desde localStorage
         "Content-Type": "application/json"
       },
       body: JSON.stringify(vehiculo)
@@ -26,17 +28,21 @@ export async function addVehiculo(token, vehiculo) {
 
     // Manejo de error HTTP
     if (!res.ok) {
-      let msg = "No se pudo registrar el vehículo. Verifica los datos ingresados.";
+      let msg = `Error ${res.status}: No se pudo registrar el vehículo`;
       try {
         const errorData = await res.json();
-        if (errorData.message) msg = errorData.message;
+        if (errorData.message) {
+          msg = errorData.message;
+        } else if (errorData.errors) {
+          msg = Object.values(errorData.errors).join("\n");
+        }
       } catch {
-        // si no se pudo parsear JSON, mantenemos el mensaje amigable
+        // si no se pudo parsear JSON, mantenemos el mensaje base
       }
       throw new Error(msg);
     }
 
-    // Si es correcto, devuelve el JSON con {status, data}
+    // ✅ Devuelve el JSON con {status, data}
     return await res.json();
 
   } catch (error) {

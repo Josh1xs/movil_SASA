@@ -41,6 +41,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("placa").value  = vehiculo.placa ?? "";
       document.getElementById("vin").value    = vehiculo.vin ?? "";
 
+      // Precargar estado
+      if (vehiculo.idEstado) {
+        document.getElementById("estado").value = vehiculo.idEstado;
+      } else if (vehiculo.estado?.idEstado) {
+        document.getElementById("estado").value = vehiculo.estado.idEstado;
+      }
     } catch (err) {
       console.error("Error cargando vehículo:", err);
       Swal.fire("Error", "No se pudo cargar el vehículo", "error")
@@ -63,12 +69,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const marca  = document.getElementById("marca").value.trim();
     const modelo = document.getElementById("modelo").value.trim();
-    const anio   = document.getElementById("anio").value.trim();
-    const placa  = document.getElementById("placa").value.trim();
-    const vin    = document.getElementById("vin").value.trim();
+    const anio   = parseInt(document.getElementById("anio").value);
+    const placa  = document.getElementById("placa").value.trim().toUpperCase();
+    const vin    = document.getElementById("vin").value.trim().toUpperCase();
+    const idEstado = parseInt(document.getElementById("estado").value);
 
     // 🔹 Validaciones antes de enviar
-    if (!marca || !modelo || !anio || !placa || !vin) {
+    if (!marca || !modelo || !anio || !placa || !vin || !idEstado) {
       Swal.fire("Campos requeridos", "Todos los campos son obligatorios", "warning");
       return;
     }
@@ -83,12 +90,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       anio,
       placa,
       vin,
-      idCliente: Number(userId) // 👈 obligatorio
+      idCliente: Number(userId),
+      idEstado
     };
 
     try {
       if (vehiculoId && vehiculoId !== "undefined" && !isNaN(Number(vehiculoId))) {
-        await updateVehiculo(token, vehiculoId, vehiculo);
+        await updateVehiculo(token, Number(vehiculoId), vehiculo); // 👈 casteo a Number
         Swal.fire("Éxito", "Vehículo actualizado correctamente", "success")
           .then(() => location.replace("./Vehiculos.html"));
       } else {
