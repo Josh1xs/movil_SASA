@@ -17,22 +17,29 @@
       <img src="../IMG/SASA.png" alt="Logo SASA">
     </div>
     <div class="title">SASA</div>
+
+    <!-- FORMULARIO LOGIN -->
     <form id="loginForm">
+      <!-- Correo -->
       <div class="input-group">
         <i class="material-icons icon">email</i>
         <input type="email" id="email" name="email" required>
         <label for="email">Correo Electrónico</label>
       </div>
 
+      <!-- Contraseña con botón ojo -->
       <div class="input-group">
         <i class="material-icons icon">lock</i>
         <input type="password" id="password" name="password" required>
         <label for="password">Contraseña</label>
+        <span class="material-icons toggle-password" id="togglePassword">visibility_off</span>
       </div>
 
+      <!-- Botón de enviar -->
       <button type="submit" class="submit-button">Iniciar Sesión</button>
     </form>
 
+    <!-- Links extra -->
     <div class="forgot-password">
       <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
     </div>
@@ -41,7 +48,24 @@
     </div>
   </div>
 
+  <!-- Controlador de login -->
   <script type="module" src="../JS/Controllers/LoginController.js"></script>
+
+  <!-- Script mostrar/ocultar contraseña -->
+  <script>
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword?.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePassword.textContent = "visibility"; //  abierto
+      } else {
+        passwordInput.type = "password";
+        togglePassword.textContent = "visibility_off"; //  tachado
+      }
+    });
+  </script>
 </body>
 
 </html>

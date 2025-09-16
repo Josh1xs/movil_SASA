@@ -152,3 +152,51 @@ body {
     opacity: 1;
   }
 }
+/* Grupo de input */
+.input-group {
+  position: relative;   /* necesario para que el ojo se posicione relativo a este contenedor */
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Campo input */
+.input-group input {
+  width: 100%;
+  padding: 12px 40px 12px 40px; /* espacio para el icono a la izquierda y el ojo a la derecha */
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 14px;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Icono del candado / correo */
+.input-group .icon {
+  position: absolute;
+  left: 12px;
+  font-size: 20px;
+  color: #666;
+}
+
+/* Label flotante */
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #aaa;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+/* Toggle de contraseña (ojo) */
+.input-group .toggle-password {
+  position: absolute;
+  right: 12px;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  user-select: none;
+}

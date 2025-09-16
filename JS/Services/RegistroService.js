@@ -1,27 +1,50 @@
-const API_URL = "http://localhost:8080/apiCliente";
+// ===============================
+// ClienteRegistroService.js
+// ===============================
 
-function parseResponse(json) {
-  if (Array.isArray(json)) return json;                // si ya es array
-  if (json.data?.content) return json.data.content;    // si viene dentro de data.content
-  if (json.content) return json.content;               // si viene como content
-  if (json.data) return json.data;                     // si viene solo en data
-  return [];                                           // vacío o estructura rara
+const API_URL = "http://localhost:8080/auth/cliente";
+
+// -------- Normalizar / Validaciones --------
+export function normalizeName(v) {
+  return v.normalize("NFKC").replace(/\s+/g, " ").trim();
 }
 
-export async function getUsuarios() {
-    const res = await fetch(`${API_URL}/consultar`);
-    if (!res.ok) throw new Error("Error al obtener usuarios");
-    const json = await res.json();
-    return parseResponse(json);
+export function nameValid(v) {
+  if (!v) return false;
+  const t = normalizeName(v);
+  if (t.length < 2) return false;
+  return /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(t);
 }
 
-export async function createUsuario(data) {
-    const res = await fetch(`${API_URL}/registrar`, {
-        method: "POST",
-        headers: {"Content_Type": "application/json"},
-        body: JSON.stringify(data)
-    })
-    if (!res.ok) throw new Error("Error al registrar usuario");
-    const json = await res.json()
-    return parseResponse(json);
+export function validEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+export function isAdult(dateStr) {
+  if (!dateStr) return false;
+  const h = new Date();
+  const d = new Date(dateStr);
+  let age = h.getFullYear() - d.getFullYear();
+  const m = h.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && h.getDate() < d.getDate())) age--;
+  return age >= 18;
+}
+
+// -------- Registrar Cliente --------
+export async function registrarCliente(cliente) {
+  const res = await fetch(`${API_URL}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cliente),
+  });
+
+  if (!res.ok) {
+    let err = {};
+    try {
+      err = await res.json();
+    } catch {}
+    throw new Error(err.message || "Error al registrar cliente");
+  }
+
+  return res.json(); // devuelve {status, cliente, token?}
 }

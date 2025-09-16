@@ -36,8 +36,8 @@
         <div class="grid-2">
           <label class="field">
             <span class="label">DUI</span>
-            <input type="text" id="dui" name="dui" class="input" inputmode="numeric" placeholder="12345678-9"
-              maxlength="10" required>
+            <input type="text" id="dui" name="dui" class="input" inputmode="numeric"
+              placeholder="12345678-9" maxlength="10" required>
           </label>
           <label class="field">
             <span class="label">Fecha de nacimiento</span>
@@ -75,7 +75,6 @@
           </div>
           <div id="passStrengthLabel" class="pass-strength"></div>
 
-
           <div id="passwordHelp" class="password-help">
             <p><span id="charCount" class="invalid">●</span> Mínimo 8 y máximo 15 caracteres</p>
             <p><span id="hasLetter" class="invalid">●</span> Al menos una letra</p>
@@ -90,7 +89,9 @@
     </section>
   </main>
 
-  <script src="../JS/registro.js" type="module"></script>
+  <!-- Controlador -->
+  <script type="module" src="../JS/Controllers/RegisterController.js"></script>
+
 </body>
 
 </html>

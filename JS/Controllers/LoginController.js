@@ -1,39 +1,55 @@
-import { login } from "../Services/LoginService.js";
+// ===============================
+// LoginController.js
+// ===============================
 
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+import { login, logout, isLoggedIn, getUsuarioLogueado } from "../Services/LoginService.js";
+
+// ------- Manejar login -------
+document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const nombreUsuario = document.getElementById("email").value.trim();
-  const contrasena = document.getElementById("password").value.trim();
-
-  if (!nombreUsuario || !contrasena) {
-    return Swal.fire({
-      icon: "warning",
-      title: "Campos vacíos",
-      text: "Debes ingresar usuario y contraseña"
-    });
-  }
+  const correo = document.getElementById("email").value;
+  const contrasena = document.getElementById("password").value;
 
   try {
-    const result = await login(nombreUsuario, contrasena);
+    const data = await login(correo, contrasena);
 
-    // Guardamos en localStorage
-    localStorage.setItem("user", JSON.stringify(result.data));
-    localStorage.setItem("userId", result.data.id);
+    if (data.status === "OK") {
+      // ✅ Guardar datos esenciales en localStorage
+      localStorage.setItem("userId", data.cliente.idCliente);   // o data.cliente.id según backend
+      localStorage.setItem("nombre", data.cliente.nombre);
+      localStorage.setItem("apellido", data.cliente.apellido);
+      localStorage.setItem("token", data.token);
 
-    Swal.fire({
-      icon: "success",
-      title: "Bienvenido",
-      text: `Hola ${result.data.nombreUsuario}`
-    }).then(() => {
-      window.location.href = "../../dashboard/index.html";
-    });
-
+      Swal.fire({
+        icon: "success",
+        title: "Bienvenido " + data.cliente.nombre,
+        showConfirmButton: true,
+        confirmButtonColor: "#C91A1A"
+      }).then(() => {
+        window.location.href = "../dashboard/index.html";
+      });
+    }
   } catch (error) {
     Swal.fire({
       icon: "error",
-      title: "Error de autenticación",
-      text: "Usuario o contraseña incorrectos"
+      title: "Credenciales incorrectas",
+      text: error.message,
+      confirmButtonColor: "#C91A1A"
     });
+  }
+});
+
+// ------- Manejar logout -------
+document.getElementById("btnLogout")?.addEventListener("click", () => {
+  logout();
+});
+
+// ------- Mostrar usuario logueado en home -------
+window.addEventListener("DOMContentLoaded", () => {
+  if (isLoggedIn()) {
+    const user = getUsuarioLogueado();
+    document.getElementById("userName")?.innerText ==
+      `${user.nombre} ${user.apellido}`;
   }
 });

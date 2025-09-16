@@ -1,115 +1,152 @@
+// ===============================
+// ajustes.js
+// ===============================
 document.addEventListener("DOMContentLoaded", async () => {
-  const $ = s => document.querySelector(s);
+  const $ = (s) => document.querySelector(s);
+
+  // =============================== 
+  // DATOS DE SESIÓN
+  // ===============================
   const userId = localStorage.getItem("userId");
-  const apiUrl = userId ? `https://retoolapi.dev/DeaUI0/registro/${userId}` : null;
+  const token  = localStorage.getItem("token");
 
+  if (!userId || !token) {
+    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
+      .then(() => location.replace("../Authenticator/login.html"));
+    return;
+  }
+
+  const apiUrl = `http://localhost:8080/apiCliente/${userId}`;
+
+  // =============================== 
+  // ELEMENTOS DEL DOM
+  // ===============================
   const nombreCompleto = $("#nombreCompleto");
-  const rolUsuario = $("#rolUsuario");
-  const userIdEl = $("#userId");
-  const menuUserId = $("#menuUserId");
-  const menuNombre = $("#menuNombre");
-  const menuRol = $("#menuRol");
-  const userInitials = $("#userInitials");
+  const rolUsuario     = $("#rolUsuario");
+  const userIdEl       = $("#userId");
+  const menuUserId     = $("#menuUserId");
+  const menuNombre     = $("#menuNombre");
+  const menuRol        = $("#menuRol");
+  const userInitials   = $("#userInitials");
 
-  const overlay = $("#overlay");
-  const profileMenu = $("#profileMenu");
-  const menuToggle = $("#menuToggle");
-  const closeMenu = $("#closeMenu");
-  const logoutBtn = $("#logoutBtn");
+  const overlay      = $("#overlay");
+  const profileMenu  = $("#profileMenu");
+  const menuToggle   = $("#menuToggle");
+  const closeMenu    = $("#closeMenu");
+  const logoutBtn    = $("#logoutBtn");
 
-  const toggleNombre = $(".toggle-nombre");
-  const formNombre = $(".form-nombre");
-  const inputNombre = $("#nuevoNombre");
-  const hintNombre = $("#hintNombre");
-  const btnGuardarNombre = $("#guardarNombre");
+  const toggleNombre    = $(".toggle-nombre");
+  const formNombre      = $(".form-nombre");
+  const inputNombre     = $("#nuevoNombre");
+  const hintNombre      = $("#hintNombre");
+  const btnGuardarNombre= $("#guardarNombre");
 
-  const togglePass = $(".toggle-pass");
-  const formPass = $(".form-pass");
-  const inputPass = $("#nuevaPass");
-  const inputPass2 = $("#repitePass");
-  const passMeter = $("#passMeter");
-  const btnGuardarPass = $("#guardarPass");
+  const togglePass    = $(".toggle-pass");
+  const formPass      = $(".form-pass");
+  const inputPass     = $("#nuevaPass");
+  const inputPass2    = $("#repitePass");
+  const passMeter     = $("#passMeter");
+  const btnGuardarPass= $("#guardarPass");
 
-  if (userIdEl) userIdEl.textContent = userId || "—";
+  if (userIdEl) userIdEl.textContent   = userId || "—";
   if (menuUserId) menuUserId.textContent = userId || "—";
 
-  function normalizarNombre(v){ return v.normalize("NFKC").replace(/\s+/g," ").trim(); }
-  function validarNombre(v){
-    if(!v) return false;
+  // =============================== 
+  // HELPERS
+  // ===============================
+  function normalizarNombre(v) {
+    return v.normalize("NFKC").replace(/\s+/g, " ").trim();
+  }
+
+  function validarNombre(v) {
+    if (!v) return false;
     const full = normalizarNombre(v);
-    if(!full.includes(" ")) return false;
-    if(full.length < 5) return false;
-    if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(full)) return false;
+    if (!full.includes(" ")) return false;
+    if (full.length < 5) return false;
+    if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(full)) return false;
     return true;
   }
-  function scorePass(p){
-    let s=0;
-    if(p.length>=8) s++;
-    if(/[a-z]/.test(p)) s++;
-    if(/[A-Z]/.test(p)) s++;
-    if(/\d/.test(p)) s++;
-    if(/[@$!%*#?&._-]/.test(p)) s++;
+
+  function scorePass(p) {
+    let s = 0;
+    if (p.length >= 8) s++;
+    if (/[a-z]/.test(p)) s++;
+    if (/[A-Z]/.test(p)) s++;
+    if (/\d/.test(p)) s++;
+    if (/[@$!%*#?&._-]/.test(p)) s++;
     return s;
   }
-  function setMeter(p){
-    const s=scorePass(p);
-    const w=[0,20,40,60,80,100][s];
-    passMeter.style.width = w+"%";
-    passMeter.style.background = s<=2?"#ef4444":s<=4?"#f59e0b":"#16a34a";
+
+  function setMeter(p) {
+    const s = scorePass(p);
+    const w = [0, 20, 40, 60, 80, 100][s];
+    passMeter.style.width = w + "%";
+    passMeter.style.background = s <= 2 ? "#ef4444" : s <= 4 ? "#f59e0b" : "#16a34a";
   }
-  function setSaving(btn, saving, labelIdle, labelSaving){
-    if(!btn) return;
-    if(saving){
-      btn.setAttribute("disabled","disabled");
+
+  function setSaving(btn, saving, labelIdle, labelSaving) {
+    if (!btn) return;
+    if (saving) {
+      btn.setAttribute("disabled", "disabled");
       btn.dataset.labelIdle = labelIdle;
       btn.textContent = labelSaving;
-    }else{
+    } else {
       btn.removeAttribute("disabled");
       btn.textContent = labelIdle || btn.dataset.labelIdle || "Guardar";
     }
   }
-  function initialsFromName(n){
+
+  function initialsFromName(n) {
     const parts = n.split(" ").filter(Boolean);
-    if(parts.length===0) return "U";
-    if(parts.length===1) return parts[0][0]?.toUpperCase() || "U";
-    return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+    if (parts.length === 0) return "U";
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "U";
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
-  async function cargarUsuario(){
-    try{
-      if(!apiUrl) throw new Error();
-      const res = await fetch(apiUrl);
-      if(!res.ok) throw new Error();
+  // =============================== 
+  // CARGAR USUARIO
+  // ===============================
+  async function cargarUsuario() {
+    try {
+      const res = await fetch(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Error al cargar usuario");
+
       const u = await res.json();
       const nombre = `${u?.nombre ?? ""} ${u?.apellido ?? ""}`.trim() || "Usuario";
-      if(nombreCompleto) nombreCompleto.textContent = nombre;
-      if(menuNombre) menuNombre.textContent = nombre;
-      if(rolUsuario) rolUsuario.textContent = "Cliente";
-      if(menuRol) menuRol.textContent = "Cliente";
-      if(userInitials) userInitials.textContent = initialsFromName(nombre);
-    }catch{
-      if(nombreCompleto) nombreCompleto.textContent = "Usuario";
-      if(userInitials) userInitials.textContent = "U";
+
+      if (nombreCompleto) nombreCompleto.textContent = nombre;
+      if (menuNombre) menuNombre.textContent = nombre;
+      if (rolUsuario) rolUsuario.textContent = "Cliente";
+      if (menuRol) menuRol.textContent = "Cliente";
+      if (userInitials) userInitials.textContent = initialsFromName(nombre);
+
+    } catch (err) {
+      console.error("Error cargar usuario:", err);
+      if (nombreCompleto) nombreCompleto.textContent = "Usuario";
+      if (userInitials) userInitials.textContent = "U";
     }
   }
 
-  function abrir(){ profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
+  // =============================== 
+  // MENU PERFIL
+  // ===============================
+  function abrir() { profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
   function cerrar(){ profileMenu?.classList.remove("open"); overlay?.classList.remove("show"); }
 
   menuToggle?.addEventListener("click", abrir);
   closeMenu?.addEventListener("click", cerrar);
   overlay?.addEventListener("click", cerrar);
-  window.addEventListener("keydown", e => e.key==="Escape" && cerrar());
+  window.addEventListener("keydown", (e) => e.key === "Escape" && cerrar());
 
+  // =============================== 
+  // CAMBIO DE NOMBRE
+  // ===============================
   toggleNombre?.addEventListener("click", () => {
-    toggleNombre.setAttribute("hidden","hidden");
+    toggleNombre.setAttribute("hidden", "hidden");
     formNombre.removeAttribute("hidden");
     inputNombre.focus();
-  });
-  togglePass?.addEventListener("click", () => {
-    togglePass.setAttribute("hidden","hidden");
-    formPass.removeAttribute("hidden");
-    inputPass.focus();
   });
 
   inputNombre?.addEventListener("input", () => {
@@ -122,32 +159,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     const val = normalizarNombre(inputNombre.value);
     const ok = validarNombre(val);
     inputNombre.classList.toggle("invalid", !ok);
-    if(!ok){ Swal.fire("Nombre inválido","Ingresa nombre y apellido, solo letras y espacios","warning"); return; }
+    if (!ok) {
+      Swal.fire("Nombre inválido", "Ingresa nombre y apellido válidos", "warning");
+      return;
+    }
 
     const confirm = await Swal.fire({
-      icon:"question",
-      title:"Confirmar cambio de nombre",
-      html:`<div style="text-align:left">Nuevo nombre:<br><strong>${val}</strong></div>`,
-      showCancelButton:true,
-      confirmButtonText:"Confirmar",
-      cancelButtonText:"Cancelar",
-      confirmButtonColor:"#c91a1a"
+      icon: "question",
+      title: "Confirmar cambio de nombre",
+      html: `<div style="text-align:left">Nuevo nombre:<br><strong>${val}</strong></div>`,
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#c91a1a",
     });
-    if(!confirm.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
     const [nombre, ...rest] = val.split(" ");
     const apellido = rest.join(" ").trim();
-    try{
+
+    try {
       setSaving(btnGuardarNombre, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(apiUrl, { method:"PATCH", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ nombre, apellido }) });
-      if(!r.ok) throw new Error();
-      await Swal.fire({icon:"success",title:"Nombre actualizado"});
+      const r = await fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nombre, apellido }),
+      });
+      if (!r.ok) throw new Error();
+      await Swal.fire({ icon: "success", title: "Nombre actualizado" });
       location.reload();
-    }catch{
-      Swal.fire("Error","No se pudo actualizar el nombre","error");
-    }finally{
+    } catch {
+      Swal.fire("Error", "No se pudo actualizar el nombre", "error");
+    } finally {
       setSaving(btnGuardarNombre, false, "Guardar cambios");
     }
+  });
+
+  // =============================== 
+  // CAMBIO DE CONTRASEÑA
+  // ===============================
+  togglePass?.addEventListener("click", () => {
+    togglePass.setAttribute("hidden", "hidden");
+    formPass.removeAttribute("hidden");
+    inputPass.focus();
   });
 
   inputPass?.addEventListener("input", () => setMeter(inputPass.value));
@@ -160,43 +217,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     const p2 = inputPass2.value.trim();
     const ok = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&._-]).{8,}$/.test(p);
     inputPass.classList.toggle("invalid", !ok);
-    inputPass2.classList.toggle("invalid", p!==p2 || !p2);
-    if(!ok){ Swal.fire("Contraseña insegura","Debe tener mínimo 8 caracteres, mayúscula, minúscula, número y símbolo","warning"); return; }
-    if(p!==p2){ Swal.fire("No coincide","Las contraseñas no coinciden","warning"); return; }
+    inputPass2.classList.toggle("invalid", p !== p2 || !p2);
 
-    const masked = "•".repeat(Math.min(p.length, 12));
-    const confirm = await Swal.fire({
-      icon:"question",
-      title:"Confirmar nueva contraseña",
-      html:`<div style="text-align:left">Se actualizará tu contraseña.<br>Vista previa: <strong>${masked}</strong></div>`,
-      showCancelButton:true,
-      confirmButtonText:"Confirmar",
-      cancelButtonText:"Cancelar",
-      confirmButtonColor:"#c91a1a"
-    });
-    if(!confirm.isConfirmed) return;
+    if (!ok) {
+      Swal.fire("Contraseña insegura", "Debe tener mínimo 8 caracteres, mayúscula, número y símbolo", "warning");
+      return;
+    }
+    if (p !== p2) {
+      Swal.fire("No coincide", "Las contraseñas no coinciden", "warning");
+      return;
+    }
 
-    try{
+    try {
       setSaving(btnGuardarPass, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(apiUrl, { method:"PATCH", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ contrasena: p }) });
-      if(!r.ok) throw new Error();
-      await Swal.fire({icon:"success",title:"Contraseña actualizada"});
+      const r = await fetch(apiUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ contrasena: p }),
+      });
+      if (!r.ok) throw new Error();
+      await Swal.fire({ icon: "success", title: "Contraseña actualizada" });
       location.reload();
-    }catch{
-      Swal.fire("Error","No se pudo actualizar la contraseña","error");
-    }finally{
+    } catch {
+      Swal.fire("Error", "No se pudo actualizar la contraseña", "error");
+    } finally {
       setSaving(btnGuardarPass, false, "Guardar cambios");
     }
   });
 
+  // =============================== 
+  // LOGOUT
+  // ===============================
   $(".cerrar-sesion")?.addEventListener("click", async () => {
-    const ok = await Swal.fire({title:"¿Cerrar sesión?",text:"Tu sesión actual se cerrará",icon:"warning",showCancelButton:true,confirmButtonColor:"#c91a1a",confirmButtonText:"Sí, salir",cancelButtonText:"Cancelar"});
-    if(ok.isConfirmed){
-      try{}finally{
-        localStorage.clear();sessionStorage.clear();document.cookie="authToken=; Max-Age=0; path=/";location.replace("../Authenticator/login.html");
-      }
+    const ok = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "Tu sesión actual se cerrará",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c91a1a",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    });
+    if (ok.isConfirmed) {
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = "authToken=; Max-Age=0; path=/";
+      location.replace("../Authenticator/login.html");
     }
   });
 
+  // =============================== 
+  // INICIO
+  // ===============================
   await cargarUsuario();
 });
