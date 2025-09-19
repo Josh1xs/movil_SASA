@@ -18,12 +18,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // 🔹 Traer vehículos paginados desde la API
-    const response = await getVehiculos(token, 0, 50, "idVehiculo", "asc");
-    const vehiculos = response.data?.content || response;
+    // 🔹 Traer vehículos desde la API
+    const raw = await getVehiculos(token, 0, 50, "idVehiculo", "asc");
+
+    // 🔹 Normalizar como en dashboard
+    const listaVehiculos = raw.data?.content || raw;
+
+    console.log("Vehículos normalizados:", listaVehiculos);
 
     // 🔹 Filtrar solo los del cliente logueado
-    const misVehiculos = vehiculos.filter(v => String(v.idCliente) === String(userId));
+    const misVehiculos = listaVehiculos.filter(v =>
+      String(v.idCliente ?? v.IdCliente ?? v.cliente?.idCliente ?? v.cliente?.IdCliente) === String(userId)
+    );
 
     if (!misVehiculos.length) {
       emptyMsg.classList.remove("hidden");
@@ -33,11 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     emptyMsg.classList.add("hidden");
     lista.innerHTML = misVehiculos.map(v => `
-      <div class="vcard" data-id="${v.id}">
+      <div class="vcard" data-id="${v.idVehiculo ?? v.IdVehiculo ?? v.id}">
         <div class="vbody">
           <h3>${v.marca} ${v.modelo}</h3>
           ${v.anio ? `<p><strong>Año:</strong> ${v.anio}</p>` : ""}
-          ${v.estado ? `<p><strong>Estado:</strong> ${v.estado}</p>` : ""}
+          ${v.estado?.nombre ? `<p><strong>Estado:</strong> ${v.estado.nombre}</p>` : ""}
           <p><span class="chip">Placa: ${v.placa}</span></p>
           <p><strong>VIN:</strong> ${v.vin}</p>
         </div>
@@ -82,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (conf.isConfirmed) {
         try {
-          await deleteVehiculo(token, id);
+          await deleteVehiculo(id, token); // ✅ id primero, token después
           Swal.fire("Eliminado", "El vehículo fue eliminado correctamente", "success")
             .then(() => location.reload());
         } catch (err) {

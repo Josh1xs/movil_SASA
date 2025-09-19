@@ -22,14 +22,15 @@ export async function getVehiculos(
   token,
   page = 0,
   size = 20,
-  sortBy = "idVehiculo", // 👈 debe coincidir con el Entity
+  sortBy = "idVehiculo",
   sortDir = "asc"
 ) {
   const url = `${API_URL}/consultar?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;
-  return fetchJsonOrThrow(url, {
+  const data = await fetchJsonOrThrow(url, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  // 👉 devuelve el objeto completo {status, data: { content, totalPages, ... }}
+  // El backend puede devolver {status, data:{content:[]}} o un array directo
+  return data.data?.content ?? data;
 }
 
 // --- OBTENER POR ID ---
@@ -70,8 +71,8 @@ export async function updateVehiculo(token, id, vehiculo) {
 }
 
 // --- ELIMINAR ---
-export async function deleteVehiculo(token, id) {
-  const url = `${API_URL}/eliminar/${id}`;
+export async function deleteVehiculo(id, token) {
+  const url = `${API_URL}/eliminar/${id}`; // ✅ ahora el id va en la URL
   return fetchJsonOrThrow(url, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` }

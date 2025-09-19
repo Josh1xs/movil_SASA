@@ -79,8 +79,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       Swal.fire("Campos requeridos", "Todos los campos son obligatorios", "warning");
       return;
     }
+    if (anio < 1900 || anio > new Date().getFullYear() + 1) {
+      Swal.fire("Año inválido", "El año debe estar entre 1900 y el próximo año", "warning");
+      return;
+    }
     if (vin.length !== 17) {
       Swal.fire("VIN inválido", "El VIN debe tener exactamente 17 caracteres", "warning");
+      return;
+    }
+    if (!/^[A-Z0-9]+$/.test(vin)) {
+      Swal.fire("VIN inválido", "El VIN solo puede contener letras y números", "warning");
+      return;
+    }
+    if (!/^[A-Z0-9-]+$/.test(placa)) {
+      Swal.fire("Placa inválida", "La placa solo puede contener letras, números y guiones", "warning");
       return;
     }
 
@@ -96,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       if (vehiculoId && vehiculoId !== "undefined" && !isNaN(Number(vehiculoId))) {
-        await updateVehiculo(token, Number(vehiculoId), vehiculo); // 👈 casteo a Number
+        await updateVehiculo(token, Number(vehiculoId), vehiculo);
         Swal.fire("Éxito", "Vehículo actualizado correctamente", "success")
           .then(() => location.replace("./Vehiculos.html"));
       } else {
@@ -106,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } catch (err) {
       console.error("❌ Error al guardar vehículo:", err);
-      Swal.fire("Error", "No se pudo guardar el vehículo. Verifica los datos.", "error");
+      Swal.fire("Error", err.message || "No se pudo guardar el vehículo. Verifica los datos.", "error");
     }
   });
 });

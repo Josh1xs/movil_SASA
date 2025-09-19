@@ -1,5 +1,5 @@
 // ===============================
-// LoginService.js
+// Services/LoginService.js
 // ===============================
 
 const API_URL = "http://localhost:8080/auth/cliente";
@@ -17,24 +17,19 @@ export async function login(correo, contrasena) {
 
     const json = await res.json();
 
-    // 🔍 Debug: ver respuesta del backend
+    // 🔍 Debug
     console.log("Respuesta del login:", json);
 
-    if (!res.ok || json.status !== "OK") {
+    if (!res.ok || json.status !== "OK" || !json.token) {
       throw new Error(json.message || "Credenciales incorrectas");
     }
 
     // ✅ Guardar datos en localStorage
     localStorage.setItem("user", JSON.stringify(json.cliente));
-localStorage.setItem("userId", json.cliente.id);  // 👈 usa id correcto
+    localStorage.setItem("userId", json.cliente.id);   // 👈 confirma que en backend sea `id`
     localStorage.setItem("token", json.token);
 
-    // 🔍 Debug: ver qué quedó guardado
-    console.log("Guardado en localStorage:");
-    console.log("userId:", localStorage.getItem("userId"));
-    console.log("token:", localStorage.getItem("token"));
-    console.log("user:", localStorage.getItem("user"));
-
+    console.log("Token guardado:", json.token.substring(0, 20) + "...");
     return json; // {status, token, cliente}
   } catch (error) {
     console.error("Error en login:", error);
@@ -71,4 +66,28 @@ export function isLoggedIn() {
     localStorage.getItem("user") !== null &&
     localStorage.getItem("token") !== null
   );
+}
+
+// -------------------------------
+// HANDLER DE 401 GLOBAL
+// -------------------------------
+export async function fetchWithAuth(url, options = {}) {
+  const token = getToken();
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const res = await fetch(url, { ...options, headers });
+
+  if (res.status === 401) {
+    // Sesión expirada → limpiar y mandar al login
+    logout();
+    Swal.fire("Sesión expirada", "Debes iniciar sesión nuevamente", "warning");
+    throw new Error("401 - Sesión expirada");
+  }
+
+  return res;
 }

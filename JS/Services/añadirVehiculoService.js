@@ -5,15 +5,6 @@ const API_URL = "http://localhost:8080/apiVehiculo";
 
 // -------------------------------------
 // Crear un nuevo vehículo
-// vehiculo = {
-//   marca: "Toyota",
-//   modelo: "Corolla",
-//   anio: 2020,
-//   placa: "P123-456",
-//   vin: "1HGBH41JXMN109186",
-//   idCliente: 5,
-//   idEstado: 1
-// }
 // -------------------------------------
 export async function addVehiculo(token, vehiculo) {
   try {
