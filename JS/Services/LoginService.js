@@ -2,7 +2,21 @@
 // Services/LoginService.js
 // ===============================
 
-const API_URL = "http://localhost:8080/auth/cliente";
+// Detectar el host dinámicamente
+let API_BASE;
+
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+  // PC navegador
+  API_BASE = "http://localhost:8080";
+} else if (window.location.hostname === "10.0.2.2") {
+  // Emulador Android
+  API_BASE = "http://10.0.2.2:8080";
+} else {
+  // Producción (ejemplo Vercel / dominio real)
+  API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo cuando subas
+}
+
+const API_URL = `${API_BASE}/auth/cliente`;
 
 // -------------------------------
 // LOGIN
@@ -17,7 +31,6 @@ export async function login(correo, contrasena) {
 
     const json = await res.json();
 
-    // 🔍 Debug
     console.log("Respuesta del login:", json);
 
     if (!res.ok || json.status !== "OK" || !json.token) {
@@ -26,7 +39,7 @@ export async function login(correo, contrasena) {
 
     // ✅ Guardar datos en localStorage
     localStorage.setItem("user", JSON.stringify(json.cliente));
-    localStorage.setItem("userId", json.cliente.id);   // 👈 confirma que en backend sea `id`
+    localStorage.setItem("userId", json.cliente.id);   // asegúrate que el backend manda `id`
     localStorage.setItem("token", json.token);
 
     console.log("Token guardado:", json.token.substring(0, 20) + "...");
@@ -83,7 +96,6 @@ export async function fetchWithAuth(url, options = {}) {
   const res = await fetch(url, { ...options, headers });
 
   if (res.status === 401) {
-    // Sesión expirada → limpiar y mandar al login
     logout();
     Swal.fire("Sesión expirada", "Debes iniciar sesión nuevamente", "warning");
     throw new Error("401 - Sesión expirada");

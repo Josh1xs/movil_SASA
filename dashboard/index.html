@@ -14,42 +14,42 @@
 
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-  <div class="menu-header no-avatar">
-    <div class="menu-user">
-      <h3 id="menuNombre">Usuario</h3>
-      <p id="menuPase" class="muted">Cliente</p>
-      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+  <!-- Menú lateral -->
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
     </div>
-  </div>
 
-  <nav class="menu-list">
-    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../Mis Vehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../MisVehiculos/AnadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
-    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
-    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
-    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-    </a>
-  </nav>
-</aside>
-
+    <nav class="menu-list">
+      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
+      <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
+      <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
 
   <!-- App -->
   <div class="app-shell">
     <!-- Top -->
     <header class="topbar">
-  <div class="greeting">
-    <h1>Bienvenido<span id=""></span></h1>
-  </div>
-  <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
-    <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
-  </button>
-</header>
+      <div class="greeting">
+        <h1 id="greetingText">Bienvenido</h1>
+      </div>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear" aria-hidden="true"></i>
+      </button>
+    </header>
 
     <!-- Buscador -->
     <div class="searchbar">
@@ -59,7 +59,6 @@
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
-
 
     <!-- Próximas Citas -->
     <section class="section">
@@ -77,23 +76,13 @@
       <div id="citasHomeList" class="cards-scroll" aria-label="Carrusel de citas"></div>
 
       <template id="tplCitaCard">
-        <article class="card card-hero" tabindex="0" role="link" aria-label="Abrir detalle de cita">
+        <article class="card card-hero">
           <div class="card-hero__img"></div>
           <div class="card-hero__overlay">
-            <div class="pill">
-              <i class="fa-regular fa-clock"></i><span>—</span>
-            </div>
+            <div class="pill"><i class="fa-regular fa-clock"></i><span>—</span></div>
             <div class="title">—</div>
-            <div class="meta">
-              <button class="cita-remaining-btn" type="button" title="Tiempo restante">
-                <i class="fa-solid fa-hourglass-half"></i>
-              </button>
-              <div class="cita-code">—</div>
-            </div>
+            <div class="meta"><div class="cita-code">—</div></div>
           </div>
-          <button class="fav" type="button" aria-label="Favorito" tabindex="-1">
-            <i class="fa-regular fa-heart"></i>
-          </button>
         </article>
       </template>
     </section>
@@ -112,38 +101,26 @@
           <div class="vehicle__img"></div>
           <div class="vehicle__body">
             <h3 class="vehicle__name">—</h3>
-            <p>Color: —</p>
+            <p>Año: —</p>
             <p>Placa: —</p>
             <p>VIN: —</p>
           </div>
-          <i class="fa-solid fa-chevron-right vehicle__chev" aria-hidden="true"></i>
+          <i class="fa-solid fa-chevron-right vehicle__chev"></i>
         </a>
       </template>
     </section>
 
     <!-- Tabbar -->
-    <nav class="tabbar" aria-label="Navegación principal">
-      <a class="tabbar__btn active" href="./index.html" aria-current="page">
-        <i class="fa-solid fa-house"></i>
-      </a>
-      <a class="tabbar__btn" href="../Citas/citas.html">
-        <i class="fa-regular fa-calendar"></i>
-      </a>
-      <a class="tabbar__btn" href="../MisVehiculos/Vehiculos.html">
-        <i class="fa-solid fa-car"></i>
-      </a>
-      <a class="tabbar__btn" href="../Ajustes/ajustes.html">
-        <i class="fa-solid fa-user"></i>
-      </a>
+    <nav class="tabbar">
+      <a class="tabbar__btn active" href="./index.html"><i class="fa-solid fa-house"></i></a>
+      <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+      <a class="tabbar__btn" href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i></a>
+      <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
     </nav>
 
- 
-    <a href="../MisVehiculos/anadirVehiculo.html" class="fab" title="Añadir vehículo" aria-label="Añadir vehículo">
-      <i class="fa-solid fa-plus"></i>
-    </a>
+    <a href="../MisVehiculos/anadirVehiculo.html" class="fab"><i class="fa-solid fa-plus"></i></a>
   </div>
 
-  <script  type ="module" src="../JS/script.js"></script>
-  <script src="../JS/shell.js"></script>
+  <script type="module" src="../JS/script.js"></script>
 </body>
 </html>

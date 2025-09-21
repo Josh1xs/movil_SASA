@@ -10,6 +10,9 @@
 </head>
 <body>
   <main class="app-shell">
+    <!-- =============================== -->
+    <!-- TOPBAR -->
+    <!-- =============================== -->
     <header class="topbar">
       <h1 class="page-title">Citas</h1>
       <button class="avatar" id="menuToggle">
@@ -17,6 +20,9 @@
       </button>
     </header>
 
+    <!-- =============================== -->
+    <!-- CALENDARIO -->
+    <!-- =============================== -->
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
@@ -29,42 +35,69 @@
       </div>
     </section>
 
-    <section class="section">
-      <form id="formCita" class="form card">
-        <input type="hidden" id="fechaSeleccionada" />
-        <div class="field">
-          <label class="label" for="horaInput">Hora</label>
-          <input type="time" id="horaInput" class="input" step="1800" required />
-          <div id="timeHint" class="subhint">Horario permitido: 07:00–16:00</div>
-        </div>
-        <div class="field">
-          <label class="label" for="vehiculoSelect">Vehículo</label>
-          <select id="vehiculoSelect" class="select" required>
-            <option value="">Cargando vehículos…</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="label" for="estado">Tipo de servicio</label>
-          <select id="estado" class="select" required>
-            <option value="">Seleccionar</option>
-            <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
-            <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="submit" id="btnEnviar" class="btn primary w100"><i class="fa-regular fa-paper-plane"></i> Enviar</button>
-          <button type="reset" class="btn ghost w100"><i class="fa-solid fa-eraser"></i> Limpiar</button>
-          <a href="../dashboard/index.html" class="btn danger w100"><i class="fa-solid fa-xmark"></i> Cancelar</a>
-        </div>
-      </form>
-    </section>
+   <section class="section">
+  <form id="formCita" class="form card">
+    <input type="hidden" id="fechaSeleccionada" />
 
+    <!-- Hora -->
+    <div class="field">
+      <label class="label" for="horaInput">Hora</label>
+      <input type="time" id="horaInput" class="input" step="1800" required />
+      <div id="timeHint" class="subhint">Horario permitido: 07:00–16:00</div>
+    </div>
+
+    <!-- Vehículo -->
+    <div class="field">
+      <label class="label" for="vehiculoSelect">Vehículo</label>
+      <select id="vehiculoSelect" class="select" required>
+        <option value="">Cargando vehículos…</option>
+      </select>
+    </div>
+
+    <!-- Tipo de servicio -->
+    <div class="field">
+      <label class="label" for="tipoServicio">Tipo de servicio</label>
+      <select id="tipoServicio" class="select" required>
+        <option value="">Seleccionar</option>
+        <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
+        <option value="Mantenimiento correctivo">Mantenimiento correctivo</option>
+      </select>
+    </div>
+
+    <!-- Descripción opcional -->
+    <div class="field">
+      <label class="label" for="descripcion">Descripción (opcional)</label>
+      <textarea id="descripcion" class="input" rows="3" maxlength="255" placeholder="Ej. Cambio de aceite, revisión de frenos..."></textarea>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button type="submit" id="btnEnviar" class="btn primary w100">
+        <i class="fa-regular fa-paper-plane"></i> Enviar
+      </button>
+      <button type="reset" class="btn ghost w100">
+        <i class="fa-solid fa-eraser"></i> Limpiar
+      </button>
+      <a href="../dashboard/index.html" class="btn danger w100">
+        <i class="fa-solid fa-xmark"></i> Cancelar
+      </a>
+    </div>
+  </form>
+</section>
+
+
+    <!-- =============================== -->
+    <!-- LISTADO DE CITAS -->
+    <!-- =============================== -->
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
       <div id="listaCitas" class="list"></div>
     </section>
   </main>
 
+  <!-- =============================== -->
+  <!-- MENÚ PERFIL -->
+  <!-- =============================== -->
   <div id="overlay" class="overlay"></div>
   <aside id="profileMenu" class="profile-menu">
     <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
@@ -87,6 +120,9 @@
     </nav>
   </aside>
 
+  <!-- =============================== -->
+  <!-- MENÚ INFERIOR -->
+  <!-- =============================== -->
   <nav class="tabbar">
     <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn active" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
@@ -94,6 +130,11 @@
     <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <script type = "module" src="../JS/Controllers/CitasController.js"></script>
+  <!-- =============================== -->
+  <!-- SCRIPT -->
+  <!-- =============================== -->
+  <script type="module" src="../JS/Controllers/CitasController.js"></script>
+  <script  type="module" src="../JS/shell.js"></script>
+
 </body>
 </html>

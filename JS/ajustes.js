@@ -1,5 +1,5 @@
 // ===============================
-// ajustes.js
+// ajustes.js (corregido dinámico)
 // ===============================
 import { getUserId, getToken, getUsuarioLogueado } from "../JS/Services/LoginService.js";
 
@@ -18,7 +18,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const apiUrl = `http://localhost:8080/apiCliente/${userId}`;
+  // =============================== 
+  // Detectar host dinámico
+  // ===============================
+  let API_BASE;
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    API_BASE = "http://localhost:8080";
+  } else if (window.location.hostname === "10.0.2.2") {
+    API_BASE = "http://10.0.2.2:8080"; // Emulador Android
+  } else {
+    API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo cuando despliegues
+  }
+
+  const apiUrl   = `${API_BASE}/apiCliente/${userId}`;
+  const apiPatch = `${API_BASE}/apiCliente/actualizar-parcial/${userId}`;
 
   // =============================== 
   // ELEMENTOS DEL DOM
@@ -195,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       setSaving(btnGuardarNombre, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(`http://localhost:8080/apiCliente/actualizar-parcial/${userId}`, {
+      const r = await fetch(apiPatch, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -255,7 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       setSaving(btnGuardarPass, true, "Guardar cambios", "Guardando…");
-      const r = await fetch(`http://localhost:8080/apiCliente/actualizar-parcial/${userId}`, {
+      const r = await fetch(apiPatch, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -266,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!r.ok) throw new Error();
 
-      // 🔑 Sincronizar con localStorage (opcional, normalmente no guardamos contraseña)
+      // 🔑 Sincronizar con localStorage (opcional)
       const user = getUsuarioLogueado();
       if (user) {
         user.contrasena = p;

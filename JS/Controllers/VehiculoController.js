@@ -21,9 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 🔹 Traer vehículos desde la API
     const raw = await getVehiculos(token, 0, 50, "idVehiculo", "asc");
 
-    // 🔹 Normalizar como en dashboard
     const listaVehiculos = raw.data?.content || raw;
-
     console.log("Vehículos normalizados:", listaVehiculos);
 
     // 🔹 Filtrar solo los del cliente logueado
@@ -41,11 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     lista.innerHTML = misVehiculos.map(v => `
       <div class="vcard" data-id="${v.idVehiculo ?? v.IdVehiculo ?? v.id}">
         <div class="vbody">
-          <h3>${v.marca} ${v.modelo}</h3>
-          ${v.anio ? `<p><strong>Año:</strong> ${v.anio}</p>` : ""}
+          <h3>${v.marca ?? v.Marca} ${v.modelo ?? v.Modelo}</h3>
+          ${v.anio || v.Anio ? `<p><strong>Año:</strong> ${v.anio ?? v.Anio}</p>` : ""}
           ${v.estado?.nombre ? `<p><strong>Estado:</strong> ${v.estado.nombre}</p>` : ""}
-          <p><span class="chip">Placa: ${v.placa}</span></p>
-          <p><strong>VIN:</strong> ${v.vin}</p>
+          <p><span class="chip">Placa: ${v.placa ?? v.Placa}</span></p>
+          <p><strong>VIN:</strong> ${v.vin ?? v.Vin}</p>
         </div>
         <div class="actions">
           <button class="btn edit-btn editar">

@@ -1,8 +1,19 @@
 // ===============================
-// ClienteRegistroService.js
+// ClienteRegistroService.js (dinámico)
 // ===============================
 
-const API_URL = "http://localhost:8080/auth/cliente";
+// Detectar host dinámico
+let API_BASE;
+
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+  API_BASE = "http://localhost:8080";
+} else if (window.location.hostname === "10.0.2.2") {
+  API_BASE = "http://10.0.2.2:8080"; // Emulador Android
+} else {
+  API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo en producción
+}
+
+const API_URL = `${API_BASE}/auth/cliente`;
 
 // -------- Normalizar / Validaciones --------
 export function normalizeName(v) {

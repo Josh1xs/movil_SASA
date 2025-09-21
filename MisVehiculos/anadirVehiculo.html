@@ -25,7 +25,7 @@
         <p id="menuPase" class="muted">Cliente</p>
         <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
       </div>
-    </div>a
+    </div>
     <nav class="menu-list">
       <a href="../dashboard/index.html"><i class="fa-solid fa-house"></i> Inicio</a>
       <a href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i> Citas</a>
@@ -55,15 +55,15 @@
 
     <!-- Formulario -->
     <section class="section">
-      <form id="formVehiculo" class="card form" novalidate>
+      <form id="vehiculoForm" class="card form" novalidate>
         <div class="row">
           <label class="label">Marca*
-            <input type="text" id="marca" class="input" inputmode="text" placeholder="Toyota, Honda…" required>
+            <input type="text" id="marca" class="input" placeholder="Toyota, Honda…" required>
           </label>
         </div>
         <div class="row">
           <label class="label">Modelo*
-            <input type="text" id="modelo" class="input" inputmode="text" placeholder="Corolla, Civic…" required>
+            <input type="text" id="modelo" class="input" placeholder="Corolla, Civic…" required>
           </label>
         </div>
         <div class="row grid-2">
@@ -82,15 +82,13 @@
         </div>
         <div class="row">
           <label class="label">Placa*
-            <input type="text" id="placa" class="input" inputmode="numeric" placeholder="1234-567" maxlength="8" required>
+            <input type="text" id="placa" class="input" placeholder="1234-567" maxlength="8" required>
           </label>
-          <div class="placa-error"></div>
         </div>
         <div class="row">
           <label class="label">VIN*
             <input type="text" id="vin" class="input" placeholder="17 caracteres VIN" maxlength="17" minlength="17" required>
           </label>
-          <div class="vin-error"></div>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn primary">Guardar</button>
@@ -112,5 +110,6 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script type="module" src="../JS/Controllers/añadirVehiculoController.js"></script>
+  <script type="module" src="../JS/shell.js"></script>
 </body>
 </html>

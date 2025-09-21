@@ -2,6 +2,8 @@
 // menu.js - Manejo del menú perfil
 // ===============================
 
+import { getToken } from "../JS/Services/LoginService.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const qs = (s) => document.querySelector(s);
 
@@ -32,13 +34,25 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", closeMenu);
   window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
 
+  // ===============================
   // Mostrar datos de usuario
+  // ===============================
   const userId = localStorage.getItem("userId");
+  const token  = getToken();
+
   if (qs("#menuUserId")) qs("#menuUserId").textContent = userId || "Desconocido";
 
-  if (userId) {
-    fetch(`http://localhost:8080/apiCliente/${userId}`)
-      .then((r) => r.json())
+  if (userId && token) {
+    fetch(`http://localhost:8080/apiCliente/${userId}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error(`Error ${r.status}`);
+        return r.json();
+      })
       .then((u) => {
         const nombre = `${u?.nombre ?? ""} ${u?.apellido ?? ""}`.trim() || "Usuario";
 
@@ -48,10 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("nombre", nombre);
         if (u?.correo) localStorage.setItem("email", u.correo);
       })
-      .catch(() => {});
+      .catch((err) => console.error("❌ Error cargando usuario:", err.message));
   }
 
+  // ===============================
   // Logout
+  // ===============================
   logout?.addEventListener("click", (e) => {
     e.preventDefault();
 
