@@ -47,3 +47,4 @@ form{display:grid;gap:12px;margin-top:6px}
 .pass-strength{font-weight:700;margin-bottom:6px}
 .btn-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent;border:none;cursor:pointer}
 input.invalid{border:1px solid #b3261e; box-shadow:0 0 0 2px rgba(179,38,30,.15)}
+

@@ -1,100 +1,30 @@
 :root{
-  --app-bg:#f3f4f6; --card:#ffffff;
-  --text:#1f2937; --muted:#6b7280; --ink:#111827;
-  --brand:#c91a1a; --brand-2:#c91a1a;
-  --chip:#eef0f3; --chip-ink:#374151;
-  --shadow:0 10px 24px rgba(0,0,0,.08);
-  --radius-xl:22px; --radius-lg:16px; --radius-md:12px;
+  --border:#e5e7eb;
+  --accent:#c91a1a;
+  --shadow:0 10px 22px rgba(0,0,0,.06);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  color:var(--text); background:var(--app-bg);
-}
-.hidden{display:none!important}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.overlay.show{opacity:1;pointer-events:auto}
 
-/* Overlay + Sidebar */
-.overlay{position:fixed; inset:0; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:.2s; z-index:20}
-.overlay.show{opacity:1; pointer-events:auto}
-
-.profile-menu{
-  position:fixed; top:0; right:0; height:100dvh; width:84%; max-width:360px;
-  background:#141414; color:#f4f4f4; transform:translateX(100%); transition:.25s;
-  z-index:30; padding:18px 16px 24px; box-shadow:-16px 0 40px rgba(0,0,0,.35)
-}
+.profile-menu{position:fixed;top:0;right:0;height:100dvh;width:84%;max-width:360px;background:#101012;color:#f4f4f4;transform:translateX(100%);transition:transform .25s;z-index:40;padding:18px 16px 24px;box-shadow:-16px 0 40px rgba(0,0,0,.35)}
 .profile-menu.open{transform:translateX(0)}
-.close-btn{position:absolute; right:12px; top:12px; width:40px; height:40px; border:none; border-radius:12px; background:rgba(255,255,255,.08); color:#fff}
+.close-btn{position:absolute;right:12px;top:12px;width:40px;height:40px;border:none;border-radius:12px;background:rgba(255,255,255,.08);color:#fff}
 .menu-header.no-avatar{margin-top:8px}
-.menu-user h3{margin:0 0 4px; color:#fff}
-.muted{color:#bdbdbd; margin:0}.small{font-size:.85rem}
-.menu-list{display:grid; gap:6px; margin-top:16px}
+.menu-user h3{margin:0 0 4px}
+.muted{color:#bdbdbd}
+.small{font-size:.85rem}
+.menu-list{display:grid;gap:6px;margin-top:16px}
 .menu-list a{display:flex;align-items:center;gap:12px;padding:12px 10px;text-decoration:none;color:#f4f4f4;border-radius:12px}
 .menu-list a:hover{background:rgba(255,255,255,.06)}
 .menu-list a.danger{color:#ffd5d5}
 
-/* App shell / topbar */
-.app-shell{max-width:430px; margin:0 auto; min-height:100dvh; padding:20px 16px 96px}
-.topbar{display:grid; grid-template-columns:1fr auto; align-items:center}
-.page-title{margin:0; color:var(--ink)}
-.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--brand);border:none;outline:2px solid #e5e7eb}
-.avatar-gear{font-size:20px}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--accent);border:none;outline:2px solid #e5e7eb}
+.avatar-gear{font-size:20px;color:var(--accent)}
 .avatar.spin .avatar-gear{animation:spin .6s linear}
+.avatar .fa-circle-notch{color:var(--accent)!important}
 @keyframes spin{to{transform:rotate(360deg)}}
-.section{margin:16px 0}
 
-/* Chip del término */
-.found-chip{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:8px 12px; border-radius:999px; font-weight:800;
-  color:#fff; background:var(--brand); box-shadow:var(--shadow);
-}
-
-/* Secciones */
-.section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
-.section-title{margin:0; color:var(--ink)}
-.counter{background:#fff; color:var(--brand); border:1px solid #f0f2f5; padding:4px 10px; border-radius:999px; font-weight:800}
-
-/* Grids */
-.grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-@media (max-width:420px){ .grid{grid-template-columns:1fr} }
-.citas-grid{display:grid; gap:12px}
-
-/* Tarjeta vehículo (sin imágenes) */
-.vcard{
-  background:var(--card); border-radius:var(--radius-xl); box-shadow:var(--shadow);
-  padding:12px; display:grid; grid-template-columns:64px 1fr; gap:12px; align-items:start;
-}
-.vicon{
-  width:64px; height:64px; border-radius:14px; display:grid; place-items:center;
-  background:#eef0f3; color:var(--brand); font-size:22px;
-}
-.vbody h3{margin:2px 0 4px; font-size:16px; color:var(--ink)}
-.vbody p{margin:2px 0; color:var(--muted); font-size:.95rem}
-.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.chip{background:var(--chip); color:var(--chip-ink); border-radius:999px; padding:4px 8px; font-weight:700; font-size:.8rem}
-
-/* Tarjeta cita */
-.cita-card{
-  background:var(--card); border-radius:var(--radius-lg); padding:12px; color:var(--text);
-  box-shadow:var(--shadow);
-}
-.cita-top{display:flex; align-items:center; justify-content:space-between; gap:10px}
-.cita-chip{background:#eef0f3; color:#374151; border-radius:999px; padding:6px 10px; font-weight:800; font-size:.85rem}
-.cita-title{margin:8px 0 0 0; color:var(--ink); font-size:16px}
-.cita-bottom{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px}
-.cita-hour{color:#111827; background:#f9fafb; padding:6px 10px; border-radius:10px; font-weight:700}
-.cita-code{font-weight:800; background:#fff; border:1px solid #e5e7eb; padding:6px 10px; border-radius:12px; color:#1f2937; font-size:.9rem}
-
-/* Card base */
-.card{background:var(--card); border-radius:var(--radius-xl); box-shadow:var(--shadow); padding:14px}
-
-/* Tabbar unificada */
-.tabbar{
-  position:fixed; left:50%; transform:translateX(-50%); bottom:16px;
-  width:min(430px - 24px, calc(100% - 24px));
-  background:#ffffff; border:1px solid #e5e7eb; border-radius:24px; padding:12px 14px;
-  display:grid; grid-template-columns:repeat(4,1fr); gap:6px; box-shadow:var(--shadow)
-}
-.tabbar__btn{height:44px;display:grid;place-items:center;color:#1f2937;text-decoration:none;border-radius:14px;font-size:18px;background:transparent;border:none}
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:min(430px - 24px, calc(100% - 24px));background:#ffffff;border:1px solid var(--border);border-radius:24px;padding:12px 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;box-shadow:var(--shadow);z-index:25}
+.tabbar__btn{height:44px;display:grid;place-items:center;color:#1f2937;text-decoration:none;border-radius:14px;font-size:18px}
+.tabbar__btn.active{background:var(--accent);color:#fff}

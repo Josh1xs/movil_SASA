@@ -4,17 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SASA — Inicio</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
   <link rel="stylesheet" href="../CSS/style.css" />
 </head>
 <body>
-
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-  <!-- Menú lateral -->
   <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
     <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
     <div class="menu-header no-avatar">
@@ -24,10 +20,7 @@
         <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
       </div>
     </div>
-
     <nav class="menu-list">
-      <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-      <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
       <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
       <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
       <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
@@ -39,9 +32,7 @@
     </nav>
   </aside>
 
-  <!-- App -->
   <div class="app-shell">
-    <!-- Top -->
     <header class="topbar">
       <div class="greeting">
         <h1 id="greetingText">Bienvenido</h1>
@@ -51,16 +42,14 @@
       </button>
     </header>
 
-    <!-- Buscador -->
-    <div class="searchbar">
+    <form class="searchbar" id="searchForm" action="./resultados.html" method="GET">
       <i class="fa-solid fa-magnifying-glass searchbar__icon"></i>
-      <input id="searchInput" class="searchbar__input" type="search" placeholder="Buscar vehículos, citas..." />
-      <button id="goSearch" class="searchbar__go" aria-label="Buscar" title="Buscar" data-results-href="./resultados.html">
+      <input id="searchInput" class="searchbar__input" type="search" name="q" placeholder="Buscar vehículos, citas..." />
+      <button id="goSearch" class="searchbar__go" type="submit" aria-label="Buscar" title="Buscar">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
-    </div>
+    </form>
 
-    <!-- Próximas Citas -->
     <section class="section">
       <div class="section-head">
         <h2>Próximas Citas</h2>
@@ -87,7 +76,6 @@
       </template>
     </section>
 
-    <!-- Mis Vehículos -->
     <section class="section">
       <div class="section-head">
         <h2>Mis Vehículos</h2>
@@ -110,7 +98,6 @@
       </template>
     </section>
 
-    <!-- Tabbar -->
     <nav class="tabbar">
       <a class="tabbar__btn active" href="./index.html"><i class="fa-solid fa-house"></i></a>
       <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
@@ -122,5 +109,23 @@
   </div>
 
   <script type="module" src="../JS/script.js"></script>
+  <script>
+    (() => {
+      const form = document.getElementById('searchForm');
+      const input = document.getElementById('searchInput');
+      form?.addEventListener('submit', (e) => {
+        const q = (input?.value || '').trim();
+        if (!q) {
+          e.preventDefault();
+          input?.focus();
+        } else {
+          try { localStorage.setItem('lastSearch', q); } catch {}
+        }
+      });
+      input?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') form?.requestSubmit();
+      });
+    })();
+  </script>
 </body>
 </html>

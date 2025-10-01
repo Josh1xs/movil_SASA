@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Datos encontrados</title>
   <meta name="robots" content="noindex,nofollow" />
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="../CSS/resultados.css" />
 </head>
@@ -13,32 +12,29 @@
 
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-<aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
-  <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-  <div class="menu-header no-avatar">
-    <div class="menu-user">
-      <h3 id="menuNombre">Usuario</h3>
-      <p id="menuPase" class="muted">Cliente</p>
-      <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+  <!-- Sidebar -->
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
     </div>
-  </div>
-
-  <nav class="menu-list">
-    <a href="../Notificaciones/notificaciones.html"><i class="fa-regular fa-bell"></i> Notificaciones</a>
-    <a href="../Historial/historial.html"><i class="fa-solid fa-clock-rotate-left"></i> Historial</a>
-    <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
-    <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
-    <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-    <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
-    <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
-    <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
-      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
-    </a>
-  </nav>
-</aside>
+    <nav class="menu-list">
+      <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
 
   <main class="app-shell">
-    <!-- Topbar -->
     <header class="topbar">
       <h1 class="page-title">Datos encontrados</h1>
       <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
@@ -46,7 +42,6 @@
       </button>
     </header>
 
-    <!-- Término buscado -->
     <section class="section">
       <div class="found-chip" aria-live="polite">
         <i class="fa-solid fa-magnifying-glass"></i>
@@ -54,7 +49,6 @@
       </div>
     </section>
 
-    <!-- Vehículos -->
     <section class="section">
       <div class="section-head">
         <h2 class="section-title">Vehículos</h2>
@@ -64,7 +58,6 @@
       <p id="vehEmpty" class="muted hidden">No se encontraron vehículos.</p>
     </section>
 
-    <!-- Citas -->
     <section class="section">
       <div class="section-head">
         <h2 class="section-title">Citas</h2>
@@ -75,7 +68,6 @@
     </section>
   </main>
 
-  <!-- Tabbar unificada -->
   <nav class="tabbar" aria-label="Navegación principal">
     <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
@@ -83,8 +75,35 @@
     <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <script src="../JS/resultados.js"></script>
-  <script src="../JS/shell.js"></script>
+  <script>
+    (function(){
+      const overlay = document.getElementById('overlay');
+      const menu = document.getElementById('profileMenu');
+      const openBtn = document.getElementById('menuToggle');
+      const closeBtn = document.getElementById('closeMenu');
 
+      function openMenu(){
+        menu.classList.add('open');
+        overlay.classList.add('show');
+        menu.setAttribute('aria-hidden','false');
+        overlay.setAttribute('aria-hidden','false');
+        openBtn?.classList.add('spin');
+      }
+      function closeMenuFn(){
+        menu.classList.remove('open');
+        overlay.classList.remove('show');
+        menu.setAttribute('aria-hidden','true');
+        overlay.setAttribute('aria-hidden','true');
+        openBtn?.classList.remove('spin');
+      }
+
+      openBtn?.addEventListener('click', openMenu);
+      closeBtn?.addEventListener('click', closeMenuFn);
+      overlay?.addEventListener('click', closeMenuFn);
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenuFn(); });
+    })();
+  </script>
+
+  <script src="../JS/resultados.js"></script>
 </body>
 </html>

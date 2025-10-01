@@ -129,6 +129,3 @@ body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,
   border-top:1px solid #f1f5f9; background:#fff;
 }
 .pay-footer .btn{flex:1}
-
-/* El blur del contenido lo aporta solo el backdrop */
-.app-shell[inert], .tabbar[inert]{filter:none}

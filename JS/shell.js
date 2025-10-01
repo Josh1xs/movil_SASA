@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeMenu() {
     menu?.classList.remove("open");
     overlay?.classList.remove("show");
-    document.body.style.overflow = "";
+    document.body.style.overflow = "";                                                                                
   }
 
   openBtn?.addEventListener("click", () => {
@@ -83,3 +83,4 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.replace(url);
   });
 });
+
