@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Órdenes de Trabajo</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../CSS/OrdenTrabajo.css"/>
+</head>
+<body>
+
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+  <aside id="profileMenu" class="profile-menu" aria-label="Menú de configuración" aria-hidden="true">
+    <button class="close-btn" id="closeMenu" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <div class="menu-header no-avatar">
+      <div class="menu-user">
+        <h3 id="menuNombre">Usuario</h3>
+        <p id="menuPase" class="muted">Cliente</p>
+        <p class="muted small">ID: <span id="menuUserId">Desconocido</span></p>
+      </div>
+    </div>
+    <nav class="menu-list">
+      <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
+      <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
+      <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
+      <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
+      <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar sesión
+      </a>
+    </nav>
+  </aside>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <h1 class="page-title">Órdenes de Trabajo</h1>
+      <button class="avatar" id="menuToggle" aria-label="Abrir configuración">
+        <i class="fa-solid fa-circle-notch avatar-gear"></i>
+      </button>
+    </header>
+
+    <!-- Resumen/KPIs opcional -->
+    <section class="section">
+      <div class="kpis">
+        <div class="kpi"><span id="kpiTotal">0</span><small>Total</small></div>
+        <div class="kpi"><span id="kpiActivas">0</span><small>Activas</small></div>
+        <div class="kpi"><span id="kpiArchivadas">0</span><small>Archivadas</small></div>
+      </div>
+    </section>
+
+    <!-- Listado -->
+    <section class="section">
+      <div class="card">
+        <div class="card-header">Mis órdenes</div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="table" id="tablaOrdenes">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Vehículo</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th class="w-actions">Acciones</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="pager">
+            <button id="prevPage" class="btn btn-ghost" aria-label="Página anterior"><i class="fa-solid fa-angle-left"></i></button>
+            <span id="pageInfo" class="muted">—</span>
+            <button id="nextPage" class="btn btn-ghost" aria-label="Página siguiente"><i class="fa-solid fa-angle-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Navegación principal">
+    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn" href="../MisVehiculos/Vehiculos.html" title="Vehículos"><i class="fa-solid fa-car"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
+  </nav>
+
+  <script type="module" src="../JS/Services/OrdenTrabajoService.js"></script>
+  <script type="module" src="../JS/OrdenTrabajo.js"></script>
+  <script>
+    (() => {
+      const overlay = document.getElementById('overlay');
+      const menu = document.getElementById('profileMenu');
+      const openBtn = document.getElementById('menuToggle');
+      const closeBtn = document.getElementById('closeMenu');
+      function open(){menu.classList.add('open'); overlay.classList.add('show')}
+      function close(){menu.classList.remove('open'); overlay.classList.remove('show')}
+      openBtn?.addEventListener('click', open);
+      closeBtn?.addEventListener('click', close);
+      overlay?.addEventListener('click', close);
+    })();
+  </script>
+</body>
+</html>
