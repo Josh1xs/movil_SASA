@@ -10,9 +10,7 @@
 </head>
 <body>
   <main class="app-shell">
-    <!-- =============================== -->
-    <!-- TOPBAR -->
-    <!-- =============================== -->
+
     <header class="topbar">
       <h1 class="page-title">Citas</h1>
       <button class="avatar" id="menuToggle">
@@ -20,9 +18,7 @@
       </button>
     </header>
 
-    <!-- =============================== -->
-    <!-- CALENDARIO -->
-    <!-- =============================== -->
+
     <section class="section">
       <div class="calendar-box card">
         <div class="calendar-header">
@@ -39,14 +35,14 @@
   <form id="formCita" class="form card">
     <input type="hidden" id="fechaSeleccionada" />
 
-    <!-- Hora -->
+
     <div class="field">
       <label class="label" for="horaInput">Hora</label>
       <input type="time" id="horaInput" class="input" step="1800" required />
       <div id="timeHint" class="subhint">Horario permitido: 07:00–16:00</div>
     </div>
 
-    <!-- Vehículo -->
+ 
     <div class="field">
       <label class="label" for="vehiculoSelect">Vehículo</label>
       <select id="vehiculoSelect" class="select" required>
@@ -54,7 +50,7 @@
       </select>
     </div>
 
-    <!-- Tipo de servicio -->
+  
     <div class="field">
       <label class="label" for="tipoServicio">Tipo de servicio</label>
       <select id="tipoServicio" class="select" required>
@@ -64,13 +60,13 @@
       </select>
     </div>
 
-    <!-- Descripción opcional -->
+
     <div class="field">
       <label class="label" for="descripcion">Descripción (opcional)</label>
       <textarea id="descripcion" class="input" rows="3" maxlength="255" placeholder="Ej. Cambio de aceite, revisión de frenos..."></textarea>
     </div>
 
-    <!-- Botones -->
+
     <div class="form-actions">
       <button type="submit" id="btnEnviar" class="btn primary w100">
         <i class="fa-regular fa-paper-plane"></i> Enviar
@@ -86,18 +82,14 @@
 </section>
 
 
-    <!-- =============================== -->
-    <!-- LISTADO DE CITAS -->
-    <!-- =============================== -->
+
     <section class="section">
       <h3 class="section-title">Mis Citas</h3>
       <div id="listaCitas" class="list"></div>
     </section>
   </main>
 
-  <!-- =============================== -->
-  <!-- MENÚ PERFIL -->
-  <!-- =============================== -->
+
   <div id="overlay" class="overlay"></div>
   <aside id="profileMenu" class="profile-menu">
     <button class="close-btn" id="closeMenu"><i class="fas fa-times"></i></button>
@@ -118,9 +110,7 @@
     </nav>
   </aside>
 
-  <!-- =============================== -->
-  <!-- MENÚ INFERIOR -->
-  <!-- =============================== -->
+
   <nav class="tabbar">
     <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
     <a class="tabbar__btn active" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
@@ -128,11 +118,9 @@
     <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <!-- =============================== -->
-  <!-- SCRIPT -->
-  <!-- =============================== -->
+
   <script type="module" src="../JS/Controllers/CitasController.js"></script>
-  <script  type="module" src="../JS/shell.js"></script>
+
 
 </body>
 </html>

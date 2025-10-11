@@ -40,6 +40,39 @@ function refreshKpis(list) {
   $("#kpiArchivadas").textContent = archivadas;
 }
 
+
+function renderDetalle(o) {
+  if (!o) return;
+
+  const id = o.id ?? o.idOrden ?? "—";
+  const fecha = o.fecha ?? o.fechaOrden ?? o.createdAt ?? "—";
+  const veh = o.vehiculoPlaca ?? o.placa ?? o.vehiculoId ?? "—";
+  const estado = o.estado ?? (o.archivada ? "Archivada" : "Creada");
+  const total = o.total ?? o.montoTotal ?? 0;
+
+  $("#dOrden").textContent = id;
+  $("#dFecha").textContent = (typeof fecha === "string" ? fecha : new Date(fecha).toISOString().slice(0,10));
+  $("#dVehiculo").textContent = veh;
+  $("#dEstado").textContent = estado;
+  $("#dTotal").textContent = money(total);
+
+
+  const items = o.detalles || o.items || o.detalle || o.detalleOrden || [];
+  const tbody = $("#tablaDetalle tbody");
+  if (!tbody) return;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" class="muted">Sin ítems</td></tr>`;
+  } else {
+    tbody.innerHTML = items.map(d => {
+      const did = d.id || d.idDetalle || "—";
+      const desc = d.descripcion || d.mantenimiento || d.servicio || "—";
+      const precio = money(d.precio ?? d.costo ?? 0);
+      return `<tr><td>${did}</td><td>${desc}</td><td>${precio}</td></tr>`;
+    }).join("");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const clienteId = getUserId?.() || localStorage.getItem("userId");
   const token = getToken?.() || localStorage.getItem("authToken");
@@ -51,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let page = 0;
   const size = 10;
-  let cache = [];  
+  let cache = [];
 
   async function load() {
     try {
@@ -66,6 +99,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       nextPage.disabled = (page + 1) * size >= total;
 
       refreshKpis(arr);
+
+
+      const first = tbody.querySelector("tr");
+      if (first) {
+        first.classList.add("is-selected");
+        const id = first.dataset.id;
+        const found = cache.find(o => String(o.id ?? o.idOrden) === String(id));
+        if (found) renderDetalle(found);
+      } else {
+        renderDetalle(null);
+      }
     } catch (e) {
       console.error("Error listando:", e);
       tbody.innerHTML = `<tr><td colspan="5" class="muted">Error al cargar</td></tr>`;
@@ -73,25 +117,38 @@ document.addEventListener("DOMContentLoaded", async () => {
       prevPage.disabled = true;
       nextPage.disabled = true;
       refreshKpis([]);
+      renderDetalle(null);
     }
   }
 
   prevPage?.addEventListener("click", () => { if (page > 0) { page--; load(); } });
   nextPage?.addEventListener("click", () => { page++; load(); });
 
+
   tbody?.addEventListener("click", async (e) => {
-    const btn = e.target.closest("button.icon");
-    if (!btn) return;
     const tr = e.target.closest("tr");
+    const btn = e.target.closest("button.icon");
     const id = tr?.dataset?.id;
+
+
+    if (tr && !btn) {
+      tbody.querySelectorAll("tr").forEach(r => r.classList.remove("is-selected"));
+      tr.classList.add("is-selected");
+      const found = cache.find(o => String(o.id ?? o.idOrden) === String(id));
+      if (found) renderDetalle(found);
+      return;
+    }
+
+    if (!btn || !id) return;
     const action = btn.dataset.action;
-    if (!id) return;
 
     if (action === "ver") {
       try {
         const o = await OrdenTrabajoService.obtener(token, id);
-        const total = o.total ?? o.montoTotal ?? 0;
-        alert(`Orden #${o.id}\nVehículo: ${o.vehiculoPlaca ?? o.vehiculoId ?? "-"}\nEstado: ${o.estado ?? (o.archivada ? "Archivada" : "Creada")}\nTotal: ${money(total)}`);
+        renderDetalle(o);
+
+        tbody.querySelectorAll("tr").forEach(r => r.classList.remove("is-selected"));
+        tr.classList.add("is-selected");
       } catch {
         alert("No se pudo obtener la orden.");
       }
@@ -108,9 +165,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           : await OrdenTrabajoService.desarchivar(token, id);
 
         tr.outerHTML = rowTpl(updated);
+
         const idx = cache.findIndex(o => String(o.id ?? o.idOrden) === String(id));
         if (idx >= 0) cache[idx] = updated;
         refreshKpis(cache);
+
+
+        const newTr = tbody.querySelector(`tr[data-id="${id}"]`);
+        if (newTr) newTr.classList.add("is-selected");
+        renderDetalle(updated);
       } catch (err) {
         alert("No se pudo completar la acción.");
       }

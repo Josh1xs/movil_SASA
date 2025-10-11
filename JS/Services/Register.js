@@ -1,16 +1,12 @@
-// ===============================
-// ClienteRegistroService.js (Producción Heroku ✅)
-// ===============================
 
-// URL base (puedes cambiarla a localhost si estás en desarrollo)
 const API_URL = "https://sasaapi-73d5de493985.herokuapp.com/auth/cliente";
 
-// -------- Validar email --------
+
 export function validEmail(e) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 }
 
-// -------- Validar mayoría de edad --------
+
 export function isAdult(dateStr) {
   if (!dateStr) return false;
   const hoy = new Date();
@@ -21,7 +17,7 @@ export function isAdult(dateStr) {
   return edad >= 18;
 }
 
-// -------- Normalizar y validar nombre --------
+
 export function normalizeName(v) {
   return v.normalize("NFKC").replace(/\s+/g, " ").trim();
 }
@@ -32,7 +28,7 @@ export function nameValid(v) {
   return t.length >= 2 && /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(t);
 }
 
-// -------- Crear cliente --------
+
 export async function registrarCliente(cliente) {
   try {
     const res = await fetch(`${API_URL}/registro`, {
@@ -47,14 +43,14 @@ export async function registrarCliente(cliente) {
       throw new Error(json.message || "Error al registrar cliente");
     }
 
-    return json; // {status, cliente, token?}
+    return json;
   } catch (error) {
-    console.error("❌ Error al registrar cliente:", error);
+    console.error(" Error al registrar cliente:", error);
     throw error;
   }
 }
 
-// -------- Validar si correo o DUI existen --------
+
 export async function validarDuplicados(correo, dui) {
   try {
     const res = await fetch(`${API_URL}/consultar`);

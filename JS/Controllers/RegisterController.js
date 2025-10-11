@@ -1,7 +1,3 @@
-// ===============================
-// RegisterController.js
-// ===============================
-
 import {
   registrarCliente,
   nameValid,
@@ -11,9 +7,6 @@ import {
   passwordStrength,
 } from "../Services/RegistroService.js";
 
-// ===============================
-// Enviar formulario
-// ===============================
 document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -26,7 +19,7 @@ document.getElementById("registerForm")?.addEventListener("submit", async (e) =>
   const contrasena   = document.getElementById("password").value;
   const btnRegistrar = document.getElementById("btnRegistrar");
 
-  // --- Validaciones ---
+
   if (!nameValid(nombre) || !nameValid(apellido)) {
     Swal.fire("Error", "Nombre o apellido inválido", "warning");
     return;
@@ -58,7 +51,6 @@ document.getElementById("registerForm")?.addEventListener("submit", async (e) =>
     return;
   }
 
-  // --- Estado cargando ---
   const originalText = btnRegistrar.innerHTML;
   btnRegistrar.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Registrando...`;
   btnRegistrar.disabled = true;
@@ -94,9 +86,6 @@ document.getElementById("registerForm")?.addEventListener("submit", async (e) =>
   }
 });
 
-// ===============================
-// Mostrar fuerza de contraseña
-// ===============================
 const passwordInput = document.getElementById("password");
 const passMeter     = document.getElementById("passMeter");
 const passStrengthLabel = document.getElementById("passStrengthLabel");
@@ -104,12 +93,12 @@ const passStrengthLabel = document.getElementById("passStrengthLabel");
 passwordInput?.addEventListener("input", () => {
   const fuerza = passwordStrength(passwordInput.value);
 
-  // Texto
+ 
   passStrengthLabel.textContent = `Fuerza: ${fuerza}`;
   passStrengthLabel.style.color =
     fuerza === "Alta" ? "green" : fuerza === "Media" ? "orange" : "red";
 
-  // Barra
+
   if (fuerza === "Baja") {
     passMeter.style.width = "33%";
     passMeter.style.background = "red";
@@ -124,9 +113,7 @@ passwordInput?.addEventListener("input", () => {
   }
 });
 
-// ===============================
-// Mostrar / Ocultar contraseña
-// ===============================
+
 const togglePwd = document.getElementById("togglePwd");
 togglePwd?.addEventListener("click", () => {
   const type = passwordInput.type === "password" ? "text" : "password";
@@ -136,14 +123,12 @@ togglePwd?.addEventListener("click", () => {
       ? `<i class="fa-regular fa-eye"></i>`
       : `<i class="fa-regular fa-eye-slash"></i>`;
 });
-// ===============================
-// Autoformatear DUI
-// ===============================
+
 const duiInput = document.getElementById("dui");
 
 duiInput?.addEventListener("input", () => {
-  let val = duiInput.value.replace(/\D/g, ""); // solo números
-  if (val.length > 9) val = val.slice(0, 9);  // limitar a 9 dígitos
+  let val = duiInput.value.replace(/\D/g, ""); 
+  if (val.length > 9) val = val.slice(0, 9);  
   if (val.length > 8) {
     val = val.slice(0, 8) + "-" + val.slice(8);
   }

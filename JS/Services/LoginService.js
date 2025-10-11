@@ -1,14 +1,7 @@
-// ===============================
-// Services/LoginService.js (Producción Heroku ✅)
-// ===============================
 
-// Base fija en Heroku
 const API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
 const API_URL = `${API_BASE}/auth/cliente`;
 
-// -------------------------------
-// LOGIN
-// -------------------------------
 export async function login(correo, contrasena) {
   try {
     const res = await fetch(`${API_URL}/login`, {
@@ -24,7 +17,7 @@ export async function login(correo, contrasena) {
       throw new Error(json.message || "Credenciales incorrectas");
     }
 
-    // ✅ Guardar sesión local
+
     localStorage.setItem("user", JSON.stringify(json.cliente));
     localStorage.setItem("userId", json.cliente.idCliente || json.cliente.id);
     localStorage.setItem("token", json.token);
@@ -32,18 +25,16 @@ export async function login(correo, contrasena) {
     console.log("✅ Token guardado:", json.token.substring(0, 20) + "...");
     return json;
   } catch (error) {
-    console.error("❌ Error en login:", error);
+    console.error("Error en login:", error);
     throw error;
   }
 }
 
-// -------------------------------
-// LOGOUT
-// -------------------------------
+
 export function logout() {
   ["user", "userId", "token"].forEach((k) => localStorage.removeItem(k));
 
-  // Redirección universal (funciona en web y móvil)
+
   if (window.location.pathname.includes("Autenticacion")) {
     window.location.href = "login.html";
   } else {
@@ -51,9 +42,7 @@ export function logout() {
   }
 }
 
-// -------------------------------
-// GETTERS
-// -------------------------------
+
 export function getUsuarioLogueado() {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
@@ -71,9 +60,7 @@ export function isLoggedIn() {
   return !!getToken() && !!getUsuarioLogueado();
 }
 
-// -------------------------------
-// FETCH CON TOKEN (MANEJO 401)
-// -------------------------------
+
 export async function fetchWithAuth(url, options = {}) {
   const token = getToken();
 

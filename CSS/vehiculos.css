@@ -95,7 +95,6 @@ body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,
 .cita-row .k{font-weight:600}
 .cita-row .v{color:#6b7280}
 
-/* FAB restaurado (botón “añadir”) */
 .fab{
   position:fixed;
   right:max(16px, calc(50% - 430px/2 + 16px));
@@ -118,3 +117,31 @@ body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,
 @supports (padding: env(safe-area-inset-bottom)){
   .fab{bottom:calc(env(safe-area-inset-bottom) + 16px + 64px + 12px)}
 }
+
+.head-actions{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:10px;
+}
+
+.add-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  text-decoration:none;
+  font-weight:700;
+  background:var(--accent);
+  color:#fff;
+  border:1px solid var(--accent);
+  box-shadow:0 8px 18px rgba(201,26,26,.18);
+  transition:transform .08s ease, filter .15s ease, box-shadow .2s ease;
+}
+.add-link i{font-size:14px}
+.add-link:hover{
+  filter:brightness(1.05);
+  box-shadow:0 10px 22px rgba(201,26,26,.25);
+}
+.add-link:active{transform:scale(.98)}
+.add-link:focus-visible{outline:3px solid rgba(201,26,26,.25); outline-offset:2px}

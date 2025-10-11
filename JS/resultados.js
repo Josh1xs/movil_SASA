@@ -1,12 +1,7 @@
-// ===============================
-// script.js (Dashboard) con fetchWithAuth + búsqueda
-// ===============================
 import { getToken, getUserId, fetchWithAuth, logout } from "../JS/Services/LoginService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ===============================
-  // CONSTANTES Y ENDPOINTS
-  // ===============================
+
   const userId        = getUserId();
   const token         = getToken();
 
@@ -14,9 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_CITAS     = "http://localhost:8080/apiCitas/consultar";
   const API_VEHICULOS = "http://localhost:8080/apiVehiculo/consultar";
 
-  // ===============================
-  // ELEMENTOS DOM
-  // ===============================
+
   const overlay      = document.getElementById("overlay");
   const profileMenu  = document.getElementById("profileMenu");
   const menuToggle   = document.getElementById("menuToggle");
@@ -35,9 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const listaVehiculosDashboard = document.getElementById("listaVehiculosDashboard");
   const tplVehiculo   = document.getElementById("tplVehiculoCard");
 
-  // ===============================
-  // MENÚ PERFIL
-  // ===============================
+
   function abrirMenu() {
     profileMenu?.classList.add("open");
     overlay?.classList.add("show");
@@ -61,9 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay?.addEventListener("click", cerrarMenu);
   window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
 
-  // ===============================
-  // MOSTRAR DATOS DEL USUARIO
-  // ===============================
+
   if (menuUserId) menuUserId.textContent = userId || "Desconocido";
 
   if (userId) {
@@ -85,17 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
     nombreHeader && (nombreHeader.textContent = localStorage.getItem("nombre") || "Usuario");
   }
 
-  // ===============================
-  // LOGOUT
-  // ===============================
+
   logoutBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     logout();
   });
 
-  // ===============================
-  // UTILIDADES
-  // ===============================
+
   const setText = (el, v) => { if (el) el.textContent = v ?? "—"; };
 
   const fechaISOaObj = (iso) => {
@@ -134,9 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${pre}, ${hora || "—"}`;
   };
 
-  // ===============================
-  // CITAS
-  // ===============================
   let citasRaw = [];
   let filtro = "hoy";
 
@@ -189,9 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(() => { citasRaw = []; renderCitas(); });
   }
 
-  // ===============================
-  // VEHÍCULOS
-  // ===============================
+
   let vehiculosRaw = [];
 
   function renderVehiculos(vehiculos) {
@@ -237,9 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch(() => renderVehiculos([]));
   }
 
-  // ===============================
-  // BÚSQUEDA (vehículos + citas)
-  // ===============================
+
   (function setupSearchGo() {
     const input = document.getElementById("searchInput");
     const btn   = document.getElementById("goSearch");
@@ -254,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Filtrar citas
+
       const citasFiltradas = (citasRaw || []).filter(
         (c) =>
           String(c.idCliente) === String(userId) &&
@@ -265,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
           )
       );
 
-      // Filtrar vehículos
+
       const vehiculosFiltrados = (vehiculosRaw || []).filter(
         (v) =>
           (v.marca || v.Marca || "").toLowerCase().includes(q) ||
@@ -274,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
           (v.vin || v.VIN || "").toLowerCase().includes(q)
       );
 
-      // Mostrar resultados en consola (puedes redirigir a otra vista)
+
       console.log("🔎 Resultados búsqueda", { citasFiltradas, vehiculosFiltrados });
 
       if (window.Swal) {

@@ -1,20 +1,15 @@
-// ===============================
-// ajustes.js (Producción Heroku ✅)
-// ===============================
 import { getUserId, getToken, getUsuarioLogueado } from "../JS/Services/LoginService.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const $ = (s) => document.querySelector(s);
 
-  // =============================== 
-  // DATOS DE SESIÓN
-  // ===============================
+
   const userId = getUserId();
   const token  = getToken();
 
   if (!userId || !token) {
     Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
-      .then(() => location.replace("../Autenticacion/login.html"));
+      .then(() => location.replace("../Authenticator/login.html"));
     return;
   }
 

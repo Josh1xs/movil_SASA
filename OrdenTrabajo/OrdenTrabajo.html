@@ -25,6 +25,7 @@
       <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
       <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
       <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
+      <a href="../OrdenTrabajo/OrdenTrabajo.html"><i class="fa-solid fa-clipboard-list"></i> Órdenes de trabajo</a>
       <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
       <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
       <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
@@ -41,7 +42,6 @@
       </button>
     </header>
 
-    <!-- Resumen/KPIs opcional -->
     <section class="section">
       <div class="kpis">
         <div class="kpi"><span id="kpiTotal">0</span><small>Total</small></div>
@@ -50,7 +50,7 @@
       </div>
     </section>
 
-    <!-- Listado -->
+
     <section class="section">
       <div class="card">
         <div class="card-header">Mis órdenes</div>
@@ -78,6 +78,39 @@
         </div>
       </div>
     </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="card-header">Detalle seleccionado</div>
+        <div class="card-body detail-grid" id="detalleWrap">
+          <div class="detail-header">
+            <div class="detail-meta">
+              <p><small class="muted">Orden</small><br><strong id="dOrden">—</strong></p>
+              <p><small class="muted">Vehículo</small><br><strong id="dVehiculo">—</strong></p>
+            </div>
+            <div class="detail-meta" style="text-align:right">
+              <p><small class="muted">Fecha</small><br><strong id="dFecha">—</strong></p>
+              <p><small class="muted">Estado</small><br><strong id="dEstado">—</strong></p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="detail-table" id="tablaDetalle">
+              <thead>
+                <tr>
+                  <th>ID Detalle</th>
+                  <th>Mantenimiento</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="detail-total">Total <span id="dTotal" style="margin-left:8px">—</span></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <nav class="tabbar" aria-label="Navegación principal">
@@ -88,7 +121,8 @@
   </nav>
 
   <script type="module" src="../JS/Services/OrdenTrabajoService.js"></script>
-  <script type="module" src="../JS/OrdenTrabajo.js"></script>
+  <script type="module" src="../JS/Controllers/OrdenTrabajoController.js"></script>
+
   <script>
     (() => {
       const overlay = document.getElementById('overlay');

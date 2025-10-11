@@ -1,10 +1,6 @@
-// ===============================
-// LoginController.js
-// ===============================
-
 import { login, logout, isLoggedIn, getUsuarioLogueado } from "../Services/LoginService.js";
 
-// ------- Manejar login -------
+
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -17,8 +13,8 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
     if (data.status === "OK") {
       const cliente = data.cliente;
 
-      // ✅ Guardar datos esenciales en localStorage
-      localStorage.setItem("userId", cliente.id);  // 👈 usar id, no idCliente
+
+      localStorage.setItem("userId", cliente.id); 
       localStorage.setItem("nombre", cliente.nombre);
       localStorage.setItem("apellido", cliente.apellido);
       localStorage.setItem("correo", cliente.correo);
@@ -43,12 +39,12 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ------- Manejar logout -------
+
 document.getElementById("btnLogout")?.addEventListener("click", () => {
   logout();
 });
 
-// ------- Mostrar usuario logueado en home -------
+
 window.addEventListener("DOMContentLoaded", () => {
   if (isLoggedIn()) {
     const user = getUsuarioLogueado();

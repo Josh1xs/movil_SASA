@@ -1,6 +1,3 @@
-// ===============================
-// Controllers/VehiculoController.js
-// ===============================
 import { getToken, getUserId } from "../Services/LoginService.js";
 import { getVehiculos, deleteVehiculo } from "../Services/VehiculoService.js";
 
@@ -13,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!userId || !token) {
     Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
-      .then(() => location.replace("../Autenticacion/login.html"));
+      .then(() => location.replace("../Authenticator/login.html"));
     return;
   }
 

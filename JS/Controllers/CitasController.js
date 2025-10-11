@@ -1,14 +1,9 @@
-// ===============================
-// citas.js (frontend móvil clientes)
-// ===============================
 import { getUserId, getToken } from "../Services/LoginService.js";
 import { getCitasPaginadas, crearCita } from "../Services/CitasService.js";
 import { getVehiculos } from "../Services/VehiculoService.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // -------------------------------
-  // ELEMENTOS DOM
-  // -------------------------------
+
   const fechaHidden    = document.getElementById("fechaSeleccionada");
   const horaInput      = document.getElementById("horaInput");
   const mesActualEl    = document.getElementById("mesActual");
@@ -30,13 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
       title: "Sesión requerida",
       text: "Por favor inicia sesión nuevamente para agendar tus citas.",
       confirmButtonColor: "#C91A1A"
-    }).then(() => location.replace("../Autenticacion/login.html"));
+    }).then(() => location.replace("../Authenticator/login.html"));
     return;
   }
 
-  // -------------------------------
-  // FUNCIONES AUXILIARES
-  // -------------------------------
+
   const two = (n) => String(n).padStart(2, "0");
   const toISO = (d) => `${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())}`;
 
@@ -48,9 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${String(h12).padStart(2, "0")}:${two(m)} ${ampm}`;
   }
 
-  // -------------------------------
-  // CALENDARIO
-  // -------------------------------
+
   const feriadosES = [
     "2025-01-01","2025-03-24","2025-03-25","2025-03-26",
     "2025-05-01","2025-06-17","2025-08-06","2025-09-15",
@@ -154,20 +145,17 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
   };
 
-  // -------------------------------
-  // VEHÍCULOS (solo del cliente logueado)
-  // -------------------------------
   async function cargarVehiculos() {
     try {
       const res = await getVehiculos(token, 0, 50);
       const vehiculos = res.content ?? res;
 
-      console.log("📥 Vehículos recibidos:", vehiculos);
+      console.log("Vehículos recibidos:", vehiculos);
 
       vehiculoSelect.innerHTML = `<option value="">Seleccionar</option>`;
 
       vehiculos
-        .filter((v) => String(v.idCliente) === String(userId)) // 👈 solo los del cliente actual
+        .filter((v) => String(v.idCliente) === String(userId)) 
         .forEach((v) => {
           const opt = document.createElement("option");
           opt.value = v.id;
@@ -179,14 +167,12 @@ document.addEventListener("DOMContentLoaded", () => {
         vehiculoSelect.innerHTML = `<option value="">No tienes vehículos registrados</option>`;
       }
     } catch (err) {
-      console.error("❌ Error cargando vehículos:", err.message);
+      console.error("Error cargando vehículos:", err.message);
       vehiculoSelect.innerHTML = `<option value="">Error cargando vehículos</option>`;
     }
   }
 
-  // -------------------------------
-  // CITAS (listado)
-  // -------------------------------
+
   async function cargarMisCitas() {
     listaCitas.innerHTML = "";
     try {
@@ -216,13 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
       `).join("");
     } catch (err) {
-      console.error("❌ Error al cargar citas:", err.message);
+      console.error("Error al cargar citas:", err.message);
     }
   }
 
-  // -------------------------------
-  // CREAR CITA
-  // -------------------------------
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -253,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
       descripcion: descripcionInp.value?.trim() || null
     };
 
-    console.log("📤 Enviando cita:", cita);
+    console.log("Enviando cita:", cita);
 
     try {
       await crearCita(cita, token);
@@ -266,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
       form.reset();
       await cargarMisCitas();
     } catch (err) {
-      console.error("❌ Error creando cita:", err);
+      console.error("Error creando cita:", err);
       Swal.fire({
         icon: "error",
         title: "No se pudo registrar",
@@ -276,9 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // -------------------------------
-  // INICIAL
-  // -------------------------------
+
   cargarVehiculos();
   cargarMisCitas();
 

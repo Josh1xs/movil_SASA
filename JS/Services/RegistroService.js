@@ -1,21 +1,16 @@
-// ===============================
-// ClienteRegistroService.js (dinámico)
-// ===============================
-
-// Detectar host dinámico
 let API_BASE;
 
 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
   API_BASE = "http://localhost:8080";
 } else if (window.location.hostname === "10.0.2.2") {
-  API_BASE = "http://10.0.2.2:8080"; // Emulador Android
+  API_BASE = "http://10.0.2.2:8080"; 
 } else {
-  API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo en producción
+  API_BASE = "";
 }
 
 const API_URL = `${API_BASE}/auth/cliente`;
 
-// -------- Normalizar / Validaciones --------
+
 export function normalizeName(v) {
   return v.normalize("NFKC").replace(/\s+/g, " ").trim();
 }
@@ -48,18 +43,18 @@ export function validDUI(dui) {
 export function passwordStrength(pass) {
   let fuerza = 0;
 
-  if (pass.length >= 8) fuerza++;           // mínimo 8 caracteres
-  if (/[A-Z]/.test(pass)) fuerza++;         // mayúscula
-  if (/[a-z]/.test(pass)) fuerza++;         // minúscula
-  if (/[0-9]/.test(pass)) fuerza++;         // número
-  if (/[^A-Za-z0-9]/.test(pass)) fuerza++;  // símbolo
+  if (pass.length >= 8) fuerza++;          
+  if (/[A-Z]/.test(pass)) fuerza++;        
+  if (/[a-z]/.test(pass)) fuerza++;         
+  if (/[0-9]/.test(pass)) fuerza++;        
+  if (/[^A-Za-z0-9]/.test(pass)) fuerza++; 
 
   if (fuerza <= 2) return "Baja";
   if (fuerza <= 4) return "Media";
   return "Alta";
 }
 
-// -------- Registrar Cliente --------
+
 export async function registrarCliente(cliente) {
   const res = await fetch(`${API_URL}/register`, {
     method: "POST",
@@ -75,5 +70,5 @@ export async function registrarCliente(cliente) {
     throw new Error(err.message || "Error al registrar cliente");
   }
 
-  return res.json(); // {status, cliente, token?}
+  return res.json(); 
 }

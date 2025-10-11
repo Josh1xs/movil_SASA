@@ -1,4 +1,3 @@
-// ../JS/recuperar.js
 const $=s=>document.querySelector(s);
 const form=$("#recoveryForm");
 const email=$("#email");

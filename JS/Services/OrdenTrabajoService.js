@@ -2,7 +2,7 @@ let API_BASE;
 if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
   API_BASE = "http://localhost:8080";
 } else if (location.hostname === "10.0.2.2") {
-  API_BASE = "http://10.0.2.2:8080";
+  API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
 } else {
   API_BASE = "https://mi-backend-produccion.com";
 }

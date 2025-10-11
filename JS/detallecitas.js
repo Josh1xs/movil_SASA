@@ -1,6 +1,3 @@
-// ===============================
-// detalleCitas.js (detalle de cita móvil clientes)
-// ===============================
 import { getToken, getUserId } from "../JS/Services/LoginService.js";
 
 const API_CITAS     = "http://localhost:8080/apiCitas";
@@ -14,9 +11,7 @@ const citaId = params.get("id");
 const token  = getToken();
 const userId = getUserId();
 
-// ===============================
-// SIDEBAR (menú perfil estilo Pokémon)
-// ===============================
+
 (function sidebar() {
   const overlay   = qs("#overlay");
   const menu      = qs("#profileMenu");
@@ -45,7 +40,6 @@ const userId = getUserId();
   overlay?.addEventListener("click", close);
   window.addEventListener("keydown", (e) => e.key === "Escape" && close());
 
-  // Datos usuario en menú
   qs("#menuUserId").textContent = userId || "Desconocido";
   if (userId) {
     fetch(`${API_CLIENTES}/${userId}`, {
@@ -60,9 +54,7 @@ const userId = getUserId();
   }
 })();
 
-// ===============================
-// CARGAR DETALLE DE LA CITA
-// ===============================
+
 async function loadDetalle() {
   if (!citaId) { 
     location.replace("./citas.html"); 
@@ -80,7 +72,6 @@ async function loadDetalle() {
     qs("#estadoTxt").textContent  = cita.estado || "—";
     qs("#descTxt").textContent    = cita.descripcion || "—";
 
-    // Vehículo relacionado
     let vehiculoTxt = "—";
     if (cita.idVehiculo) {
       try {
@@ -92,7 +83,6 @@ async function loadDetalle() {
     }
     qs("#vehiculoTxt").textContent = vehiculoTxt;
 
-    // Para exportar a PDF
     qs("#btnPdf").dataset.fecha = cita.fecha || "";
     qs("#btnPdf").dataset.hora  = cita.hora  || "";
     qs("#btnPdf").dataset.code  = cita.id ? `#CITA-${cita.id}` : "cita";
@@ -102,9 +92,7 @@ async function loadDetalle() {
   }
 }
 
-// ===============================
-// DESCARGAR PDF DEL DETALLE
-// ===============================
+
 async function downloadPDF() {
   const card = qs("#citaCard");
   if (!card) return;
@@ -134,9 +122,7 @@ async function downloadPDF() {
   }
 }
 
-// ===============================
-// INIT
-// ===============================
+
 document.addEventListener("DOMContentLoaded", () => {
   loadDetalle();
   qs("#btnPdf")?.addEventListener("click", downloadPDF);

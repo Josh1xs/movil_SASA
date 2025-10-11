@@ -1,4 +1,4 @@
-// ../JS/codigo.js
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("verificationForm");
   const codeInput = document.getElementById("code");
