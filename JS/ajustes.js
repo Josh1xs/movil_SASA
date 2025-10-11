@@ -1,5 +1,5 @@
 // ===============================
-// ajustes.js (corregido dinámico)
+// ajustes.js (Producción Heroku ✅)
 // ===============================
 import { getUserId, getToken, getUsuarioLogueado } from "../JS/Services/LoginService.js";
 
@@ -19,19 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // =============================== 
-  // Detectar host dinámico
+  // API BASE fija (Heroku)
   // ===============================
-  let API_BASE;
-  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    API_BASE = "http://localhost:8080";
-  } else if (window.location.hostname === "10.0.2.2") {
-    API_BASE = "http://10.0.2.2:8080"; // Emulador Android
-  } else {
-    API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo cuando despliegues
-  }
-
-  const apiUrl   = `${API_BASE}/apiCliente/${userId}`;
-  const apiPatch = `${API_BASE}/apiCliente/actualizar-parcial/${userId}`;
+  const API_BASE  = "https://sasaapi-73d5de493985.herokuapp.com";
+  const apiUrl    = `${API_BASE}/apiCliente/${userId}`;
+  const apiPatch  = `${API_BASE}/apiCliente/actualizar-parcial/${userId}`;
 
   // =============================== 
   // ELEMENTOS DEL DOM
@@ -49,18 +41,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const menuToggle   = $("#menuToggle");
   const closeMenu    = $("#closeMenu");
 
-  const toggleNombre    = $(".toggle-nombre");
-  const formNombre      = $(".form-nombre");
-  const inputNombre     = $("#nuevoNombre");
-  const hintNombre      = $("#hintNombre");
-  const btnGuardarNombre= $("#guardarNombre");
+  const toggleNombre     = $(".toggle-nombre");
+  const formNombre       = $(".form-nombre");
+  const inputNombre      = $("#nuevoNombre");
+  const hintNombre       = $("#hintNombre");
+  const btnGuardarNombre = $("#guardarNombre");
 
-  const togglePass    = $(".toggle-pass");
-  const formPass      = $(".form-pass");
-  const inputPass     = $("#nuevaPass");
-  const inputPass2    = $("#repitePass");
-  const passMeter     = $("#passMeter");
-  const btnGuardarPass= $("#guardarPass");
+  const togglePass     = $(".toggle-pass");
+  const formPass       = $(".form-pass");
+  const inputPass      = $("#nuevaPass");
+  const inputPass2     = $("#repitePass");
+  const passMeter      = $("#passMeter");
+  const btnGuardarPass = $("#guardarPass");
 
   if (userIdEl)   userIdEl.textContent   = userId || "—";
   if (menuUserId) menuUserId.textContent = userId || "—";
@@ -128,9 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       let u = null;
-      if (res.ok) {
-        u = await res.json();
-      }
+      if (res.ok) u = await res.json();
 
       const localUser = getUsuarioLogueado();
       const nombre = `${u?.nombre ?? localUser?.nombre ?? ""} ${u?.apellido ?? localUser?.apellido ?? ""}`.trim() || "Usuario";
@@ -219,7 +209,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!r.ok) throw new Error();
 
-      // 🔑 Sincronizar con localStorage
       const user = getUsuarioLogueado();
       if (user) {
         user.nombre = nombre;
@@ -279,7 +268,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!r.ok) throw new Error();
 
-      // 🔑 Sincronizar con localStorage (opcional)
       const user = getUsuarioLogueado();
       if (user) {
         user.contrasena = p;

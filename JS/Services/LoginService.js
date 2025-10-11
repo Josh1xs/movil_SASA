@@ -1,21 +1,9 @@
 // ===============================
-// Services/LoginService.js
+// Services/LoginService.js (Producción Heroku ✅)
 // ===============================
 
-// Detectar el host dinámicamente
-let API_BASE;
-
-if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-  // PC navegador
-  API_BASE = "http://localhost:8080";
-} else if (window.location.hostname === "10.0.2.2") {
-  // Emulador Android
-  API_BASE = "http://10.0.2.2:8080";
-} else {
-  // Producción (ejemplo Vercel / dominio real)
-  API_BASE = "https://mi-backend-produccion.com"; // 👈 cámbialo cuando subas
-}
-
+// Base fija en Heroku
+const API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
 const API_URL = `${API_BASE}/auth/cliente`;
 
 // -------------------------------
@@ -30,22 +18,21 @@ export async function login(correo, contrasena) {
     });
 
     const json = await res.json();
+    console.log("📩 Respuesta login:", json);
 
-    console.log("Respuesta del login:", json);
-
-    if (!res.ok || json.status !== "OK" || !json.token) {
+    if (!res.ok || !json.token) {
       throw new Error(json.message || "Credenciales incorrectas");
     }
 
-    // ✅ Guardar datos en localStorage
+    // ✅ Guardar sesión local
     localStorage.setItem("user", JSON.stringify(json.cliente));
-    localStorage.setItem("userId", json.cliente.id);   // asegúrate que el backend manda `id`
+    localStorage.setItem("userId", json.cliente.idCliente || json.cliente.id);
     localStorage.setItem("token", json.token);
 
-    console.log("Token guardado:", json.token.substring(0, 20) + "...");
-    return json; // {status, token, cliente}
+    console.log("✅ Token guardado:", json.token.substring(0, 20) + "...");
+    return json;
   } catch (error) {
-    console.error("Error en login:", error);
+    console.error("❌ Error en login:", error);
     throw error;
   }
 }
@@ -55,7 +42,13 @@ export async function login(correo, contrasena) {
 // -------------------------------
 export function logout() {
   ["user", "userId", "token"].forEach((k) => localStorage.removeItem(k));
-  window.location.href = "../Autenticacion/login.html";
+
+  // Redirección universal (funciona en web y móvil)
+  if (window.location.pathname.includes("Autenticacion")) {
+    window.location.href = "login.html";
+  } else {
+    window.location.href = "../Autenticacion/login.html";
+  }
 }
 
 // -------------------------------
@@ -75,14 +68,11 @@ export function getToken() {
 }
 
 export function isLoggedIn() {
-  return (
-    localStorage.getItem("user") !== null &&
-    localStorage.getItem("token") !== null
-  );
+  return !!getToken() && !!getUsuarioLogueado();
 }
 
 // -------------------------------
-// HANDLER DE 401 GLOBAL
+// FETCH CON TOKEN (MANEJO 401)
 // -------------------------------
 export async function fetchWithAuth(url, options = {}) {
   const token = getToken();

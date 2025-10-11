@@ -1,8 +1,9 @@
 // ===============================
-// ClienteRegistroService.js
+// ClienteRegistroService.js (Producción Heroku ✅)
 // ===============================
 
-const API_URL = "http://localhost:8080/auth/cliente"; // 👈 cambia si tu endpoint es otro
+// URL base (puedes cambiarla a localhost si estás en desarrollo)
+const API_URL = "https://sasaapi-73d5de493985.herokuapp.com/auth/cliente";
 
 // -------- Validar email --------
 export function validEmail(e) {
@@ -12,12 +13,12 @@ export function validEmail(e) {
 // -------- Validar mayoría de edad --------
 export function isAdult(dateStr) {
   if (!dateStr) return false;
-  const h = new Date();
-  const d = new Date(dateStr);
-  let age = h.getFullYear() - d.getFullYear();
-  const m = h.getMonth() - d.getMonth();
-  if (m < 0 || (m === 0 && h.getDate() < d.getDate())) age--;
-  return age >= 18;
+  const hoy = new Date();
+  const nacimiento = new Date(dateStr);
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const mes = hoy.getMonth() - nacimiento.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) edad--;
+  return edad >= 18;
 }
 
 // -------- Normalizar y validar nombre --------
@@ -28,37 +29,50 @@ export function normalizeName(v) {
 export function nameValid(v) {
   if (!v) return false;
   const t = normalizeName(v);
-  if (t.length < 2) return false;
-  return /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(t);
+  return t.length >= 2 && /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(t);
 }
 
 // -------- Crear cliente --------
 export async function registrarCliente(cliente) {
-  const res = await fetch(`${API_URL}/registro`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cliente),
-  });
+  try {
+    const res = await fetch(`${API_URL}/registro`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cliente),
+    });
 
-  if (!res.ok) {
-    let err = {};
-    try {
-      err = await res.json();
-    } catch {}
-    throw new Error(err.message || "Error al registrar cliente");
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json.message || "Error al registrar cliente");
+    }
+
+    return json; // {status, cliente, token?}
+  } catch (error) {
+    console.error("❌ Error al registrar cliente:", error);
+    throw error;
   }
-
-  return res.json();
 }
 
 // -------- Validar si correo o DUI existen --------
 export async function validarDuplicados(correo, dui) {
-  const res = await fetch(`${API_URL}/consultar`);
-  if (!res.ok) return { correoExiste: false, duiExiste: false };
+  try {
+    const res = await fetch(`${API_URL}/consultar`);
+    if (!res.ok) return { correoExiste: false, duiExiste: false };
 
-  const data = await res.json();
-  const correoExiste = Array.isArray(data) && data.some((u) => u.correo?.toLowerCase() === correo.toLowerCase());
-  const duiExiste = Array.isArray(data) && data.some((u) => String(u.dui) === dui);
+    const data = await res.json();
 
-  return { correoExiste, duiExiste };
+    const correoExiste =
+      Array.isArray(data) &&
+      data.some((u) => u.correo?.toLowerCase() === correo.toLowerCase());
+
+    const duiExiste =
+      Array.isArray(data) &&
+      data.some((u) => String(u.dui) === String(dui));
+
+    return { correoExiste, duiExiste };
+  } catch (error) {
+    console.error("❌ Error al validar duplicados:", error);
+    return { correoExiste: false, duiExiste: false };
+  }
 }
