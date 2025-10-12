@@ -1,88 +1,91 @@
-import { getToken, getUserId, fetchWithAuth, logout } from "../JS/Services/LoginService.js";
+// ===============================
+// DashboardClienteController.js ✅ FINAL COMPLETO
+// (Heroku + Perfil Oscuro + Filtro de citas + Búsqueda)
+// ===============================
 
-document.addEventListener("DOMContentLoaded", () => {
+import { getUserId, getToken, getUsuarioLogueado, logout } from "../JS/Services/LoginService.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const $ = (s) => document.querySelector(s);
+
   const userId = getUserId();
-  const token = getToken();
+  const token  = getToken();
 
-  let API_BASE;
-  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    API_BASE = "http://localhost:8080";
-  } else if (window.location.hostname === "10.0.2.2") {
-    API_BASE = "http://10.0.2.2:8080";
-  } else {
-    API_BASE = "https://mi-backend-produccion.com";
+  if (!userId || !token) {
+    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
+      .then(() => location.replace("../Authenticator/login.html"));
+    return;
   }
 
+  // ===============================
+  // 🔗 API BASE (Heroku)
+  // ===============================
+  const API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
   const API_USER = `${API_BASE}/apiCliente/${userId}`;
-  const API_CITAS = `${API_BASE}/apiCitas/consultar`;
   const API_VEHICULOS = `${API_BASE}/apiVehiculo/consultar?page=0&size=50&sortBy=idVehiculo&sortDir=asc`;
+  const API_CITAS = `${API_BASE}/apiCitas/consultar`;
 
-  const greetingText = document.getElementById("greetingText");
-  const menuUserId = document.getElementById("menuUserId");
-  const menuNombre = document.getElementById("menuNombre");
-  const menuPase = document.getElementById("menuPase");
-  const citasHomeList = document.getElementById("citasHomeList");
-  const chipsCitas = document.getElementById("citasChips");
-  const tplCita = document.getElementById("tplCitaCard");
-  const listaVehiculosDashboard = document.getElementById("listaVehiculosDashboard");
-  const tplVehiculo = document.getElementById("tplVehiculoCard");
-  const logoutBtn = document.getElementById("logoutBtn");
+  // ===============================
+  // 🔹 ELEMENTOS DEL DOM
+  // ===============================
+  const nombreHeader = $("#nombreHeader");
+  const nombreCompleto = $("#nombreCompleto");
+  const rolUsuario = $("#rolUsuario");
+  const userIdEl = $("#userId");
+  const userInitials = $("#userInitials");
 
-  const overlay = document.getElementById("overlay");
-  const profileMenu = document.getElementById("profileMenu");
-  const menuToggle = document.getElementById("menuToggle");
-  const closeMenu = document.getElementById("closeMenu");
+  const menuNombre = $("#menuNombre");
+  const menuRol = $("#menuRol");
+  const menuUserId = $("#menuUserId");
 
-  function openMenu(){ profileMenu?.classList.add("open"); overlay?.classList.add("show"); }
-  function closeMenuFn(){ profileMenu?.classList.remove("open"); overlay?.classList.remove("show"); }
+  const overlay = $("#overlay");
+  const profileMenu = $("#profileMenu");
+  const menuToggle = $("#menuToggle");
+  const closeMenu = $("#closeMenu");
+  const logoutBtn = $(".cerrar-sesion");
 
-  menuToggle?.addEventListener("click", openMenu);
-  closeMenu?.addEventListener("click", closeMenuFn);
-  overlay?.addEventListener("click", closeMenuFn);
-  window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeMenuFn(); });
+  const listaVehiculosDashboard = $("#listaVehiculosDashboard");
+  const tplVehiculo = $("#tplVehiculoCard");
+  const citasHomeList = $("#citasHomeList");
+  const tplCita = $("#tplCitaCard");
+  const chipsCitas = $("#citasChips");
+  const searchInput = $("#searchCitas"); // 🔍 barra de búsqueda
 
-  if (menuUserId) menuUserId.textContent = userId || "—";
+  // ===============================
+  // 🔹 HELPERS
+  // ===============================
+  const initialsFromName = (n) => {
+    const parts = n.split(" ").filter(Boolean);
+    if (parts.length === 0) return "U";
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "U";
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
 
-  if (userId) {
-    fetchWithAuth(API_USER)
-      .then(r => r.json())
-      .then(user => {
-        const nombre = `${user?.nombre ?? ""} ${user?.apellido ?? ""}`.trim() || "Usuario";
-        if (greetingText) greetingText.textContent = `Bienvenido ${nombre}`;
-        if (menuNombre) menuNombre.textContent = nombre;
-        if (menuPase) menuPase.textContent = user?.pase ?? "Cliente";
-        localStorage.setItem("nombre", nombre);
-        if (user?.email) localStorage.setItem("email", user.email);
-      })
-      .catch(() => {
-        const nombre = localStorage.getItem("nombre") || "Usuario";
-        if (greetingText) greetingText.textContent = `Bienvenido ${nombre}`;
-      });
-  }
+  const setText = (el, val) => el && (el.textContent = val ?? "—");
 
-  logoutBtn?.addEventListener("click", e => {
-    e.preventDefault();
-    logout();
-  });
-
-  const setText = (el, v) => { if (el) el.textContent = v ?? "—"; };
-
-  const fechaISOaObj = iso => {
+  const fechaISOaObj = (iso) => {
     if (!iso) return null;
     const [y, m, d] = iso.split("-").map(Number);
     return new Date(y, m - 1, d);
   };
 
-  const isToday = iso => {
+  const isToday = (iso) => {
     const d = fechaISOaObj(iso);
     const now = new Date();
-    return !!d && d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
+    return (
+      !!d &&
+      d.getFullYear() === now.getFullYear() &&
+      d.getMonth() === now.getMonth() &&
+      d.getDate() === now.getDate()
+    );
   };
 
   const withinNextDays = (iso, days = 7) => {
     const d = fechaISOaObj(iso);
-    const start = new Date(); start.setHours(0,0,0,0);
-    const end = new Date(start); end.setDate(end.getDate() + days);
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(end.getDate() + days);
     return !!d && d >= start && d <= end;
   };
 
@@ -91,40 +94,131 @@ document.addEventListener("DOMContentLoaded", () => {
     const d = fechaISOaObj(fecha);
     if (!d) return hora || "—";
     const hoy = new Date();
-    const pre = d.toDateString() === hoy.toDateString() ? "Hoy" : d.toLocaleDateString("es", { weekday: "short" });
+    const pre =
+      d.toDateString() === hoy.toDateString()
+        ? "Hoy"
+        : d.toLocaleDateString("es", { weekday: "short" });
     return `${pre}, ${hora || "—"}`;
   };
 
-  let citasRaw = [];
-  let filtro = "hoy";
+  // ===============================
+  // 🔹 CARGAR USUARIO
+  // ===============================
+  async function cargarUsuario() {
+    try {
+      const res = await fetch(API_USER, { headers: { Authorization: `Bearer ${token}` } });
+      let u = null;
+      if (res.ok) u = await res.json();
 
-  chipsCitas?.addEventListener("click", e => {
-    const a = e.target.closest("a[data-filter]");
-    if (!a) return;
-    e.preventDefault();
-    chipsCitas.querySelectorAll(".chip").forEach(c => c.classList.remove("chip-active"));
-    a.classList.add("chip-active");
-    filtro = a.dataset.filter;
-    renderCitas();
+      const localUser = getUsuarioLogueado();
+      const nombre = `${u?.nombre ?? localUser?.nombre ?? ""} ${u?.apellido ?? localUser?.apellido ?? ""}`.trim() || "Usuario";
+      const rol = (u?.rol ?? localUser?.rol ?? "CLIENTE").toUpperCase();
+
+      // Encabezado principal
+      setText(nombreHeader, `Bienvenido ${nombre}`);
+
+      // Panel lateral
+      setText(nombreCompleto, nombre);
+      setText(rolUsuario, rol);
+      setText(menuNombre, nombre);
+      setText(menuRol, rol);
+      setText(userIdEl, userId);
+      setText(menuUserId, userId);
+      setText(userInitials, initialsFromName(nombre));
+
+      localStorage.setItem("nombre", nombre);
+      localStorage.setItem("rol", rol);
+    } catch (err) {
+      console.error("⚠️ Error al cargar usuario:", err);
+      const localUser = getUsuarioLogueado();
+      const nombre = `${localUser?.nombre ?? ""} ${localUser?.apellido ?? ""}`.trim() || "Usuario";
+      const rol = localUser?.rol ?? "CLIENTE";
+
+      setText(nombreHeader, `Bienvenido ${nombre}`);
+      setText(nombreCompleto, nombre);
+      setText(rolUsuario, rol);
+      setText(menuNombre, nombre);
+      setText(menuRol, rol);
+      setText(userIdEl, userId);
+      setText(menuUserId, userId);
+      setText(userInitials, initialsFromName(nombre));
+    }
+  }
+
+  // ===============================
+  // 🔹 MENÚ PERFIL
+  // ===============================
+  const abrirMenu = () => {
+    profileMenu?.classList.add("open");
+    overlay?.classList.add("show");
+  };
+  const cerrarMenu = () => {
+    profileMenu?.classList.remove("open");
+    overlay?.classList.remove("show");
+  };
+
+  menuToggle?.addEventListener("click", abrirMenu);
+  closeMenu?.addEventListener("click", cerrarMenu);
+  overlay?.addEventListener("click", cerrarMenu);
+  window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
+
+  // ===============================
+  // 🔹 LOGOUT
+  // ===============================
+  logoutBtn?.addEventListener("click", async () => {
+    const ok = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "Tu sesión actual se cerrará",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c91a1a",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    });
+    if (ok.isConfirmed) {
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = "authToken=; Max-Age=0; path=/";
+      location.replace("../Authenticator/login.html");
+    }
   });
 
-  const filtrarCitas = arr => {
-    if (filtro === "hoy") return arr.filter(c => isToday(c.fecha));
-    if (filtro === "semana") return arr.filter(c => withinNextDays(c.fecha, 7));
-    return arr;
+  // ===============================
+  // 🔹 CITAS (Filtro + Búsqueda)
+  // ===============================
+  let citasRaw = [];
+  let filtro = "hoy";
+  let busqueda = "";
+
+  const filtrarCitas = (arr) => {
+    let filtered = arr.filter((c) => String(c.idCliente) === String(userId));
+
+    if (filtro === "hoy") filtered = filtered.filter((c) => isToday(c.fecha));
+    else if (filtro === "semana") filtered = filtered.filter((c) => withinNextDays(c.fecha, 7));
+
+    if (busqueda.trim() !== "") {
+      const term = busqueda.toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.descripcion?.toLowerCase().includes(term) ||
+          c.fecha?.toLowerCase().includes(term) ||
+          c.hora?.toLowerCase().includes(term)
+      );
+    }
+
+    return filtered;
   };
 
   function renderCitas() {
     if (!citasHomeList) return;
     citasHomeList.innerHTML = "";
-    let items = (citasRaw || []).filter(c => String(c.idCliente) === String(userId));
-    items = filtrarCitas(items);
+    const items = filtrarCitas(citasRaw);
     if (!items.length) {
       citasHomeList.innerHTML = `<div class="empty-state">Sin citas en este filtro.</div>`;
       return;
     }
     const frag = document.createDocumentFragment();
-    items.forEach(cita => {
+    items.forEach((cita) => {
       const el = tplCita?.content.firstElementChild.cloneNode(true);
       if (!el) return;
       setText(el.querySelector(".pill span"), fmtLabelHora(cita.fecha, cita.hora));
@@ -133,19 +227,42 @@ document.addEventListener("DOMContentLoaded", () => {
       frag.appendChild(el);
     });
     citasHomeList.appendChild(frag);
-    localStorage.setItem("citas", JSON.stringify(items));
   }
 
+  // Cambiar filtro (chips)
+  chipsCitas?.addEventListener("click", (e) => {
+    const a = e.target.closest("a[data-filter]");
+    if (!a) return;
+    e.preventDefault();
+    chipsCitas.querySelectorAll(".chip").forEach((c) => c.classList.remove("chip-active"));
+    a.classList.add("chip-active");
+    filtro = a.dataset.filter;
+    renderCitas();
+  });
+
+  // Barra de búsqueda
+  searchInput?.addEventListener("input", (e) => {
+    busqueda = e.target.value;
+    renderCitas();
+  });
+
+  // Cargar citas
   if (userId && citasHomeList) {
-    fetchWithAuth(API_CITAS)
-      .then(res => res.json())
-      .then(json => {
+    fetch(API_CITAS, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((json) => {
         citasRaw = json.data?.content ?? json.content ?? json ?? [];
         renderCitas();
       })
-      .catch(() => { citasRaw = []; renderCitas(); });
+      .catch(() => {
+        citasRaw = [];
+        renderCitas();
+      });
   }
 
+  // ===============================
+  // 🔹 VEHÍCULOS
+  // ===============================
   function renderVehiculos(vehiculos) {
     if (!listaVehiculosDashboard) return;
     if (!vehiculos.length) {
@@ -159,31 +276,35 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     const frag = document.createDocumentFragment();
-    vehiculos.forEach(v => {
+    vehiculos.forEach((v) => {
       const el = tplVehiculo?.content.firstElementChild.cloneNode(true);
       if (!el) return;
-      el.querySelector(".vehicle__name").textContent = `${v.marca ?? v.Marca ?? ""} ${v.modelo ?? v.Modelo ?? ""}`.trim();
+      el.querySelector(".vehicle__name").textContent = `${v.marca ?? ""} ${v.modelo ?? ""}`.trim();
       const ps = el.querySelectorAll(".vehicle__body p");
-      if (ps[0]) ps[0].textContent = `Año: ${v.anio ?? v.Anio ?? "—"}`;
-      if (ps[1]) ps[1].textContent = `Placa: ${v.placa ?? v.Placa ?? "—"}`;
-      if (ps[2]) ps[2].textContent = `VIN: ${v.vin ?? v.VIN ?? "—"}`;
+      if (ps[0]) ps[0].textContent = `Año: ${v.anio ?? "—"}`;
+      if (ps[1]) ps[1].textContent = `Placa: ${v.placa ?? "—"}`;
+      if (ps[2]) ps[2].textContent = `VIN: ${v.vin ?? "—"}`;
       frag.appendChild(el);
     });
     listaVehiculosDashboard.innerHTML = "";
     listaVehiculosDashboard.appendChild(frag);
-    localStorage.setItem("vehiculos", JSON.stringify(vehiculos));
   }
 
   if (userId && listaVehiculosDashboard) {
-    fetchWithAuth(API_VEHICULOS)
-      .then(res => res.json())
-      .then(json => {
+    fetch(API_VEHICULOS, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((json) => {
         const data = json.data?.content ?? json.content ?? [];
-        const vehiculosCliente = (Array.isArray(data) ? data : []).filter(v =>
-          String(v.idCliente ?? v.IdCliente ?? v?.cliente?.idCliente ?? "") === String(userId)
+        const vehiculosCliente = data.filter(
+          (v) => String(v.idCliente ?? v?.cliente?.idCliente ?? "") === String(userId)
         );
         renderVehiculos(vehiculosCliente);
       })
       .catch(() => renderVehiculos([]));
   }
+
+  // ===============================
+  // 🔹 INICIO
+  // ===============================
+  await cargarUsuario();
 });

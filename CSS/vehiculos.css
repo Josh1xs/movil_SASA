@@ -145,3 +145,135 @@ body{margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,
 }
 .add-link:active{transform:scale(.98)}
 .add-link:focus-visible{outline:3px solid rgba(201,26,26,.25); outline-offset:2px}
+/* === MIS VEHÍCULOS (SASA STYLE) === */
+
+.vehiculos-lista {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* === TARJETA === */
+.vcard {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 16px 18px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.vcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.08);
+}
+
+/* === INFORMACIÓN DEL VEHÍCULO === */
+.vbody h3 {
+  font-size: 1.05rem;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.vbody p {
+  margin: 2px 0;
+  color: var(--text);
+  font-size: 0.93rem;
+}
+
+.vbody strong {
+  color: var(--ink);
+}
+
+.chip {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* === ACCIONES === */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.actions .btn {
+  flex: 1;
+  height: 40px;
+  border: none;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+
+.edit-btn {
+  background: #f3f4f6;
+  color: var(--ink);
+}
+
+.edit-btn:hover {
+  background: #e5e7eb;
+}
+
+.delete-btn {
+  background: #fff1f2;
+  color: var(--accent);
+}
+
+.delete-btn:hover {
+  background: #ffe4e6;
+  transform: scale(.98);
+}
+
+/* === MENSAJE VACÍO === */
+#vehEmpty {
+  color: var(--muted);
+  text-align: center;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+/* === BOTÓN AÑADIR === */
+.head-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.btn-add {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: var(--r-md);
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(201,26,26,.25);
+  transition: transform .1s, filter .15s;
+}
+
+.btn-add i {
+  font-size: 14px;
+}
+
+.btn-add:hover {
+  filter: brightness(1.05);
+}
+
+.btn-add:active {
+  transform: scale(.97);
+}
+.hidden {
+  display: none !important;
+}

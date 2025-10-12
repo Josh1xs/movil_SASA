@@ -16,43 +16,66 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // 🔹 Traer vehículos desde la API
-    const raw = await getVehiculos(token, 0, 50, "idVehiculo", "asc");
+    const raw = await getVehiculos(token, 0, 100, "idVehiculo", "asc");
+    console.log("Respuesta bruta del backend:", raw);
 
-    const listaVehiculos = raw.data?.content || raw;
-    console.log("Vehículos normalizados:", listaVehiculos);
+    // ✅ Normaliza la estructura del backend
+    const listaVehiculos = raw.data?.content || raw.data || raw.content || raw;
 
-    // 🔹 Filtrar solo los del cliente logueado
-    const misVehiculos = listaVehiculos.filter(v =>
-      String(v.idCliente ?? v.IdCliente ?? v.cliente?.idCliente ?? v.cliente?.IdCliente) === String(userId)
-    );
-
-    if (!misVehiculos.length) {
-      emptyMsg.classList.remove("hidden");
-      lista.innerHTML = "";
-      return;
+    if (!Array.isArray(listaVehiculos)) {
+      console.error("Formato inesperado:", listaVehiculos);
+      throw new Error("Formato de respuesta no válido");
     }
 
-    emptyMsg.classList.add("hidden");
-    lista.innerHTML = misVehiculos.map(v => `
-      <div class="vcard" data-id="${v.idVehiculo ?? v.IdVehiculo ?? v.id}">
-        <div class="vbody">
-          <h3>${v.marca ?? v.Marca} ${v.modelo ?? v.Modelo}</h3>
-          ${v.anio || v.Anio ? `<p><strong>Año:</strong> ${v.anio ?? v.Anio}</p>` : ""}
-          ${v.estado?.nombre ? `<p><strong>Estado:</strong> ${v.estado.nombre}</p>` : ""}
-          <p><span class="chip">Placa: ${v.placa ?? v.Placa}</span></p>
-          <p><strong>VIN:</strong> ${v.vin ?? v.Vin}</p>
-        </div>
-        <div class="actions">
-          <button class="btn edit-btn editar">
-            <i class="fa fa-pen"></i> Editar
-          </button>
-          <button class="btn delete-btn eliminar">
-            <i class="fa fa-trash"></i> Eliminar
-          </button>
-        </div>
-      </div>
-    `).join("");
+    console.log("Vehículos normalizados:", listaVehiculos);
 
+    // 🔹 Filtrar solo los del cliente logueado (si el campo existe)
+    const misVehiculos = listaVehiculos.filter((v) => {
+      const idC =
+        v.idCliente ??
+        v.IdCliente ??
+        v.cliente?.idCliente ??
+        v.cliente?.IdCliente ??
+        v.clienteId;
+      return !idC || String(idC) === String(userId);
+    });
+
+    // ===============================
+    // 🔹 Mostrar u ocultar mensaje vacío correctamente
+    // ===============================
+    if (misVehiculos.length === 0) {
+      emptyMsg.classList.remove("hidden");
+      lista.innerHTML = "";
+    } else {
+      emptyMsg.classList.add("hidden");
+      lista.innerHTML = misVehiculos
+        .map(
+          (v) => `
+          <div class="vcard" data-id="${v.idVehiculo ?? v.IdVehiculo ?? v.id}">
+            <div class="vbody">
+              <h3>${v.marca ?? v.Marca ?? "Sin marca"} ${v.modelo ?? v.Modelo ?? ""}</h3>
+              ${v.anio || v.Anio ? `<p><strong>Año:</strong> ${v.anio ?? v.Anio}</p>` : ""}
+              ${
+                v.estado?.nombre
+                  ? `<p><strong>Estado:</strong> ${v.estado.nombre}</p>`
+                  : ""
+              }
+              <p><span class="chip">Placa: ${v.placa ?? v.Placa ?? "N/A"}</span></p>
+              <p><strong>VIN:</strong> ${v.vin ?? v.Vin ?? "N/A"}</p>
+            </div>
+            <div class="actions">
+              <button class="btn edit-btn editar">
+                <i class="fa fa-pen"></i> Editar
+              </button>
+              <button class="btn delete-btn eliminar">
+                <i class="fa fa-trash"></i> Eliminar
+              </button>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
   } catch (err) {
     console.error("❌ Error cargando vehículos:", err);
     Swal.fire("Error", "No se pudieron cargar los vehículos", "error");
@@ -78,14 +101,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         showCancelButton: true,
         confirmButtonColor: "#C91A1A",
         cancelButtonColor: "#6c757d",
-        confirmButtonText: "Sí, eliminar"
+        confirmButtonText: "Sí, eliminar",
       });
 
       if (conf.isConfirmed) {
         try {
-          await deleteVehiculo(id, token); // ✅ id primero, token después
-          Swal.fire("Eliminado", "El vehículo fue eliminado correctamente", "success")
-            .then(() => location.reload());
+          await deleteVehiculo(id, token);
+          Swal.fire(
+            "Eliminado",
+            "El vehículo fue eliminado correctamente",
+            "success"
+          ).then(() => location.reload());
         } catch (err) {
           console.error("❌ Error eliminando vehículo:", err);
           Swal.fire("Error", "No se pudo eliminar el vehículo", "error");

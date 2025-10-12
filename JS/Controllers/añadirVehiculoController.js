@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("vehiculoForm");
   const token = getToken();
   const userId = getUserId();
+  const btnLimpiar = document.getElementById("btnLimpiar");
 
   if (!userId || !token) {
     Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
@@ -12,14 +13,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
+  // ===============================
+  // CARGAR DATOS SI ES EDICIÓN
+  // ===============================
   if (id) {
     try {
       const vehiculo = await getVehiculoById(token, id);
-
 
       document.getElementById("marca").value = vehiculo.marca ?? vehiculo.Marca ?? "";
       document.getElementById("modelo").value = vehiculo.modelo ?? vehiculo.Modelo ?? "";
@@ -36,7 +38,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-
+  // ===============================
+  // GUARDAR O ACTUALIZAR VEHÍCULO
+  // ===============================
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -54,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         placa: document.getElementById("placa").value,
         vin: document.getElementById("vin").value,
         idCliente: userId,
-        idEstado: Number(estadoVal)
+        idEstado: Number(estadoVal),
       };
 
       try {
@@ -74,5 +78,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   } else {
     console.error("No se encontró el formulario con id='vehiculoForm'");
+  }
+
+  // ===============================
+  // BOTÓN LIMPIAR FORMULARIO
+  // ===============================
+  if (btnLimpiar) {
+    btnLimpiar.addEventListener("click", () => {
+      // Vacía todos los inputs del formulario
+      form.reset();
+
+      // Si estás en modo edición (con ID), también puedes limpiar la URL
+      if (id) {
+        const nuevaUrl = window.location.pathname; // elimina los ?id=...
+        window.history.replaceState({}, document.title, nuevaUrl);
+      }
+
+      Swal.fire({
+        title: "Formulario limpio",
+        text: "Todos los campos han sido vaciados.",
+        icon: "info",
+        confirmButtonColor: "#C91A1A",
+      });
+    });
   }
 });
