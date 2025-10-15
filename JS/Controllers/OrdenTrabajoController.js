@@ -1,184 +1,290 @@
-import { getUserId, getToken } from "../JS/Services/LoginService.js";
-import { OrdenTrabajoService } from "../JS/Services/OrdenTrabajoService.js";
+// ===============================
+// OrdenTrabajoController.js (Móvil) ✅ FINAL FULL FUNCIONAL HEROKU DTO PLANO
+// ===============================
 
+import { getUserId, getToken } from "../Services/LoginService.js";
+import { listarOrdenesPorVehiculo, obtenerOrdenPorId } from "../Services/OrdenTrabajoService.js";
+import { getDetallesByOrden } from "../Services/DetalleOrdenService.js";
+import { getVehiculoById } from "../Services/VehiculoService.js";
+
+// ===============================
+// Utils
+// ===============================
 const $ = (s) => document.querySelector(s);
 const money = (n) => `$${(Number(n) || 0).toFixed(2)}`;
-const badge = (e) => `<span class="badge state-${e}">${e}</span>`;
 
-function rowTpl(o) {
-  const id = o.id ?? o.idOrden;
-  const veh = o.vehiculoPlaca ?? o.placa ?? o.vehiculoId ?? "-";
-  const total = o.total ?? o.montoTotal ?? 0;
-  const estado = o.estado ?? (o.archivada ? "Archivada" : "Creada");
-  const archivada = String(estado).toLowerCase() === "archivada" || !!o.archivada;
+// ===============================
+// Estado global
+// ===============================
+const state = {
+  vehiculoId: null,
+  vehiculoInfo: null,
+  ordenes: [],
+  seleccionada: null,
+  page: 0,
+};
 
-  const btnArch = archivada
-    ? `<button class="icon unarch" data-action="desarchivar"><i class="fa-solid fa-box-open"></i> Desarchivar</button>`
-    : `<button class="icon arch" data-action="archivar"><i class="fa-solid fa-box-archive"></i> Archivar</button>`;
+// ===============================
+// 🔹 Verificar sesión real del cliente
+// ===============================
+function validarSesion() {
+  const userId = getUserId?.() || localStorage.getItem("userId");
+  const token = getToken?.() || localStorage.getItem("token");
 
-  return `
-  <tr data-id="${id}">
-    <td>${id}</td>
-    <td>${veh}</td>
-    <td>${money(total)}</td>
-    <td>${badge(estado)}</td>
-    <td class="w-actions">
-      <div class="chips">
-        <button class="icon" data-action="ver" title="Ver"><i class="fa-solid fa-eye"></i> Ver</button>
-        ${btnArch}
-      </div>
-    </td>
-  </tr>`;
+  if (!userId || !token) {
+    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
+      .then(() => location.replace("../Authenticator/login.html"));
+    return null;
+  }
+
+  return { userId, token };
 }
 
-function refreshKpis(list) {
-  const total = list.length;
-  const archivadas = list.filter(o => (o.estado?.toLowerCase?.() === "archivada") || o.archivada).length;
-  const activas = total - archivadas;
-  $("#kpiTotal").textContent = total;
-  $("#kpiActivas").textContent = activas;
-  $("#kpiArchivadas").textContent = archivadas;
+// ===============================
+// 🔹 Renderizar órdenes
+// ===============================
+function renderOrdenes() {
+  const cont = $("#ordenesList");
+  const vacio = $("#noOrdenes");
+  const pager = $("#pager");
+
+  if (!state.ordenes.length) {
+    vacio.innerHTML = `
+      <i class="fa-solid fa-clipboard-xmark empty-icon"></i>
+      <p>No hay órdenes registradas para este vehículo</p>
+    `;
+    vacio.style.display = "flex";
+    cont.innerHTML = "";
+    pager.style.display = "none";
+    renderDetalle(null);
+    return;
+  }
+
+  vacio.style.display = "none";
+  pager.style.display = "flex";
+
+  cont.innerHTML = state.ordenes
+    .map((o) => {
+      const id = o.id ?? o.idOrden ?? "-";
+      const placa = o.placaVehiculo ?? o.vehiculoPlaca ?? o.vehiculo?.placa ?? "—";
+      const marca = o.marcaVehiculo ?? o.vehiculoMarca ?? o.vehiculo?.marca ?? "";
+      const fecha = o.fecha ?? o.fechaOrden ?? "—";
+      const estado = o.estado ?? "Activa";
+      const total = o.total ?? o.montoTotal ?? 0;
+
+      return `
+        <div class="orden-card" data-id="${id}">
+          <div class="orden-card-header">
+            <span class="orden-id">#${id}</span>
+            <span class="estado badge-${estado.toLowerCase()}">${estado}</span>
+          </div>
+          <div class="orden-card-body">
+            <div class="orden-info">
+              <div class="orden-vehiculo">${placa} ${marca}</div>
+              <small class="muted">${String(fecha).substring(0, 10)}</small>
+            </div>
+            <div class="orden-total">${money(total)}</div>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
 }
 
+// ===============================
+// 🔹 Renderizar detalle seleccionado
+// ===============================
+async function renderDetalle(o) {
+  const tbody = $("#tablaDetalle tbody");
 
-function renderDetalle(o) {
-  if (!o) return;
+  if (!o) {
+    if (tbody)
+      tbody.innerHTML = `<tr><td colspan="3" class="muted text-center">Selecciona una orden</td></tr>`;
+    $("#dOrden").textContent = "—";
+    $("#dFecha").textContent = "—";
+    $("#dVehiculo").textContent = "—";
+    $("#dEstado").textContent = "—";
+    $("#dTotal").textContent = "—";
+    return;
+  }
 
-  const id = o.id ?? o.idOrden ?? "—";
-  const fecha = o.fecha ?? o.fechaOrden ?? o.createdAt ?? "—";
-  const veh = o.vehiculoPlaca ?? o.placa ?? o.vehiculoId ?? "—";
-  const estado = o.estado ?? (o.archivada ? "Archivada" : "Creada");
-  const total = o.total ?? o.montoTotal ?? 0;
+  const id = o?.id ?? o?.idOrden ?? "—";
+  const fecha = o?.fecha ?? o?.fechaOrden ?? "—";
+  const placa = o?.placaVehiculo ?? o?.vehiculoPlaca ?? "—";
+  const marca = o?.marcaVehiculo ?? o?.vehiculoMarca ?? "";
+  const estado = o?.estado ?? "—";
+  let total = o?.total ?? o?.montoTotal ?? 0;
 
   $("#dOrden").textContent = id;
-  $("#dFecha").textContent = (typeof fecha === "string" ? fecha : new Date(fecha).toISOString().slice(0,10));
-  $("#dVehiculo").textContent = veh;
+  $("#dFecha").textContent =
+    typeof fecha === "string"
+      ? fecha.substring(0, 10)
+      : new Date(fecha).toISOString().slice(0, 10);
+  $("#dVehiculo").textContent = `${placa} ${marca}`.trim();
   $("#dEstado").textContent = estado;
-  $("#dTotal").textContent = money(total);
 
-
-  const items = o.detalles || o.items || o.detalle || o.detalleOrden || [];
-  const tbody = $("#tablaDetalle tbody");
   if (!tbody) return;
 
-  if (!Array.isArray(items) || items.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="3" class="muted">Sin ítems</td></tr>`;
-  } else {
-    tbody.innerHTML = items.map(d => {
-      const did = d.id || d.idDetalle || "—";
-      const desc = d.descripcion || d.mantenimiento || d.servicio || "—";
-      const precio = money(d.precio ?? d.costo ?? 0);
-      return `<tr><td>${did}</td><td>${desc}</td><td>${precio}</td></tr>`;
-    }).join("");
+  try {
+    const detalles = await getDetallesByOrden(id);
+
+    if (!Array.isArray(detalles) || !detalles.length) {
+      tbody.innerHTML = `<tr><td colspan="3" class="muted text-center">Sin detalles registrados</td></tr>`;
+      $("#dTotal").textContent = money(0);
+      return;
+    }
+
+    // 🔹 Calcular total acumulado real
+    let totalSum = 0;
+
+    tbody.innerHTML = detalles
+      .map((d) => {
+        const did = d.id || d.idDetalle || "—";
+
+        // Soporte DTO plano o anidado (Heroku DTO plano)
+        const desc =
+          d.mantenimientoDTO?.nombre ||
+          d.mantenimiento?.nombre ||
+          d.mantenimiento ||
+          d.descripcion ||
+          d.servicio ||
+          "—";
+
+        const precioRaw =
+          d.mantenimientoDTO?.precio ??
+          d.mantenimiento?.precio ??
+          d.subtotal ??
+          d.precio ??
+          d.costo ??
+          0;
+
+        totalSum += Number(precioRaw) || 0;
+        const precio = money(precioRaw);
+
+        return `<tr><td>${did}</td><td>${desc}</td><td>${precio}</td></tr>`;
+      })
+      .join("");
+
+    // 🔹 Mostrar total real
+    $("#dTotal").textContent = money(totalSum);
+
+    // 🔹 Actualizar total también en la tarjeta seleccionada
+    const card = document.querySelector(`.orden-card.is-selected .orden-total`);
+    if (card) card.textContent = money(totalSum);
+  } catch (err) {
+    console.error("❌ Error cargando detalle:", err);
+    tbody.innerHTML = `<tr><td colspan="3" class="text-danger text-center">Error al cargar detalles</td></tr>`;
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const clienteId = getUserId?.() || localStorage.getItem("userId");
-  const token = getToken?.() || localStorage.getItem("authToken");
+// ===============================
+// 🔹 Cargar órdenes (con token ✅)
+// ===============================
+async function cargarOrdenes() {
+  const sesion = validarSesion();
+  if (!sesion) return;
 
-  const tbody = $("#tablaOrdenes tbody");
-  const pageInfo = $("#pageInfo");
-  const prevPage = $("#prevPage");
-  const nextPage = $("#nextPage");
+  try {
+    console.log("📡 Cargando órdenes por vehículo...");
 
-  let page = 0;
-  const size = 10;
-  let cache = [];
+    const vehiculoId = Number(localStorage.getItem("vehiculoId"));
+    if (!vehiculoId) {
+      Swal.fire("Vehículo no seleccionado", "Selecciona un vehículo antes de continuar", "info");
+      return;
+    }
 
-  async function load() {
+    state.vehiculoId = vehiculoId;
+    const token = sesion.token;
+
+    // 🔹 Info del vehículo
     try {
-      const data = await OrdenTrabajoService.listar(token, clienteId, page, size);
-      const arr = data?.content || data || [];
-      const total = data?.totalElements ?? data?.total ?? arr.length;
-
-      cache = arr;
-      tbody.innerHTML = arr.map(rowTpl).join("") || `<tr><td colspan="5" class="muted">Sin órdenes</td></tr>`;
-      pageInfo.textContent = `Página ${page + 1}`;
-      prevPage.disabled = page <= 0;
-      nextPage.disabled = (page + 1) * size >= total;
-
-      refreshKpis(arr);
-
-
-      const first = tbody.querySelector("tr");
-      if (first) {
-        first.classList.add("is-selected");
-        const id = first.dataset.id;
-        const found = cache.find(o => String(o.id ?? o.idOrden) === String(id));
-        if (found) renderDetalle(found);
-      } else {
-        renderDetalle(null);
-      }
-    } catch (e) {
-      console.error("Error listando:", e);
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Error al cargar</td></tr>`;
-      pageInfo.textContent = "—";
-      prevPage.disabled = true;
-      nextPage.disabled = true;
-      refreshKpis([]);
-      renderDetalle(null);
+      const vehiculo = await getVehiculoById(token, vehiculoId);
+      state.vehiculoInfo = vehiculo;
+      console.log("🚗 Vehículo cargado:", vehiculo);
+    } catch (err) {
+      console.warn("⚠️ No se pudo cargar la información del vehículo:", err);
     }
+
+    // 🔹 Traer todas las órdenes con token ✅
+    const todas = await listarOrdenesPorVehiculo(vehiculoId, state.page, token);
+    console.log("📦 Todas las órdenes (raw):", todas);
+
+    // 🔍 Filtro adaptable
+    const data = (Array.isArray(todas) ? todas : []).filter((o) => {
+      const idDetectado =
+        o.idVehiculo ??
+        o.idvehiculo ??
+        o.id_vehiculo ??
+        o.vehiculo?.idVehiculo ??
+        o.vehiculo?.idvehiculo ??
+        o.vehiculoId ??
+        null;
+
+      return Number(idDetectado) === Number(vehiculoId);
+    });
+
+    console.log("✅ Órdenes filtradas del vehículo actual:", data);
+
+    state.ordenes = data ?? [];
+    renderOrdenes();
+
+    // 🔹 Si solo hay una, mostrarla automáticamente
+    if (state.ordenes.length === 1) {
+      console.log("🎯 Mostrando automáticamente detalle de la única orden...");
+      await renderDetalle(state.ordenes[0]);
+    }
+
+    // 🔹 KPIs
+    $("#kpiTotal").textContent = state.ordenes.length;
+    const activas = state.ordenes.filter(
+      (o) => (o.estado ?? "activa").toLowerCase() === "activa"
+    ).length;
+    $("#kpiActivas").textContent = activas;
+  } catch (err) {
+    console.error("💥 Error cargando órdenes:", err);
+    Swal.fire("Error", "No se pudieron cargar las órdenes del vehículo", "error");
   }
+}
 
-  prevPage?.addEventListener("click", () => { if (page > 0) { page--; load(); } });
-  nextPage?.addEventListener("click", () => { page++; load(); });
+// ===============================
+// 🔹 Paginación
+// ===============================
+$("#prevPage")?.addEventListener("click", () => {
+  if (state.page > 0) {
+    state.page--;
+    cargarOrdenes();
+  }
+});
 
+$("#nextPage")?.addEventListener("click", () => {
+  state.page++;
+  cargarOrdenes();
+});
 
-  tbody?.addEventListener("click", async (e) => {
-    const tr = e.target.closest("tr");
-    const btn = e.target.closest("button.icon");
-    const id = tr?.dataset?.id;
+// ===============================
+// 🔹 Click en una orden (mostrar detalle)
+// ===============================
+$("#ordenesList")?.addEventListener("click", async (e) => {
+  const card = e.target.closest(".orden-card");
+  if (!card) return;
+  const id = card.dataset.id;
 
+  document.querySelectorAll(".orden-card").forEach((c) => c.classList.remove("is-selected"));
+  card.classList.add("is-selected");
 
-    if (tr && !btn) {
-      tbody.querySelectorAll("tr").forEach(r => r.classList.remove("is-selected"));
-      tr.classList.add("is-selected");
-      const found = cache.find(o => String(o.id ?? o.idOrden) === String(id));
-      if (found) renderDetalle(found);
-      return;
-    }
+  try {
+    const o = await obtenerOrdenPorId(id);
+    state.seleccionada = o;
+    await renderDetalle(o);
+  } catch (err) {
+    console.error("❌ Error al cargar detalle:", err);
+  }
+});
 
-    if (!btn || !id) return;
-    const action = btn.dataset.action;
-
-    if (action === "ver") {
-      try {
-        const o = await OrdenTrabajoService.obtener(token, id);
-        renderDetalle(o);
-
-        tbody.querySelectorAll("tr").forEach(r => r.classList.remove("is-selected"));
-        tr.classList.add("is-selected");
-      } catch {
-        alert("No se pudo obtener la orden.");
-      }
-      return;
-    }
-
-    if (action === "archivar" || action === "desarchivar") {
-      try {
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
-
-        const updated = action === "archivar"
-          ? await OrdenTrabajoService.archivar(token, id)
-          : await OrdenTrabajoService.desarchivar(token, id);
-
-        tr.outerHTML = rowTpl(updated);
-
-        const idx = cache.findIndex(o => String(o.id ?? o.idOrden) === String(id));
-        if (idx >= 0) cache[idx] = updated;
-        refreshKpis(cache);
-
-
-        const newTr = tbody.querySelector(`tr[data-id="${id}"]`);
-        if (newTr) newTr.classList.add("is-selected");
-        renderDetalle(updated);
-      } catch (err) {
-        alert("No se pudo completar la acción.");
-      }
-    }
-  });
-
-  load();
+// ===============================
+// 🔹 Inicializar
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("🚀 Iniciando vista móvil de órdenes de trabajo...");
+  cargarOrdenes();
 });

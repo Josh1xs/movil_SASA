@@ -272,3 +272,92 @@ button.icon.unarch {
   color: var(--brand);
   font-weight: 800;
 }
+/* ======== ESTADO VACÍO ======== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.2rem 1rem;
+  color: var(--muted);
+  animation: fadeIn .3s ease;
+}
+.empty-state .empty-icon {
+  font-size: 2.8rem;
+  color: var(--brand);
+  margin-bottom: 0.6rem;
+}
+
+/* ======== LISTA DE ÓRDENES ======== */
+.ordenes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn .25s ease;
+}
+
+.orden-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+  transition: all .15s ease;
+  cursor: pointer;
+}
+.orden-card:hover {
+  transform: scale(1.01);
+  border-color: var(--brand);
+}
+
+.orden-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  color: var(--ink);
+}
+.orden-card-header span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.orden-card-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.orden-vehiculo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.orden-total {
+  color: var(--brand);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* Estados visuales */
+.estado {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-transform: capitalize;
+  border: 1px solid var(--line);
+}
+.estado.Creada { background: #fff8f1; border-color: #fed7aa; color: #92400e; }
+.estado.Proceso { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; }
+.estado.Entregada { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+.estado.Cancelada { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+
+/* ======== ANIMACIONES ======== */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(8px);}
+  to {opacity: 1; transform: translateY(0);}
+}

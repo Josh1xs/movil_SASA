@@ -1,5 +1,5 @@
 // ===============================
-// 📅 CitasService.js (Heroku versión limpia)
+// 📅 CitasService.js (Heroku versión limpia y funcional)
 // ===============================
 
 // 🌐 URL base del backend (Heroku)
@@ -52,9 +52,9 @@ export async function getCitasPaginadas(token, page = 0, size = 10) {
   return res.data?.content ?? res.content ?? res.data ?? res;
 }
 
-// 🔹 Obtener cita por ID
+// 🔹 Obtener cita por ID (corregido: sin /consultar/)
 export async function getCitaById(token, id) {
-  const res = await fetchJsonOrThrow(`${API_URL}/consultar/${id}`, {
+  const res = await fetchJsonOrThrow(`${API_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.data ?? res;

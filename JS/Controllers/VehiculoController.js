@@ -1,27 +1,118 @@
-import { getToken, getUserId } from "../Services/LoginService.js";
+// ===============================
+// 🚗 VehiculoController.js ✅ FINAL COMPLETO
+// (Heroku + Perfil + Logout + CRUD Vehículos)
+// ===============================
+
+import { getToken, getUserId, getUsuarioLogueado } from "../Services/LoginService.js";
 import { getVehiculos, deleteVehiculo } from "../Services/VehiculoService.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const lista = document.getElementById("vehiculosLista");
-  const emptyMsg = document.getElementById("vehEmpty");
+  const $ = (s) => document.querySelector(s);
 
+  // ===============================
+  // 🔹 AUTENTICACIÓN
+  // ===============================
   const token = getToken();
   const userId = getUserId();
 
   if (!userId || !token) {
-    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning")
-      .then(() => location.replace("../Authenticator/login.html"));
+    Swal.fire("Sesión requerida", "Debes iniciar sesión nuevamente", "warning").then(() =>
+      location.replace("../Authenticator/login.html")
+    );
     return;
   }
 
+  // ===============================
+  // 🔹 API BASE
+  // ===============================
+  const API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
+  const API_USER = `${API_BASE}/apiCliente/${userId}`;
+
+  // ===============================
+  // 🔹 REFERENCIAS DOM
+  // ===============================
+  const lista = $("#vehiculosLista");
+  const emptyMsg = $("#vehEmpty");
+
+  const overlay = $("#overlay");
+  const profileMenu = $("#profileMenu");
+  const menuToggle = $("#menuToggle");
+  const closeMenu = $("#closeMenu");
+  const logoutBtn = $("#logoutBtn");
+
+  // ===============================
+  // 🔹 PERFIL / MENÚ / LOGOUT
+  // ===============================
+  async function cargarUsuario() {
+    try {
+      const res = await fetch(API_USER, { headers: { Authorization: `Bearer ${token}` } });
+      let u = null;
+      if (res.ok) u = await res.json();
+
+      const localUser = getUsuarioLogueado();
+      const nombre =
+        `${u?.nombre ?? localUser?.nombre ?? ""} ${u?.apellido ?? localUser?.apellido ?? ""}`.trim() ||
+        "Usuario";
+      const rol = (u?.rol ?? localUser?.rol ?? "Cliente").toUpperCase();
+
+      const menuNombre = $("#menuNombre");
+      const menuPase = $("#menuPase");
+      const menuUserId = $("#menuUserId");
+
+      if (menuNombre) menuNombre.textContent = nombre;
+      if (menuPase) menuPase.textContent = rol;
+      if (menuUserId) menuUserId.textContent = userId;
+
+      localStorage.setItem("nombre", nombre);
+      localStorage.setItem("rol", rol);
+    } catch (err) {
+      console.error("⚠️ Error al cargar usuario:", err);
+    }
+  }
+
+  // Menú lateral (abrir/cerrar)
+  const abrirMenu = () => {
+    profileMenu?.classList.add("open");
+    overlay?.classList.add("show");
+  };
+  const cerrarMenu = () => {
+    profileMenu?.classList.remove("open");
+    overlay?.classList.remove("show");
+  };
+
+  menuToggle?.addEventListener("click", abrirMenu);
+  closeMenu?.addEventListener("click", cerrarMenu);
+  overlay?.addEventListener("click", cerrarMenu);
+  window.addEventListener("keydown", (e) => e.key === "Escape" && cerrarMenu());
+
+  // Logout
+  logoutBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const ok = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "Tu sesión actual se cerrará",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#C91A1A",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    });
+    if (ok.isConfirmed) {
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = "authToken=; Max-Age=0; path=/";
+      location.replace("../Authenticator/login.html");
+    }
+  });
+
+  // ===============================
+  // 🔹 CARGAR VEHÍCULOS
+  // ===============================
   try {
-    // 🔹 Traer vehículos desde la API
     const raw = await getVehiculos(token, 0, 100, "idVehiculo", "asc");
     console.log("Respuesta bruta del backend:", raw);
 
-    // ✅ Normaliza la estructura del backend
     const listaVehiculos = raw.data?.content || raw.data || raw.content || raw;
-
     if (!Array.isArray(listaVehiculos)) {
       console.error("Formato inesperado:", listaVehiculos);
       throw new Error("Formato de respuesta no válido");
@@ -29,7 +120,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Vehículos normalizados:", listaVehiculos);
 
-    // 🔹 Filtrar solo los del cliente logueado (si el campo existe)
     const misVehiculos = listaVehiculos.filter((v) => {
       const idC =
         v.idCliente ??
@@ -40,9 +130,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return !idC || String(idC) === String(userId);
     });
 
-    // ===============================
-    // 🔹 Mostrar u ocultar mensaje vacío correctamente
-    // ===============================
     if (misVehiculos.length === 0) {
       emptyMsg.classList.remove("hidden");
       lista.innerHTML = "";
@@ -82,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===============================
-  // EVENTO ELIMINAR
+  // 🔹 EVENTO ELIMINAR
   // ===============================
   lista.addEventListener("click", async (e) => {
     const card = e.target.closest(".vcard");
@@ -107,11 +194,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (conf.isConfirmed) {
         try {
           await deleteVehiculo(id, token);
-          Swal.fire(
-            "Eliminado",
-            "El vehículo fue eliminado correctamente",
-            "success"
-          ).then(() => location.reload());
+          Swal.fire("Eliminado", "El vehículo fue eliminado correctamente", "success").then(() =>
+            location.reload()
+          );
         } catch (err) {
           console.error("❌ Error eliminando vehículo:", err);
           Swal.fire("Error", "No se pudo eliminar el vehículo", "error");
@@ -121,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ===============================
-  // EVENTO EDITAR
+  // 🔹 EVENTO EDITAR
   // ===============================
   lista.addEventListener("click", (e) => {
     const card = e.target.closest(".vcard");
@@ -133,8 +218,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // ✅ Redirección segura con ID correcto
       location.href = `./anadirVehiculo.html?id=${encodeURIComponent(id)}`;
     }
   });
+
+  // ===============================
+  // 🔹 INICIALIZAR PERFIL
+  // ===============================
+  await cargarUsuario();
 });

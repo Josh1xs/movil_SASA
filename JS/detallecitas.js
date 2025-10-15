@@ -1,129 +1,102 @@
-import { getToken, getUserId } from "../JS/Services/LoginService.js";
+// ===============================
+// 🧾 detallecitas.js (versión SASA completa y funcional)
+// ===============================
 
-const API_CITAS     = "http://localhost:8080/apiCitas";
-const API_VEHICULOS = "http://localhost:8080/apiVehiculo";
-const API_CLIENTES  = "http://localhost:8080/apiCliente";
+import { getToken, getUserId } from "./Services/LoginService.js";
+import { getCitaById } from "./Services/CitasService.js";
+import { getVehiculos } from "./Services/VehiculoService.js";
 
-const qs = (s) => document.querySelector(s);
-const params = new URLSearchParams(location.search);
-const citaId = params.get("id");
+document.addEventListener("DOMContentLoaded", async () => {
+  // ===============================
+  // 📦 Obtener parámetros y token
+  // ===============================
+  const params = new URLSearchParams(window.location.search);
+  const citaId = params.get("id");
+  const token = getToken();
+  const userId = getUserId();
 
-const token  = getToken();
-const userId = getUserId();
-
-
-(function sidebar() {
-  const overlay   = qs("#overlay");
-  const menu      = qs("#profileMenu");
-  const toggle    = qs("#menuToggle");
-  const closeMenu = qs("#closeMenu");
-
-  function open() {
-    menu.classList.add("open");
-    overlay.classList.add("show");
-    overlay.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-  function close() {
-    menu.classList.remove("open");
-    overlay.classList.remove("show");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+  if (!token || !userId) {
+    await Swal.fire({
+      icon: "warning",
+      title: "Sesión requerida",
+      text: "Por favor inicia sesión nuevamente.",
+      confirmButtonColor: "#C91A1A",
+    });
+    location.href = "../Authenticator/login.html";
+    return;
   }
 
-  toggle?.addEventListener("click", () => {
-    toggle.classList.add("spin");
-    setTimeout(() => toggle.classList.remove("spin"), 600);
-    open();
-  });
-  closeMenu?.addEventListener("click", close);
-  overlay?.addEventListener("click", close);
-  window.addEventListener("keydown", (e) => e.key === "Escape" && close());
+  // ===============================
+  // 🎯 Referencias del DOM
+  // ===============================
+  const titleFecha   = document.getElementById("titleFecha");
+  const code         = document.getElementById("code");
+  const horaTxt      = document.getElementById("horaTxt");
+  const estadoTxt    = document.getElementById("estadoTxt");
+  const descTxt      = document.getElementById("descTxt");
+  const vehiculoTxt  = document.getElementById("vehiculoTxt");
 
-  qs("#menuUserId").textContent = userId || "Desconocido";
-  if (userId) {
-    fetch(`${API_CLIENTES}/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then((r) => r.json())
-      .then((u) => {
-        qs("#menuNombre").textContent = `${u?.nombre ?? ""} ${u?.apellido ?? ""}`.trim() || "Usuario";
-        qs("#menuPase").textContent   = u?.pase || "Cliente";
-      })
-      .catch(() => {});
-  }
-})();
-
-
-async function loadDetalle() {
-  if (!citaId) { 
-    location.replace("./citas.html"); 
-    return; 
+  // ===============================
+  // ⚠️ Validar parámetro ID
+  // ===============================
+  if (!citaId) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se encontró el ID de la cita.",
+      confirmButtonColor: "#C91A1A",
+    });
+    return;
   }
 
+  // ===============================
+  // 🚀 Cargar datos de la cita
+  // ===============================
   try {
-    const cita = await fetch(`${API_CITAS}/${citaId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(r => r.json());
+    const cita = await getCitaById(token, citaId);
+    console.log("✅ Cita cargada correctamente:", cita);
 
-    qs("#titleFecha").textContent = cita.fecha || "—";
-    qs("#code").textContent       = `#CITA-${cita.id ?? "—"}`;
-    qs("#horaTxt").textContent    = cita.hora || "—";
-    qs("#estadoTxt").textContent  = cita.estado || "—";
-    qs("#descTxt").textContent    = cita.descripcion || "—";
+    if (!cita) throw new Error("Cita no encontrada");
 
-    let vehiculoTxt = "—";
-    if (cita.idVehiculo) {
+    // ===============================
+    // 🖋️ Renderizar datos base
+    // ===============================
+    titleFecha.textContent = cita.fecha || "—";
+    code.textContent       = `#CITA-${cita.id}`;
+    horaTxt.textContent    = cita.hora || "—";
+    estadoTxt.textContent  = cita.tipoServicio || "—";
+    descTxt.textContent    = cita.descripcion || "—";
+
+    // ===============================
+    // 🚗 Cargar vehículo asociado
+    // ===============================
+    if (cita.vehiculo?.placa) {
+      vehiculoTxt.textContent = `${cita.vehiculo.marca} ${cita.vehiculo.modelo} (${cita.vehiculo.placa})`;
+    } else if (cita.idVehiculo) {
       try {
-        const veh = await fetch(`${API_VEHICULOS}/${cita.idVehiculo}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).then(r => r.json());
-        vehiculoTxt = `${veh.marca || "Vehículo"} ${veh.modelo || ""} - ${veh.placa || ""}`.trim();
-      } catch {}
+        const res = await getVehiculos(token, 0, 50);
+        const vehiculos = res.content ?? res;
+        const encontrado = vehiculos.find(v => v.id === cita.idVehiculo);
+        if (encontrado) {
+          vehiculoTxt.textContent = `${encontrado.marca} ${encontrado.modelo} (${encontrado.placa})`;
+        } else {
+          vehiculoTxt.textContent = "Vehículo no encontrado";
+        }
+      } catch (e) {
+        console.warn("⚠️ No se pudo cargar el vehículo:", e);
+        vehiculoTxt.textContent = "Error cargando vehículo";
+      }
+    } else {
+      vehiculoTxt.textContent = "—";
     }
-    qs("#vehiculoTxt").textContent = vehiculoTxt;
 
-    qs("#btnPdf").dataset.fecha = cita.fecha || "";
-    qs("#btnPdf").dataset.hora  = cita.hora  || "";
-    qs("#btnPdf").dataset.code  = cita.id ? `#CITA-${cita.id}` : "cita";
   } catch (err) {
-    console.error(err);
-    if (window.Swal) Swal.fire("Error", "No se pudo cargar el detalle de la cita", "error");
+    console.error("❌ Error cargando detalle de cita:", err);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No se pudo cargar el detalle de la cita.",
+      confirmButtonColor: "#C91A1A",
+    });
   }
-}
-
-
-async function downloadPDF() {
-  const card = qs("#citaCard");
-  if (!card) return;
-
-  const fecha = qs("#btnPdf").dataset.fecha || "";
-  const code  = qs("#btnPdf").dataset.code  || "cita";
-
-  try {
-    const canvas = await html2canvas(card, { scale: 2, useCORS: true, background: "#ffffff" });
-    const imgData = canvas.toDataURL("image/png");
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "p", unit: "pt", format: "a4" });
-    const pageWidth  = pdf.internal.pageSize.getWidth();
-    const margin = 36; 
-    const renderWidth = pageWidth - margin * 2;
-    const ratio = canvas.height / canvas.width;
-    const renderHeight = renderWidth * ratio;
-
-    pdf.addImage(imgData, "PNG", margin, margin, renderWidth, renderHeight, undefined, "FAST");
-
-    const safeFecha = fecha.replaceAll("/", "-");
-    pdf.save(`detalle-${code}-${safeFecha || "sasa"}.pdf`);
-  } catch (err) {
-    console.error(err);
-    if (window.Swal) Swal.fire("Error", "No se pudo generar el PDF", "error");
-  }
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadDetalle();
-  qs("#btnPdf")?.addEventListener("click", downloadPDF);
 });

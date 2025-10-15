@@ -1,7 +1,13 @@
+// ===============================
+// LoginService.js ✅ FINAL (Heroku + LocalStorage + Authenticator correcto)
+// ===============================
 
 const API_BASE = "https://sasaapi-73d5de493985.herokuapp.com";
 const API_URL = `${API_BASE}/auth/cliente`;
 
+// ===============================
+// 🔐 LOGIN
+// ===============================
 export async function login(correo, contrasena) {
   try {
     const res = await fetch(`${API_URL}/login`, {
@@ -17,7 +23,7 @@ export async function login(correo, contrasena) {
       throw new Error(json.message || "Credenciales incorrectas");
     }
 
-
+    // ✅ Guardar sesión
     localStorage.setItem("user", JSON.stringify(json.cliente));
     localStorage.setItem("userId", json.cliente.idCliente || json.cliente.id);
     localStorage.setItem("token", json.token);
@@ -30,19 +36,23 @@ export async function login(correo, contrasena) {
   }
 }
 
-
+// ===============================
+// 🔐 LOGOUT
+// ===============================
 export function logout() {
   ["user", "userId", "token"].forEach((k) => localStorage.removeItem(k));
 
-
-  if (window.location.pathname.includes("Autenticacion")) {
+  // ✅ Redirección correcta (sube dos niveles desde Controllers)
+  if (window.location.pathname.includes("Authenticator")) {
     window.location.href = "login.html";
   } else {
-    window.location.href = "../Autenticacion/login.html";
+    window.location.href = "../../Authenticator/login.html";
   }
 }
 
-
+// ===============================
+// 🔎 Usuario actual
+// ===============================
 export function getUsuarioLogueado() {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
@@ -60,7 +70,9 @@ export function isLoggedIn() {
   return !!getToken() && !!getUsuarioLogueado();
 }
 
-
+// ===============================
+// 🌐 Fetch con autenticación
+// ===============================
 export async function fetchWithAuth(url, options = {}) {
   const token = getToken();
 
@@ -73,8 +85,9 @@ export async function fetchWithAuth(url, options = {}) {
   const res = await fetch(url, { ...options, headers });
 
   if (res.status === 401) {
-    logout();
-    Swal.fire("Sesión expirada", "Debes iniciar sesión nuevamente", "warning");
+    Swal.fire("Sesión expirada", "Debes iniciar sesión nuevamente", "warning").then(() => {
+      logout();
+    });
     throw new Error("401 - Sesión expirada");
   }
 

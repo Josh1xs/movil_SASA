@@ -25,7 +25,7 @@
       <a href="../MisVehiculos/Vehiculos.html"><i class="fa-solid fa-car"></i> Vehículos</a>
       <a href="../MisVehiculos/anadirVehiculo.html"><i class="fa-solid fa-plus-circle"></i> Añadir Vehículo</a>
       <a href="../Citas/citas.html"><i class="fa-regular fa-calendar-check"></i> Citas</a>
-      <a href="../OrdenTrabajo/OrdenTrabajo.html"><i class="fa-solid fa-clipboard-list"></i> Órdenes de trabajo</a>
+      <a href="../OrdenTrabajo/OrdenTrabajo.html" class="active"><i class="fa-solid fa-clipboard-list"></i> Órdenes de trabajo</a>
       <a href="../Facturas/facturas.html"><i class="fa-solid fa-receipt"></i> Facturas</a>
       <a href="../Ajustes/ajustes.html"><i class="fa-solid fa-sliders"></i> Ajustes</a>
       <a href="../Authenticator/login.html" id="logoutBtn" class="danger">
@@ -49,38 +49,41 @@
       </div>
     </section>
 
-
+    <!-- ======== MIS ÓRDENES ======== -->
     <section class="section">
       <div class="card">
         <div class="card-header">Mis órdenes</div>
         <div class="card-body">
-          <div class="table-wrap">
-            <table class="table" id="tablaOrdenes">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Vehículo</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                  <th class="w-actions">Acciones</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+
+          <!-- Estado vacío -->
+          <div id="noOrdenes" class="empty-state" style="display:none;">
+            <i class="fa-solid fa-clipboard-xmark empty-icon"></i>
+            <p>Aún no tienes órdenes registradas</p>
           </div>
 
-          <div class="pager">
-            <button id="prevPage" class="btn btn-ghost" aria-label="Página anterior"><i class="fa-solid fa-angle-left"></i></button>
-            <span id="pageInfo" class="muted">—</span>
-            <button id="nextPage" class="btn btn-ghost" aria-label="Página siguiente"><i class="fa-solid fa-angle-right"></i></button>
+          <!-- Contenedor de lista -->
+          <div id="ordenesList" class="ordenes-list"></div>
+
+          <!-- Paginación -->
+          <div class="pager" id="pager" style="display:none;">
+            <button id="prevPage" class="btn btn-ghost" aria-label="Página anterior">
+              <i class="fa-solid fa-angle-left"></i>
+            </button>
+            <span id="pageInfo" class="muted">Página 1</span>
+            <button id="nextPage" class="btn btn-ghost" aria-label="Página siguiente">
+              <i class="fa-solid fa-angle-right"></i>
+            </button>
           </div>
+
         </div>
       </div>
     </section>
 
+    <!-- ======== DETALLE ======== -->
     <section class="section">
-      <div class="card">
-        <div class="card-header">Detalle seleccionado</div>
+      <div class="card detail-card">
+        <div class="card-header gradient-red">Detalle seleccionado</div>
+
         <div class="card-body detail-grid" id="detalleWrap">
           <div class="detail-header">
             <div class="detail-meta">
@@ -106,20 +109,22 @@
             </table>
           </div>
 
-          <div class="detail-total">Total <span id="dTotal" style="margin-left:8px">—</span></div>
+          <div class="detail-total">
+            <strong>Total:</strong> <span id="dTotal" class="price">—</span>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- NAV INFERIOR -->
   <nav class="tabbar" aria-label="Navegación principal">
-    <a class="tabbar__btn" href="../dashboard/index.html" title="Inicio"><i class="fa-solid fa-house"></i></a>
-    <a class="tabbar__btn" href="../Citas/citas.html" title="Citas"><i class="fa-regular fa-calendar"></i></a>
-    <a class="tabbar__btn" href="../MisVehiculos/Vehiculos.html" title="Vehículos"><i class="fa-solid fa-car"></i></a>
-    <a class="tabbar__btn" href="../Ajustes/ajustes.html" title="Ajustes"><i class="fa-solid fa-user"></i></a>
+    <a class="tabbar__btn" href="../dashboard/index.html"><i class="fa-solid fa-house"></i></a>
+    <a class="tabbar__btn" href="../Citas/citas.html"><i class="fa-regular fa-calendar"></i></a>
+    <a class="tabbar__btn active" href="../OrdenTrabajo/OrdenTrabajo.html"><i class="fa-solid fa-clipboard-list"></i></a>
+    <a class="tabbar__btn" href="../Ajustes/ajustes.html"><i class="fa-solid fa-user"></i></a>
   </nav>
 
-  <script type="module" src="../JS/Services/OrdenTrabajoService.js"></script>
   <script type="module" src="../JS/Controllers/OrdenTrabajoController.js"></script>
 
   <script>
@@ -128,12 +133,15 @@
       const menu = document.getElementById('profileMenu');
       const openBtn = document.getElementById('menuToggle');
       const closeBtn = document.getElementById('closeMenu');
-      function open(){menu.classList.add('open'); overlay.classList.add('show')}
-      function close(){menu.classList.remove('open'); overlay.classList.remove('show')}
+      const open = () => { menu.classList.add('open'); overlay.classList.add('show'); };
+      const close = () => { menu.classList.remove('open'); overlay.classList.remove('show'); };
       openBtn?.addEventListener('click', open);
       closeBtn?.addEventListener('click', close);
       overlay?.addEventListener('click', close);
     })();
   </script>
+<!-- Librería SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>
